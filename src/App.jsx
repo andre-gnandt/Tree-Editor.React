@@ -4,30 +4,56 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [level, setLevel] = useState(0)
+  const [Nodes, setNodes] = useState([]);
+  //let NodeData = [];
 
+  
+  function getNodes(){
+    
+    fetch("http://localhost:11727/api/Nodes").then(res=> res.json()).then(
+      result => {
+        setNodes(result);
+      }
+    )
+    console.log(Nodes);
+    
+  };
+  
+
+  function buttonResults(value){
+    console.log("button clicked!");
+    setLevel(value);
+    getNodes();
+  }
+
+  
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+        <div className="card">
+          <button onClick={(l) => buttonResults(level+1)}>
+            level is {level}
+          </button>
+        </div>
+        <h2>Node List........</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              Nodes.map((node) => (
+                <tr key={node.id}>
+                  <td>{node.level}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>      
     </>
   )
 }
