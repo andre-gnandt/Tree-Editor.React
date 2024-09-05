@@ -1,32 +1,32 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import NodeDetails   from './Components/NodeDetails'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
   const [level, setLevel] = useState(0)
-  const [Nodes, setNodes] = useState([]);
+  const [Nodes, setNodes] = useState({});
   //let NodeData = [];
-
   
   function getNodes(){
-    
-    fetch("http://localhost:11727/api/Nodes").then(res=> res.json()).then(
+    fetch("http://localhost:11727/api/Nodes/961d76a6-77cd-46c8-9e22-4fc9ab394bdc").then(res=> res.json()).then(
       result => {
         setNodes(result);
       }
     )
-    console.log(Nodes);
-    
   };
-  
 
   function buttonResults(value){
     console.log("button clicked!");
-    setLevel(value);
+    //setLevel(value);
     getNodes();
-  }
+  };
 
+  useEffect(() => {
+    getNodes();
+  }, [level])
+  
   
   return (
     <>
@@ -36,23 +36,8 @@ function App() {
             level is {level}
           </button>
         </div>
-        <h2>Node List........</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Level</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              Nodes.map((node) => (
-                <tr key={node.id}>
-                  <td>{node.level}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
+        <h2>Node:</h2>
+        <NodeDetails node = {Nodes} />
       </div>      
     </>
   )
