@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
-import NodeDetails   from './Components/NodeDetails'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import NodeDetails   from './features/nodes/NodeDetails'
 import './App.css'
 
 function App() {
@@ -37,7 +35,7 @@ function App() {
           </button>
         </div>
         <h2>Node:</h2>
-        <NodeDetails node = {Nodes} />
+        <NodeDetails props = {Nodes}  />
       </div>      
     </>
   )
