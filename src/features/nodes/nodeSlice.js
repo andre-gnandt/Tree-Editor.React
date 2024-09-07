@@ -13,11 +13,11 @@ export const nodeSlice = createSlice({
   initialState,
   reducers: {
     cloneNode: (state, action) => {
-        state.data = action.payload.props.data;
-        state.title = action.payload.props.title;
-        state.level = action.payload.props.level;
-        state.number = action.payload.props.number;
-        state.nodeId = action.payload.props.nodeId;
+        state.data = action.payload.data;
+        state.title = action.payload.title;
+        state.level = action.payload.level;
+        state.number = action.payload.number;
+        state.nodeId = action.payload.nodeId;
     },
     updateNodeData: (state, action) => {
         state.data = action.payload;

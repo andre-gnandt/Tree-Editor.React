@@ -1,50 +1,40 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { cloneNode, updateNodeData, updateNodeNumber } from './nodeSlice'
-//import { InputText } from 'primereact/inputtext';
+import { InputText } from 'primereact/inputtext';
 import './DetailsList.css';
 
-const NodeDetails = input => {
+const NodeDetails = (input) => {
+    const firstRender = useRef(true);
     const props = input.props
-    const node = useSelector(state => state.node);
     const dispatch = useDispatch();
-    dispatch(cloneNode(input));
-    
-   // render() {
+    const node = useSelector(state => state.node);
         
-   
+    useEffect(() => {
+        if(firstRender.current){
+            dispatch(cloneNode(props));
+        }
+    });
+
+    const handleChange = (e, method) => {
+        firstRender.current = false;
+        dispatch(method(e.target.value));
+    }
+
         return(
             <div>
                 <div>
-                    <h1>{props.title}</h1>
+                    <h1>{node.title}</h1>
                 </div>
                 <div>
-                    Data: <input value = {props.data} />
+                    Data: <InputText onChange = {(e) => handleChange(e, updateNodeData)} value = {node.data} />
                 </div>
-                    Number: <input onChange={(value) => dispatch(updateNodeNumber(value.target.values))} value = {node.number ? node.number : ""} />
+                    Number: <InputText onChange = {(e) => handleChange(e, updateNodeNumber)} value = {node.number ? node.number : ""} />
                 <div>
                     <button > Save </button>
                     <button > Reset </button>
                 </div>
             </div> );
-    //};
-    
-      /*
-    return(
-        <div>
-            <div>
-                <h1>{props.props.title}</h1>
-            </div>
-            <div>
-                Data: <input value = {props.data} />
-            </div>
-                Number: <input value = {props.number ? props.number : ""} />
-            <div>
-                <button > Save </button>
-                <button > Reset </button>
-            </div>
-        </div> );
-    */
 }
 
 export default NodeDetails 
