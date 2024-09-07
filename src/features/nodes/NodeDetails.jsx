@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { cloneNode, updateNodeData, updateNodeNumber } from './nodeSlice'
 import { InputText } from 'primereact/inputtext';
-//import updateNode from '/LocalTreeData.React/src/api/nodes/nodesApi';
+import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import './DetailsList.css';
 
 const NodeDetails = (input) => {
@@ -19,17 +19,6 @@ const NodeDetails = (input) => {
         firstRender.current = false;
         dispatch(method(value));
     }
-
-    const putOptions = {
-        method: 'PUT',
-        headers: { "Content-type": "application/json; charset=UTF-8"},
-        body: null
-    }
-
-    function updateNode(id, node){
-        putOptions.body = JSON.stringify(node);
-        fetch(`http://localhost:11727/api/Nodes/${id}`, putOptions);
-    };
 
         return(
             <div>
