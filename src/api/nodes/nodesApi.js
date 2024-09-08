@@ -10,17 +10,18 @@ export function updateNode(id, node){
 };
 
 export function GetNode(id){
+    let value = null;
     fetch("http://localhost:11727/api/Nodes/"+id).then(res=> res.json()).then(
         result => {
-          return result;
+          value = result;
         }
     )
+    return value;
 };
 
-export function GetTrees(){
-    fetch("http://localhost:11727/api/Nodes/Trees").then(res=> res.json()).then(
-        result => {
-          return result;
-        }
-    )
+export default async function GetTrees(){
+    await fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
+        result => {console.log(result); return result;}
+    );
+    return null;
 };

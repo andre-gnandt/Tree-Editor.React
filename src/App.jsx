@@ -1,41 +1,62 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+//import { render} from 'react-dom';
 import NodeDetails   from './features/nodes/NodeDetails'
+//import  GetTrees   from './api/nodes/nodesApi';
+import TreeNode from './features/nodes/TreeNode';
 import './App.css'
 
 function App() {
-  const [level, setLevel] = useState(0)
-  const [Nodes, setNodes] = useState({});
-  //let NodeData = [];
-  
-  function getNodes(){
-    fetch("http://localhost:11727/api/Nodes/961d76a6-77cd-46c8-9e22-4fc9ab394bdc").then(res=> res.json()).then(
-      result => {
-        setNodes(result);
-      }
-    )
+  const firstRender = useRef(true);
+  const [tree, setTree] = useState(null);
+
+  function GetTrees(){
+    fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
+        result => { console.log("result"); console.log(result[0]); setTree(result[0]);}
+    );
   };
 
-  function buttonResults(value){
-    console.log("button clicked!");
-    //setLevel(value);
-    getNodes();
-  };
-
+  if(firstRender.current){
+    GetTrees();
+    firstRender.current = false;
+  }
+  /*
   useEffect(() => {
-    getNodes();
-  }, [level])
-  
-  
+    async function GetTrees(){
+      await fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
+          result => { console.log("result"); console.log(result[0]); setTree(result[0]);}
+      );
+    };
+
+    GetTrees()
+  })
+
+  */
+    
+  function RenderChildren(parent)
+  {
+    if(parent == null){ return (<></>)}
+    const children = parent.children;
+    console.log("children");
+    console.log(children);
+
+    if(children == null){return (<></>)}
+    return(
+      <>
+        {children.forEach(child => {
+          <> 
+            <TreeNode input = {child} />
+            {RenderChildren(child)}
+          </>
+        })}
+      </>
+    )
+  }
+
   return (
     <>
-      <div>
-        <div className="card">
-          <button onClick={(l) => buttonResults(level+1)}>
-            level is {level}
-          </button>
-        </div>
-        <h2>Node:</h2>
-        <NodeDetails props = {Nodes}  />
+      <div id = 'tree-root'>
+        <TreeNode props = {tree} />
+        {RenderChildren(tree)}
       </div>      
     </>
   )
