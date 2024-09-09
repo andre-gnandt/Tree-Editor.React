@@ -8,30 +8,28 @@ import './DetailsList.css';
 import NodeDetails from './NodeDetails';
 
 const TreeNode = (props) => {
-    const[visible, setVisible] = useState(true);
-    
-    if(props.props == null) return (<></>);
+    const[dialog, setDialog] = useState(false);
     console.log("Treenode input");
-    console.log(props);    
-
+    console.log(props); 
+    if(props == null || props.props == null || !('id' in props.props)) return (<></>);   
+    console.log("returning component");
         return(
             <>
                 <div style = {{border: '1px solid red'}}>
-                    <button>
+                    <button onClick={() => {setDialog(true)}}>
                         <div>
                             <h1>{props.props.title}</h1>
                         </div>
-                    </button>
-                    
-                </div>
-                
+                    </button>                    
+                </div>               
                 <div>
                     DIALOG
-                    <Dialog visible = {visible}> 
-                        <NodeDetails input = {props}/>
+                    <Dialog header = {"HEADER"} visible = {dialog} style={{ width: '50vw' }} onHide={() => {if (!dialog) return; setDialog(false)}} > 
+                        <NodeDetails input = {props.props}/>
                     </Dialog>
                 </div>
-            </> );
+            </> 
+        );
 }
 
 export default TreeNode 

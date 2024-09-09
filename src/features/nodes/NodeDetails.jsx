@@ -7,9 +7,11 @@ import './DetailsList.css';
 
 const NodeDetails = (input) => {
     const firstRender = useRef(true);
-    const props = input.props
+    const props = input.input
     const dispatch = useDispatch();
     const node = useSelector(state => state.node);
+    console.log("node details input");
+    console.log(input);
 
     if(firstRender.current){
         dispatch(cloneNode(props));

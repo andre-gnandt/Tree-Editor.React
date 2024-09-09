@@ -19,18 +19,6 @@ function App() {
     GetTrees();
     firstRender.current = false;
   }
-  /*
-  useEffect(() => {
-    async function GetTrees(){
-      await fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
-          result => { console.log("result"); console.log(result[0]); setTree(result[0]);}
-      );
-    };
-
-    GetTrees()
-  })
-
-  */
     
   function RenderChildren(parent)
   {
@@ -42,12 +30,12 @@ function App() {
     if(children == null){return (<></>)}
     return(
       <>
-        {children.forEach(child => {
-          <> 
-            <TreeNode input = {child} />
-            {RenderChildren(child)}
-          </>
-        })}
+        {children.map(child => 
+            <div key = {child.id}> <div> CHILD 
+              <TreeNode input = {child} /> </div>
+              {RenderChildren(child)}
+            </div>
+        )}
       </>
     )
   }
