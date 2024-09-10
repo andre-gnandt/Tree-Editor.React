@@ -32,7 +32,7 @@ function App() {
       <>
         {children.map(child => 
             <div key = {child.id}> <div> CHILD 
-              <TreeNode input = {child} /> </div>
+              <TreeNode props = {child} /> </div>
               {RenderChildren(child)}
             </div>
         )}
