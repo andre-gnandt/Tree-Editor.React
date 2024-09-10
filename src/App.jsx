@@ -20,21 +20,34 @@ function App() {
     firstRender.current = false;
   }
     
-  function RenderChildren(parent)
+  function RenderChildren(parent, level = 1)
   {
     if(parent == null){ return (<></>)}
     const children = parent.children;
     console.log("children");
     console.log(children);
 
+    var count = 0;
     if(children == null){return (<></>)}
+
+    const childElements =[];
+    children.forEach(child => {
+      childElements.push((
+      <>
+        <TreeNode props = {child} /> 
+        {RenderChildren(child, level + 1)}
+      </>));
+    });
+
     return(
       <>
-        {children.map(child => 
-            <div key = {child.id}> <div> CHILD 
-              <TreeNode props = {child} /> </div>
-              {RenderChildren(child)}
-            </div>
+        {childElements.map(child => {
+            
+            return (
+            <>
+              {child}
+            </> );
+            }
         )}
       </>
     )

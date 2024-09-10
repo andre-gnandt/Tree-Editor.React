@@ -21,13 +21,10 @@ const TreeNode = (props) => {
                             <h1>{props.props.title}</h1>
                         </div>
                     </button>                    
-                </div>               
-                <div>
-                    DIALOG
-                    <Dialog header = {"HEADER"} visible = {dialog} style={{ width: '50vw' }} onHide={() => {if (!dialog) return; setDialog(false)}} > 
-                        <NodeDetails input = {props.props}/>
-                    </Dialog>
-                </div>
+                </div>                               
+                <Dialog header = {"HEADER"} visible = {dialog} style={{ width: '50vw' }} onHide={() => {if (!dialog) return; setDialog(false)}} > 
+                    <NodeDetails input = {props.props}/>
+                </Dialog>               
             </> 
         );
 }
