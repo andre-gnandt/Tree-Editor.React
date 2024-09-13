@@ -7,19 +7,19 @@ import updateNode from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import './DetailsList.css';
 import NodeDetails from './NodeDetails';
 
-const TreeNode = (props) => {
+const TreeNode = (props, css) => {
     const[dialog, setDialog] = useState(false);
     console.log("Treenode input");
     console.log(props); 
+    console.log(props.css.top);
     if(props == null || props.props == null || !('id' in props.props)) return (<></>);   
+    
     console.log("returning component");
         return(
             <>
-                <div style = {{border: '1px solid red'}}>
-                    <button onClick={() => {setDialog(true)}}>
-                        <div>
-                            <h1>{props.props.title}</h1>
-                        </div>
+                <div style = {{position:'absolute', right: props.css.right, top: props.css.top, left: props.css.left, display: 'table', border: '1px solid red', height: '80px', width: '80px'}}>
+                    <button style = {{display: 'table-cell', height: '80px', width: '80px'}}  onClick={() => {setDialog(true)}}>
+                        {props.props.title}
                     </button>                    
                 </div>                               
                 <Dialog header = {"HEADER"} visible = {dialog} style={{ width: '50vw' }} onHide={() => {if (!dialog) return; setDialog(false)}} > 

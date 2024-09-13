@@ -20,23 +20,38 @@ function App() {
     firstRender.current = false;
   }
     
-  function RenderChildren(parent, level = 1)
+  function RenderChildren(parent, row = 1, parentLeft = window.innerWidth/2, parentRight = 0)
   {
+    
     if(parent == null){ return (<></>)}
     const children = parent.children;
     console.log("children");
     console.log(children);
 
-    var count = 0;
     if(children == null){return (<></>)}
 
-    const childElements =[];
+    var elementWidth = 80;
+    //var 
+    let widthCount = (children.length-1)*elementWidth;
+    const childElements = [];
+    var i = 0;
     children.forEach(child => {
+      var leftSpace = 0.00;
+      if((i > 0 || children.length%2==0) && i%2 == 0) childSpace = -1*child.children.length*elementWidth*1.5;
+      if((i > 0 || children.length%2==0) && i%2 == 1) childSpace = child.children.length*elementWidth*1.5;
+
+      var childSpace =  0.00;
+      if((i > 0 || children.length%2==0) && i%2 == 0) childSpace = -1*child.children.length*elementWidth*1.5;
+      if((i > 0 || children.length%2==0) && i%2 == 1) childSpace = child.children.length*elementWidth*1.5;
+      //var right = widthCount > 0 ? widthCount + parentRight : 0;
+      var right = 0;
+      var left = childSpace+leftSpace+parentLeft;
       childElements.push((
-      <>
-        <TreeNode props = {child} /> 
-        {RenderChildren(child, level + 1)}
+      <>    
+          <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: String(right)+'rem', left: String(left)+'px'}} />        
+          {RenderChildren(child, row + 1, left, right)}
       </>));
+      i++;
     });
 
     return(
@@ -55,10 +70,10 @@ function App() {
 
   return (
     <>
-      <div id = 'tree-root'>
-        <TreeNode props = {tree} />
+      
+        <TreeNode props = {tree} css = {{top: '0rem', right: '0rem', left: String(window.innerWidth/2)+'px'}}/>
         {RenderChildren(tree)}
-      </div>      
+          
     </>
   )
 }
