@@ -35,14 +35,14 @@ function App() {
     let widthCount = (children.length-1)*elementWidth;
     const childElements = [];
     var i = 0;
-    var leftCount = children.length%2 == 0 ? elementWidth/2 : 0;
+    var leftCount = elementWidth;
     var childCountOdd = 0;
     var childCountEven = 0;
     children.forEach(child => {
       var leftSpace = 0;
       var childSpace =  0.00;
-      if((i > 0 || children.length%2==0) && i%2 == 0){ childSpace = -1*child.children.length*elementWidth/4; childCountEven =  child.children.length;}
-      if((i > 0 || children.length%2==0) && i%2 == 1){ childSpace = child.children.length*elementWidth/4; childCountOdd =  child.children.length; }
+      if((i > 0 || children.length%2==0) && i%2 == 0){ childSpace = -1*child.children.length*leftCount/2; childCountEven =  child.children.length;}
+      if((i > 0 || children.length%2==0) && i%2 == 1){ childSpace = child.children.length*leftCount/2; childCountOdd =  child.children.length; }
   
       if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven/2 : -1*leftCount; }
       if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd/2 : leftCount; }
