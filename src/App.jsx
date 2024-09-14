@@ -36,15 +36,16 @@ function App() {
     const childElements = [];
     var i = 0;
     var leftCount = children.length%2 == 0 ? elementWidth/2 : 0;
-    var childCountOdd = 1;
-    var childCountEven = 1;
+    var childCountOdd = 0;
+    var childCountEven = 0;
     children.forEach(child => {
-      var leftSpace = 0.00;
+      var leftSpace = 0;
       var childSpace =  0.00;
-      if((i > 0 || children.length%2==0) && i%2 == 0) childSpace = -1*child.children.length*elementWidth/4;
-      if((i > 0 || children.length%2==0) && i%2 == 1) childSpace = child.children.length*elementWidth/4;
-      if((i > 0 || children.length%2==0) && i%2 == 0) leftSpace = -1*leftCount; 
-      if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = leftCount; leftCount = leftCount; }
+      if((i > 0 || children.length%2==0) && i%2 == 0){ childSpace = -1*child.children.length*elementWidth/4; childCountEven =  child.children.length;}
+      if((i > 0 || children.length%2==0) && i%2 == 1){ childSpace = child.children.length*elementWidth/4; childCountOdd =  child.children.length; }
+  
+      if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven/2 : -1*leftCount; }
+      if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd/2 : leftCount; }
       //var right = widthCount > 0 ? widthCount + parentRight : 0;
       var right = 0;
       var left = childSpace+leftSpace+parentLeft;
