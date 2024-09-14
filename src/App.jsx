@@ -30,19 +30,21 @@ function App() {
 
     if(children == null){return (<></>)}
 
-    var elementWidth = 80;
+    var elementWidth = 160;
     //var 
     let widthCount = (children.length-1)*elementWidth;
     const childElements = [];
     var i = 0;
+    var leftCount = children.length%2 == 0 ? elementWidth/2 : 0;
+    var childCountOdd = 1;
+    var childCountEven = 1;
     children.forEach(child => {
       var leftSpace = 0.00;
-      if((i > 0 || children.length%2==0) && i%2 == 0) childSpace = -1*child.children.length*elementWidth*1.5;
-      if((i > 0 || children.length%2==0) && i%2 == 1) childSpace = child.children.length*elementWidth*1.5;
-
       var childSpace =  0.00;
-      if((i > 0 || children.length%2==0) && i%2 == 0) childSpace = -1*child.children.length*elementWidth*1.5;
-      if((i > 0 || children.length%2==0) && i%2 == 1) childSpace = child.children.length*elementWidth*1.5;
+      if((i > 0 || children.length%2==0) && i%2 == 0) childSpace = -1*child.children.length*elementWidth/4;
+      if((i > 0 || children.length%2==0) && i%2 == 1) childSpace = child.children.length*elementWidth/4;
+      if((i > 0 || children.length%2==0) && i%2 == 0) leftSpace = -1*leftCount; 
+      if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = leftCount; leftCount = leftCount; }
       //var right = widthCount > 0 ? widthCount + parentRight : 0;
       var right = 0;
       var left = childSpace+leftSpace+parentLeft;
