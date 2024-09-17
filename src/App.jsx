@@ -11,7 +11,7 @@ function App() {
 
   function GetTrees(){
     fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
-        result => { console.log("result"); console.log(result[0]); setTree(result[0]);}
+        result => { setTree(result[0]);}
     );
   };
 
@@ -20,6 +20,7 @@ function App() {
     firstRender.current = false;
   }
     
+  /*
   
   function RenderChildren(parent, row = 1, parentLeft = window.innerWidth/2, parentRight = 0)
   {
@@ -75,8 +76,9 @@ function App() {
   }
   
 
-  /*
-  function RenderChildren(parent, row = 1, parentLeft = window.innerWidth/2, parentRight = 0, maxLevels = new Object())
+  */
+
+  function RenderChildren(parent, row = 1, parentLeft = window.innerWidth/2, maxLevels = new Object(), firstNode = false, path = 'middle')
   {
     
     if(parent == null){ return (<></>)}
@@ -91,7 +93,7 @@ function App() {
     let widthCount = (children.length-1)*elementWidth;
     const childElements = [];
     const childTrees = [];
-    var i = 1;
+    var i = 0;
     var leftCount = elementWidth;
     var childCountOdd = 0;
     var childCountEven = 0;
@@ -111,12 +113,11 @@ function App() {
       if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven/2 : -1*leftCount; }
       if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd/2 : leftCount; }
       //var right = widthCount > 0 ? widthCount + parentRight : 0;
-      var right = 0;
       var left = childSpace+leftSpace+parentLeft;
       childElements.push((
       <>    
-          {RenderChildren(child, row + 1, left, right)} 
-          <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: String(right)+'rem', left: String(left)+'px'}} />       
+          {RenderChildren(child, row + 1, left)} 
+          <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />       
       </>));
 
       i++;
@@ -135,13 +136,13 @@ function App() {
       </>
     )
   }
-    */
+    
 
   return (
     <>
       
-        <TreeNode props = {tree} css = {{top: '0rem', right: '0rem', left: String(window.innerWidth/2)+'px'}}/>
-        {RenderChildren(tree)}
+      {RenderChildren(tree)}
+      <TreeNode props = {tree} css = {{top: '0rem', right: '0rem', left: String(window.innerWidth/2)+'px'}}/>
           
     </>
   )
