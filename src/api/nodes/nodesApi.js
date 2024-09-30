@@ -21,7 +21,7 @@ export function GetNode(id){
 
 export default async function GetTrees(){
     await fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
-        result => {console.log(result); return result;}
+        result => { return result;}
     );
     return null;
 };

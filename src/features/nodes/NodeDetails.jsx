@@ -6,12 +6,10 @@ import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import './DetailsList.css';
 
 const NodeDetails = (input) => {
-    const firstRender = useRef(true);
-    const props = input.input
     const dispatch = useDispatch();
     const node = useSelector(state => state.node);
-    console.log("node details input");
-    console.log(input);
+    const firstRender = useRef(true);
+    const props = input.input
 
     if(firstRender.current){
         dispatch(cloneNode(props));
@@ -41,7 +39,7 @@ const NodeDetails = (input) => {
                 </div>
                     Number: <InputText onChange = {(e) => handleChange(e.target.value, updateNodeNumber)} value = {node.number ? node.number : ""} />
                 <div>
-                    <button onClick = {() => {updateNode(node.id, node); setNode(props);}}> Save </button>
+                    <button onClick = {() => {updateNode(node.id, node); /*setNode(props); */}}> Save </button>
                     <button onClick = {() => handleChange(props, cloneNode)} > Reset </button>
                 </div>
             </div> );

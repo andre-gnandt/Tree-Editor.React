@@ -9,11 +9,25 @@ function App() {
   const firstRender = useRef(true);
   const [tree, setTree] = useState(null);
   const maxLevels = new Object();
+  var childLeftPosition = null;
+  var childRightPosition = null;
+
+  function SetParentNodes(node)
+  {
+    node.children.forEach(child => {
+      child.parent = node;
+      SetParentNodes(child);
+    });
+  }
 
   function GetTrees(){
     fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
-        result => { setTree(result[0]);}
-    );
+        result => { 
+          var nodes = result[1];
+          SetParentNodes(nodes);
+          setTree(nodes);
+        }
+    );   
   };
 
   if(firstRender.current){
@@ -89,8 +103,6 @@ function App() {
     
     if(parent == null){ return (<></>)}
     const children = parent.children;
-    console.log("children");
-    console.log(children);
 
     if(children == null){return (<></>)}
 
@@ -104,34 +116,36 @@ function App() {
     var childCountOdd = 0;
     var childCountEven = 0;
 
-    var maxLevel = String(row-1) in maxLevels ? maxLevels[String(row-1)] : {}
-    var maxRight =  'Right' in maxLevel ? maxLevel.Right : null;
-    var maxLeft = 'Left' in maxLevel ? maxLevel.Left : null; 
-
+    if( !(String(row-1) in maxLevels) ) maxLevels[String(row-1)] = {};
+    var maxLevel = maxLevels[String(row-1)];
+    
     children.forEach(child => {
-      
+      var maxRight =  'Right' in maxLevel ? maxLevel.Right : null;
+      var maxLeft = 'Left' in maxLevel ? maxLevel.Left : null; 
+
       if(path === 'middle')
       {
         var leftSpace = 0;
-        var childSpace =  0.00;
-        if((i > 0 || children.length%2==0) && i%2 == 0){ childSpace = child.children.length > 1 ? -1*child.children.length*leftCount/2 : 0; childCountEven =  child.children.length;}
-        if((i > 0 || children.length%2==0) && i%2 == 1){ childSpace = child.children.length > 1 ? child.children.length*leftCount/2 : 0; childCountOdd =  child.children.length; }
-
-        //if(i >= children.length && i%2==0 && ){ }
     
         if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven/2 : -1*leftCount; }
         if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd/2 : leftCount; }
         //var right = widthCount > 0 ? widthCount + parentRight : 0;
-        var left = childSpace+leftSpace+parentLeft;
+        var left = leftSpace+parentLeft;
 
         var pathSplitter = 'middle'; 
 
         if(i == 0) pathSplitter = 'middle';
-        else if(i%2 == 0) pathSplitter = 'right';
-        else if(i%2 == 1) pathSplitter = 'left';
+        else if(i%2 == 0) pathSplitter = 'left';
+        else if(i%2 == 1) pathSplitter = 'right';
         
-        if(maxLeft == null) maxLevel["Left"] = left;
-        if(maxRight == null) maxLevel["Right"] = left;
+        if(maxLeft == null || left < maxLeft) maxLevel["Left"] = left;
+        if(maxRight == null || left > maxRight) maxLevel["Right"] = left;
+
+        if(i>=children.length-2)
+        {
+          if(i%2 == 0) parent["Left"] = left;
+          if(i%2 == 1) parent["Right"] = left;
+        }
 
         childElements.push((
           <>    
@@ -142,23 +156,68 @@ function App() {
       else if(path === 'right')
       {
         var leftSpace = 0;
+        var left = 0;
         //if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven/2 : -1*leftCount; }
         //if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd/2 : leftCount; }
-        leftspace = leftCount*((children.length-1)/2-i);
+        leftSpace = leftCount*(-1*(children.length-1)/2+i);
+        left = leftSpace+parentLeft; 
 
-        var left = leftSpace+parentLeft;
-
-        var pathSplitter = 'middle'; 
+        var pathSplitter = 'right'; 
         
-        if(maxLeft == null || maxLeft <= ) maxLevel["Left"] = left;
-        if(maxRight == null) maxLevel["Right"] = left;
+        if(maxRight != null && left < maxRight+elementWidth) left = maxRight+elementWidth;
 
         childElements.push((
           <>    
-              {RenderChildren(child, row + 1, left, pathSplitter)} 
-              <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />       
+              {RenderChildren(child, row + 1, left, pathSplitter)}       
           </>));
+
+        var positionAboveChildren = child.children.length > 0 ? childLeftPosition+(childRightPosition-childLeftPosition)/2 : null;
+        if(positionAboveChildren != null && positionAboveChildren > maxRight+elementWidth){
+           left = positionAboveChildren; 
+        }
+        console.log("positionAboveChildren");
+        console.log(childLeftPosition+"  "+childRightPosition);
+
+        maxLevel["Right"] = left;
+
+        if(maxLeft == null || left < maxLeft) maxLevels["Left"] = left;
+
+        if(i==0) childLeftPosition = left;
+        if(i >= children.length-1) childRightPosition = left;
+
+        childElements.push((
+          <>    
+              <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />       
+          </>
+        ));
       }
+      else if(path === 'left')
+        {
+          var leftSpace = 0;
+          var left = 0;
+          //if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven/2 : -1*leftCount; }
+          //if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd/2 : leftCount; }
+          leftSpace = leftCount*((children.length-1)/2-i);
+
+          if(child.children.length > 0){ left = child["Left"]+(child["Right"]-child["Left"])/2; }
+          else{ left = leftSpace+parentLeft; }
+  
+          var pathSplitter = 'left'; 
+          
+          if(maxLeft != null && left > maxLeft-elementWidth) left = maxLeft-elementWidth;
+          maxLevel["Left"] = left;
+  
+          if(maxRight == null || left > maxRight) maxLevels["Right"] = left;
+
+          if(i==0) parent["Right"] = left;
+          if(i >= children.length-1) parent["Left"] = left;
+  
+          childElements.push((
+            <>    
+                {RenderChildren(child, row + 1, left, pathSplitter)} 
+                <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />       
+            </>));
+        }
 
       i++;
     });

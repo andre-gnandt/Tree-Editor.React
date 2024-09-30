@@ -9,12 +9,8 @@ import NodeDetails from './NodeDetails';
 
 const TreeNode = (props, css) => {
     const[dialog, setDialog] = useState(false);
-    console.log("Treenode input");
-    console.log(props); 
-    console.log(props.css.top);
     if(props == null || props.props == null || !('id' in props.props)) return (<></>);   
     
-    console.log("returning component");
         return(
             <>
                 <div style = {{position:'absolute', right: props.css.right, top: props.css.top, left: props.css.left, display: 'table', border: '1px solid red', height: '80px', width: '80px'}}>
