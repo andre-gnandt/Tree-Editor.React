@@ -97,6 +97,8 @@ function App() {
 
   */
 
+
+  //Add proper position check, depending on whether it is a left, right, or middle sided node to render the parent position for a middle pathway.
   function RenderChildren(parent, row = 1, parentLeft = window.innerWidth/2, path = 'middle')
   {
     
@@ -130,7 +132,7 @@ function App() {
     
         if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven/2 : -1*leftCount; }
         if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd/2 : leftCount; }
-        //var right = widthCount > 0 ? widthCount + parentRight : 0;
+
         var left = leftSpace+parentLeft;
 
         var pathSplitter = 'middle'; 
