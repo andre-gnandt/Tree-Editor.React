@@ -9,8 +9,7 @@ function App() {
   const firstRender = useRef(true);
   const [tree, setTree] = useState(null);
   const maxLevels = new Object();
-  var childLeftPosition = null;
-  var childRightPosition = null;
+  const childPositions = new Object();
 
   function SetParentNodes(node)
   {
@@ -24,7 +23,7 @@ function App() {
     fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
         result => { 
           var nodes = result[1];
-          SetParentNodes(nodes);
+          //SetParentNodes(nodes);
           setTree(nodes);
         }
     );   
@@ -118,10 +117,13 @@ function App() {
 
     if( !(String(row-1) in maxLevels) ) maxLevels[String(row-1)] = {};
     var maxLevel = maxLevels[String(row-1)];
+
+    var parentNodePosition = new Object();
     
     children.forEach(child => {
       var maxRight =  'Right' in maxLevel ? maxLevel.Right : null;
       var maxLeft = 'Left' in maxLevel ? maxLevel.Left : null; 
+      
 
       if(path === 'middle')
       {
@@ -143,8 +145,8 @@ function App() {
 
         if(i>=children.length-2)
         {
-          if(i%2 == 0) parent["Left"] = left;
-          if(i%2 == 1) parent["Right"] = left;
+         // if(i%2 == 0) parent["Left"] = left;
+         // if(i%2 == 1) parent["Right"] = left;
         }
 
         childElements.push((
@@ -170,20 +172,30 @@ function App() {
           <>    
               {RenderChildren(child, row + 1, left, pathSplitter)}       
           </>));
+        var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
 
-        var positionAboveChildren = child.children.length > 0 ? childLeftPosition+(childRightPosition-childLeftPosition)/2 : null;
+        var positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
         if(positionAboveChildren != null && positionAboveChildren > maxRight+elementWidth){
            left = positionAboveChildren; 
         }
         console.log("positionAboveChildren");
-        console.log(childLeftPosition+"  "+childRightPosition);
+        console.log("value: "+positionAboveChildren);
+        console.log("id: "+child.id);
+        console.log("coordinates: "+childPositionsOfNode["Left"]+"  "+childPositionsOfNode["Right"]);
 
         maxLevel["Right"] = left;
 
         if(maxLeft == null || left < maxLeft) maxLevels["Left"] = left;
 
-        if(i==0) childLeftPosition = left;
-        if(i >= children.length-1) childRightPosition = left;
+        if(i==0){ console.log("left node: "+parent.id+" value: "+left); parentNodePosition["Left"] = left; }
+        if(i >= children.length-1)
+        { 
+          parentNodePosition["Right"] = left;
+          childPositions[String(parent.id)] = parentNodePosition;
+          console.log("setParentPositions");
+          console.log("id: "+parent.id);
+          console.log("coordinates: "+parentNodePosition["Left"]+"  "+parentNodePosition["Right"]);
+        }
 
         childElements.push((
           <>    

@@ -39,7 +39,7 @@ const NodeDetails = (input) => {
                 </div>
                     Number: <InputText onChange = {(e) => handleChange(e.target.value, updateNodeNumber)} value = {node.number ? node.number : ""} />
                 <div>
-                    <button onClick = {() => {updateNode(node.id, node); /*setNode(props); */}}> Save </button>
+                    <button onClick = {() => {updateNode(node.id, node); setNode(props); }}> Save </button>
                     <button onClick = {() => handleChange(props, cloneNode)} > Reset </button>
                 </div>
             </div> );
