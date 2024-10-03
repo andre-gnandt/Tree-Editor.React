@@ -145,10 +145,14 @@ function App() {
           <>    
               {RenderChildren(child, row + 1, left, pathSplitter)}       
           </>));
-        var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
 
+        var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
         var positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
-        if(positionAboveChildren != null && positionAboveChildren <= maxRight-elementWidth && positionAboveChildren >= maxLeft+elementWidth ){
+        if(positionAboveChildren != null && 
+          (pathSplitter === "middle" && positionAboveChildren <= maxRight-elementWidth && positionAboveChildren >= maxLeft+elementWidth ) ||
+          (pathSplitter === "left" && positionAboveChildren <= maxLeft-elementWidth  ) ||
+          (pathSplitter === "right" && positionAboveChildren >= maxRight+elementWidth  ))
+        {
            left = positionAboveChildren; 
         }
         console.log("positionAboveChildren");
