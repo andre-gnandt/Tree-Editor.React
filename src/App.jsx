@@ -317,27 +317,6 @@ function App() {
       </>
     )
   }
-
-  async function waitForElm(selector) {
-    return new Promise(resolve => {
-        if (document.getElementById(selector)) {
-            return resolve(document.getElementById(selector));
-        }
-
-        const observer = new MutationObserver(mutations => {
-            if (document.getElementById(selector)) {
-                observer.disconnect();
-                resolve(document.getElementById(selector));
-            }
-        });
-
-        // If you get "parameter 1 is not of type 'Node'" error, see https://stackoverflow.com/a/77855838/492336
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    });
-  }
     
   function AddLines(node)
   {
@@ -345,17 +324,13 @@ function App() {
     const lines = [];
     
       node.children.forEach(child => 
-      {   
-        
-          //console.log("child rendered!");
-          //console.log(elm.innerHTML);
+      {           
           lines.push(
             <>
-              <LineTo delay from={node.id} to={child.id} /> 
+              <LineTo id = {""} delay from={node.id} to={child.id} className={node.id+"_"+child.id} /> 
               {AddLines(child)}
             </>
-          )
-          
+          )        
       }
     );
 
