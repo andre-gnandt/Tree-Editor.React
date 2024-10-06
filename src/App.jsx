@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import NodeDetails   from './features/nodes/NodeDetails'
 //import  GetTrees   from './api/nodes/nodesApi';
 import TreeNode from './features/nodes/TreeNode';
+import LineTo from 'react-lineto';
 import './App.css'
 
 function App() {
@@ -97,6 +98,26 @@ function App() {
 
   */
 
+  function waitForElm(selector) {
+    return new Promise(resolve => {
+        if (document.querySelector(selector)) {
+            return resolve(document.querySelector(selector));
+        }
+
+        const observer = new MutationObserver(mutations => {
+            if (document.querySelector(selector)) {
+                observer.disconnect();
+                resolve(document.querySelector(selector));
+            }
+        });
+
+        // If you get "parameter 1 is not of type 'Node'" error, see https://stackoverflow.com/a/77855838/492336
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+}
 
   //Add proper position check, depending on whether it is a left, right, or middle sided node to render the parent position for a middle pathway.
   function RenderChildren(parent, row = 1, parentLeft = window.innerWidth/2, path = 'middle')
@@ -123,6 +144,7 @@ function App() {
     var parentNodePosition = new Object();
     
     children.forEach(child => {
+
       var maxRight =  'Right' in maxLevel ? maxLevel.Right : null;
       var maxLeft = 'Left' in maxLevel ? maxLevel.Left : null; 
       
@@ -155,28 +177,28 @@ function App() {
         {
            left = positionAboveChildren; 
         }
-        console.log("positionAboveChildren");
-        console.log("value: "+positionAboveChildren);
-        console.log("id: "+child.id);
-        console.log("coordinates: "+childPositionsOfNode["Left"]+"  "+childPositionsOfNode["Right"]);
+        //console.log("positionAboveChildren");
+        //console.log("value: "+positionAboveChildren);
+        //console.log("id: "+child.id);
+        //console.log("coordinates: "+childPositionsOfNode["Left"]+"  "+childPositionsOfNode["Right"]);
 
         if(maxLeft == null || left < maxLeft) maxLevel["Left"] = left;
         if(maxRight == null || left > maxRight) maxLevel["Right"] = left;
 
-        if(i >= children.length-2 && i%2 == 0){ console.log("left node: "+parent.id+" value: "+left); parentNodePosition["Left"] = left; }
+        if(i >= children.length-2 && i%2 == 0){ parentNodePosition["Left"] = left; }
         if(i >= children.length-2 && i%2 == 1){ parentNodePosition["Right"] = left; }
         if(i >= children.length-1)
         {
           childPositions[String(parent.id)] = parentNodePosition;
-          console.log("setParentPositions");
-          console.log("id: "+parent.id);
-          console.log("coordinates: "+parentNodePosition["Left"]+"  "+parentNodePosition["Right"]);
+          //console.log("setParentPositions");
+          //console.log("id: "+parent.id);
+          //console.log("coordinates: "+parentNodePosition["Left"]+"  "+parentNodePosition["Right"]);
         }
         
 
         childElements.push((
           <>    
-              <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />       
+              <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />      
           </>
         ));
       }
@@ -203,28 +225,28 @@ function App() {
         if(positionAboveChildren != null && positionAboveChildren >= maxRight+elementWidth){
            left = positionAboveChildren; 
         }
-        console.log("positionAboveChildren");
-        console.log("value: "+positionAboveChildren);
-        console.log("id: "+child.id);
-        console.log("coordinates: "+childPositionsOfNode["Left"]+"  "+childPositionsOfNode["Right"]);
+        //console.log("positionAboveChildren");
+        //console.log("value: "+positionAboveChildren);
+        //console.log("id: "+child.id);
+        //console.log("coordinates: "+childPositionsOfNode["Left"]+"  "+childPositionsOfNode["Right"]);
 
         maxLevel["Right"] = left;
 
         if(maxLeft == null || left < maxLeft) maxLevels["Left"] = left;
 
-        if(i==0){ console.log("left node: "+parent.id+" value: "+left); parentNodePosition["Left"] = left; }
+        if(i==0){ parentNodePosition["Left"] = left; }
         if(i >= children.length-1)
         { 
           parentNodePosition["Right"] = left;
           childPositions[String(parent.id)] = parentNodePosition;
-          console.log("setParentPositions");
-          console.log("id: "+parent.id);
-          console.log("coordinates: "+parentNodePosition["Left"]+"  "+parentNodePosition["Right"]);
+          //console.log("setParentPositions");
+          //console.log("id: "+parent.id);
+          //console.log("coordinates: "+parentNodePosition["Left"]+"  "+parentNodePosition["Right"]);
         }
 
         childElements.push((
           <>    
-              <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />       
+              <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />         
           </>
         ));
       }
@@ -253,28 +275,28 @@ function App() {
           if(positionAboveChildren != null && positionAboveChildren <= maxRight-elementWidth){
              left = positionAboveChildren; 
           }
-          console.log("positionAboveChildren");
-          console.log("value: "+positionAboveChildren);
-          console.log("id: "+child.id);
-          console.log("coordinates: "+childPositionsOfNode["Left"]+"  "+childPositionsOfNode["Right"]);
+          //console.log("positionAboveChildren");
+          //console.log("value: "+positionAboveChildren);
+          //console.log("id: "+child.id);
+          //console.log("coordinates: "+childPositionsOfNode["Left"]+"  "+childPositionsOfNode["Right"]);
   
           maxLevel["Left"] = left;
   
           if(maxLeft == null || left > maxRight) maxLevels["Right"] = left;
   
-          if(i== 0){ console.log("left node: "+parent.id+" value: "+left); parentNodePosition["Right"] = left; }
+          if(i== 0){ parentNodePosition["Right"] = left; }
           if(i >= children.length-1)
           { 
             parentNodePosition["Left"] = left;
             childPositions[String(parent.id)] = parentNodePosition;
-            console.log("setParentPositions");
-            console.log("id: "+parent.id);
-            console.log("coordinates: "+parentNodePosition["Left"]+"  "+parentNodePosition["Right"]);
+            //console.log("setParentPositions");
+            //console.log("id: "+parent.id);
+            //console.log("coordinates: "+parentNodePosition["Left"]+"  "+parentNodePosition["Right"]);
           }
   
           childElements.push((
             <>    
-                <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />       
+                <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />      
             </>
           ));
         }
@@ -295,16 +317,70 @@ function App() {
       </>
     )
   }
+
+  async function waitForElm(selector) {
+    return new Promise(resolve => {
+        if (document.getElementById(selector)) {
+            return resolve(document.getElementById(selector));
+        }
+
+        const observer = new MutationObserver(mutations => {
+            if (document.getElementById(selector)) {
+                observer.disconnect();
+                resolve(document.getElementById(selector));
+            }
+        });
+
+        // If you get "parameter 1 is not of type 'Node'" error, see https://stackoverflow.com/a/77855838/492336
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+  }
     
+  function AddLines(node)
+  {
+    if(node == null || !('children' in node)){return (<></>)}
+    const lines = [];
+    
+      node.children.forEach(child => 
+      {   
+        
+          //console.log("child rendered!");
+          //console.log(elm.innerHTML);
+          lines.push(
+            <>
+              <LineTo delay from={node.id} to={child.id} /> 
+              {AddLines(child)}
+            </>
+          )
+          
+      }
+    );
+
+    return(
+      <>
+        {lines.map(child => {
+            
+            return (
+            <>
+              {child}
+            </> );
+            }
+        )}
+      </>
+    )
+  }
 
   return (
     <>
       
       {RenderChildren(tree)}
       <TreeNode props = {tree} css = {{top: '0rem', right: '0rem', left: String(window.innerWidth/2)+'px'}}/>
-          
+      {AddLines(tree)}
     </>
-  )
+  );
 }
 
 export default App
