@@ -5,6 +5,7 @@ import NodeDetails   from './features/nodes/NodeDetails'
 import TreeNode from './features/nodes/TreeNode';
 import LineTo from 'react-lineto';
 import './App.css'
+import Draggable from 'react-draggable';
 
 function App() {
   const firstRender = useRef(true);
@@ -34,90 +35,6 @@ function App() {
     GetTrees();
     firstRender.current = false;
   }
-    
-  /*
-  
-  function RenderChildren(parent, row = 1, parentLeft = window.innerWidth/2, maxLevels = new Object(), firstNode = false, path = 'middle')
-  {
-    
-    if(parent == null){ return (<></>)}
-    const children = parent.children;
-    console.log("children");
-    console.log(children);
-
-    if(children == null){return (<></>)}
-
-    var elementWidth = 160;
-    //var 
-    let widthCount = (children.length-1)*elementWidth;
-    const childElements = [];
-    const childTrees = [];
-    var i = 0;
-    var leftCount = elementWidth;
-    var childCountOdd = 0;
-    var childCountEven = 0;
-
-    var maxLevel = String(row-1) in maxLevels ? maxLevels[String(row-1)] : {}
-    var maxRight =  'Right' in maxLevel ? maxLevel.Right : null;
-    var maxLeft = 'Left' in maxLevel ? maxLevel.Left : null; 
-
-    children.forEach(child => {
-      var leftSpace = 0;
-      var childSpace =  0.00;
-      if((i > 0 || children.length%2==0) && i%2 == 0){ childSpace = child.children.length > 1 ? -1*child.children.length*leftCount/2 : 0; childCountEven =  child.children.length;}
-      if((i > 0 || children.length%2==0) && i%2 == 1){ childSpace = child.children.length > 1 ? child.children.length*leftCount/2 : 0; childCountOdd =  child.children.length; }
-
-      //if(i >= children.length && i%2==0 && ){ }
-  
-      if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven/2 : -1*leftCount; }
-      if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd/2 : leftCount; }
-      //var right = widthCount > 0 ? widthCount + parentRight : 0;
-      var left = childSpace+leftSpace+parentLeft;
-      childElements.push((
-      <>    
-          {RenderChildren(child, row + 1, left)} 
-          <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />       
-      </>));
-
-      i++;
-    });
-
-    return(
-      <>
-        {childElements.map(child => {
-            
-            return (
-            <>
-              {child}
-            </> );
-            }
-        )}
-      </>
-    )
-  }
-
-  */
-
-  function waitForElm(selector) {
-    return new Promise(resolve => {
-        if (document.querySelector(selector)) {
-            return resolve(document.querySelector(selector));
-        }
-
-        const observer = new MutationObserver(mutations => {
-            if (document.querySelector(selector)) {
-                observer.disconnect();
-                resolve(document.querySelector(selector));
-            }
-        });
-
-        // If you get "parameter 1 is not of type 'Node'" error, see https://stackoverflow.com/a/77855838/492336
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    });
-}
 
   //Add proper position check, depending on whether it is a left, right, or middle sided node to render the parent position for a middle pathway.
   function RenderChildren(parent, row = 1, parentLeft = window.innerWidth/2, path = 'middle')
@@ -128,6 +45,8 @@ function App() {
 
     if(children == null){return (<></>)}
 
+    parent["left"] = parentLeft;
+    parent["top"] = (row-1)*160;
     var elementWidth = 160;
     //var 
     let widthCount = (children.length-1)*elementWidth;
@@ -177,10 +96,6 @@ function App() {
         {
            left = positionAboveChildren; 
         }
-        //console.log("positionAboveChildren");
-        //console.log("value: "+positionAboveChildren);
-        //console.log("id: "+child.id);
-        //console.log("coordinates: "+childPositionsOfNode["Left"]+"  "+childPositionsOfNode["Right"]);
 
         if(maxLeft == null || left < maxLeft) maxLevel["Left"] = left;
         if(maxRight == null || left > maxRight) maxLevel["Right"] = left;
@@ -190,24 +105,12 @@ function App() {
         if(i >= children.length-1)
         {
           childPositions[String(parent.id)] = parentNodePosition;
-          //console.log("setParentPositions");
-          //console.log("id: "+parent.id);
-          //console.log("coordinates: "+parentNodePosition["Left"]+"  "+parentNodePosition["Right"]);
         }
-        
-
-        childElements.push((
-          <>    
-              <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />      
-          </>
-        ));
       }
       else if(path === 'right')
       {
         var leftSpace = 0;
         var left = 0;
-        //if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven/2 : -1*leftCount; }
-        //if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd/2 : leftCount; }
         leftSpace = leftCount*(-1*(children.length-1)/2+i);
         left = leftSpace+parentLeft; 
 
@@ -225,10 +128,6 @@ function App() {
         if(positionAboveChildren != null && positionAboveChildren >= maxRight+elementWidth){
            left = positionAboveChildren; 
         }
-        //console.log("positionAboveChildren");
-        //console.log("value: "+positionAboveChildren);
-        //console.log("id: "+child.id);
-        //console.log("coordinates: "+childPositionsOfNode["Left"]+"  "+childPositionsOfNode["Right"]);
 
         maxLevel["Right"] = left;
 
@@ -243,12 +142,6 @@ function App() {
           //console.log("id: "+parent.id);
           //console.log("coordinates: "+parentNodePosition["Left"]+"  "+parentNodePosition["Right"]);
         }
-
-        childElements.push((
-          <>    
-              <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />         
-          </>
-        ));
       }
       else if(path === 'left')
         {
@@ -289,16 +182,7 @@ function App() {
           { 
             parentNodePosition["Left"] = left;
             childPositions[String(parent.id)] = parentNodePosition;
-            //console.log("setParentPositions");
-            //console.log("id: "+parent.id);
-            //console.log("coordinates: "+parentNodePosition["Left"]+"  "+parentNodePosition["Right"]);
           }
-  
-          childElements.push((
-            <>    
-                <TreeNode props = {child} css = {{top: String(row*10)+'rem', right: '0rem', left: String(left)+'px'}} />      
-            </>
-          ));
         }
 
       i++;
@@ -306,20 +190,68 @@ function App() {
 
     return(
       <>
-        {childElements.map(child => {
-            
-            return (
-            <>
-              {child}
-            </> );
-            }
-        )}
+        
+        
+          {childElements.map(child => {
+              
+              return (
+              <>
+                {child}
+              </> );
+              }
+          )}
+
+          <Draggable onDrag = {(drag) =>{ if(parent.nodeId && document.getElementsByClassName(parent.nodeId+"_"+parent.id).length > 0){ document.getElementsByClassName(parent.nodeId+"_"+parent.id)[0].remove(); } RepositionSubTree(drag, parent);}}>
+            <div>
+              <TreeNode props = {parent} css = {{top: String((row-1)*160)+'px', right: '0rem', left: String(parentLeft)+'px'}} />
+            </div>
+          </Draggable>
+        
       </>
     )
+  }
+
+  function GetElementPosition(element)
+  {
+    var position = element.getBoundingClientRect();
+    var x = position.left;
+    var y = position.top;
+
+    return {X:x, Y:y};
+  }
+
+  function RepositionSubTree(dragEvent, node)
+  {
+    const X = dragEvent.x;
+    const Y = dragEvent.y;
+
+    if(!('position' in node))
+    {
+      const nodeElement = document.getElementById(node.id);
+      node['position'] = GetElementPosition(nodeElement);
+    }
+
+    node.children.forEach(child => {
+      const childElement = document.getElementById(child.id);
+      
+      if(!('position' in child))
+      {
+        child['position'] = GetElementPosition(childElement);
+      }
+      
+      const position = node['position'];
+      const xOffset = X-position.X;
+      const yOffset = Y-position.Y;
+
+      childElement.style.top = String((child["top"]+yOffset))+"px";
+      childElement.style.left = String((child["left"]+xOffset))+"px";
+    });
+
   }
     
   function AddLines(node)
   {
+    
     if(node == null || !('children' in node)){return (<></>)}
     const lines = [];
     
@@ -327,7 +259,7 @@ function App() {
       {           
           lines.push(
             <>
-              <LineTo id = {""} delay from={node.id} to={child.id} className={node.id+"_"+child.id} /> 
+              <LineTo delay id={node.id+"_"+child.id} from={node.id} to={child.id} className={node.id+"_"+child.id} /> 
               {AddLines(child)}
             </>
           )        
@@ -352,7 +284,6 @@ function App() {
     <>
       
       {RenderChildren(tree)}
-      <TreeNode props = {tree} css = {{top: '0rem', right: '0rem', left: String(window.innerWidth/2)+'px'}}/>
       {AddLines(tree)}
     </>
   );
