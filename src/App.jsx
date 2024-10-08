@@ -6,8 +6,13 @@ import TreeNode from './features/nodes/TreeNode';
 import LineTo from 'react-lineto';
 import './App.css'
 import Draggable from 'react-draggable';
+import { createRoot } from 'react-dom/client';
+import { createPortal } from 'react-dom';
+import ReactDOM from 'react-dom'
 
 function App() {
+  const container = document.body;
+  const root = createRoot(container);
   const firstRender = useRef(true);
   const [tree, setTree] = useState(null);
   const maxLevels = new Object();
@@ -61,6 +66,7 @@ function App() {
     var maxLevel = maxLevels[String(row-1)];
 
     var parentNodePosition = new Object();
+    
     
     children.forEach(child => {
 
@@ -220,6 +226,53 @@ function App() {
     return {X:x, Y:y};
   }
 
+  function DepthFirstMethod(method, node, data)
+  {
+    if(node == null || !('children' in node)){return (<></>)}
+
+    node.children.forEach(child => 
+      {
+        DepthFirstMethod(method, child, data);
+        method(data, node, child);
+      });
+  }
+
+  function RepositionDescendants(data, parent, child)
+  {
+    /*
+    if(document.getElementsByClassName(parent.id+"_"+child.id).length > 0)
+    {
+      document.getElementsByClassName(parent.id+"_"+child.id)[0].remove();
+    }
+      */
+
+    const X = data.X;
+    const Y = data.Y;
+
+    const childElement = document.getElementById(child.id);
+    const line = document.getElementsByClassName(parent.id+"_"+child.id).length > 0 ? document.getElementsByClassName(parent.id+"_"+child.id)[0] : null;
+  
+    childElement.style.top = String((child["top"]+Y))+"px";
+    childElement.style.left = String((child["left"]+X))+"px";
+
+    if(line)
+    {
+      if(!('line' in child))
+      {
+        child['line'] = {left: Number(line.style.left.substring(0, line.style.left.length-2)), top: Number(line.style.top.substring(0, line.style.top.length-2))}
+      }
+
+      const top = child['line'].top;
+      const left = child['line'].left
+
+      line.style.top = String(top+Y)+"px";
+      line.style.left = String(left+X)+"px";
+    }
+  
+    //ReactDOM.createPortal(<LineTo delay id={parent.id+"_"+child.id} from={parent.id} to={child.id} className={parent.id+"_"+child.id} />, document.body);
+    //root.render(createPortal(<LineTo delay id={parent.id+"_"+child.id} from={parent.id} to={child.id} className={parent.id+"_"+child.id} />) );
+  }
+
   function RepositionSubTree(dragEvent, node)
   {
     const X = dragEvent.x;
@@ -229,15 +282,16 @@ function App() {
     {
       const nodeElement = document.getElementById(node.id);
       node['position'] = GetElementPosition(nodeElement);
-    }
+    }  
 
+    const position = node['position'];
+    const xOffset = X-position.X;
+    const yOffset = Y-position.Y;
+
+    DepthFirstMethod(RepositionDescendants, node, {X: xOffset, Y: yOffset});
+    /*
     node.children.forEach(child => {
       const childElement = document.getElementById(child.id);
-      
-      if(!('position' in child))
-      {
-        child['position'] = GetElementPosition(childElement);
-      }
       
       const position = node['position'];
       const xOffset = X-position.X;
@@ -246,7 +300,7 @@ function App() {
       childElement.style.top = String((child["top"]+yOffset))+"px";
       childElement.style.left = String((child["left"]+xOffset))+"px";
     });
-
+    */
   }
     
   function AddLines(node)
