@@ -17,6 +17,14 @@ function App() {
   const [tree, setTree] = useState(null);
   const maxLevels = new Object();
   const childPositions = new Object();
+  var dragInterval = null;
+  var dragging = false;
+  var dragNode = null;
+
+  function OnDragging()
+  {
+    RepositionSubTree(dragNode)
+  }
 
   function SetParentNodes(node)
   {
@@ -207,7 +215,7 @@ function App() {
               }
           )}
 
-          <Draggable onDrag = {(drag) =>{ if(parent.nodeId && document.getElementsByClassName(parent.nodeId+"_"+parent.id).length > 0){ document.getElementsByClassName(parent.nodeId+"_"+parent.id)[0].remove(); } RepositionSubTree(drag, parent);}}>
+          <Draggable onDrag = {(drag) =>{ RepositionSubTree(drag, parent); if(parent.nodeId && document.getElementsByClassName(parent.nodeId+"_"+parent.id).length > 0){ document.getElementsByClassName(parent.nodeId+"_"+parent.id)[0].remove(); }}}>
             <div>
               <TreeNode props = {parent} css = {{top: String((row-1)*160)+'px', right: '0rem', left: String(parentLeft)+'px'}} />
             </div>
@@ -334,11 +342,24 @@ function App() {
     )
   }
 
+  function SetPositions(node)
+  {
+    if(node != null && 'id' in node){  
+      const nodeElement = document.getElementById(node.id);
+      node['position'] = GetElementPosition(nodeElement);
+      nodeElement.children.forEach(child => 
+        {
+          SetPositions(child);
+        });
+      }
+  };
+
   return (
     <>
-      
-      {RenderChildren(tree)}
-      {AddLines(tree)}
+      <div id = 'tree-root' onLoad={() => {SetPositions(tree)}}>
+        {RenderChildren(tree)}
+        {AddLines(tree)}
+      </div>
     </>
   );
 }
