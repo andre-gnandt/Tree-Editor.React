@@ -17,14 +17,7 @@ function App() {
   const [tree, setTree] = useState(null);
   const maxLevels = new Object();
   const childPositions = new Object();
-  var dragInterval = null;
   var dragging = false;
-  var dragNode = null;
-
-  function OnDragging()
-  {
-    RepositionSubTree(dragNode)
-  }
 
   function SetParentNodes(node)
   {
@@ -213,11 +206,11 @@ function App() {
                 {child}
               </> );
               }
-          )}
+          )}``
 
-          <Draggable onDrag = {(drag) =>{ RepositionSubTree(drag, parent); if(parent.nodeId && document.getElementsByClassName(parent.nodeId+"_"+parent.id).length > 0){ document.getElementsByClassName(parent.nodeId+"_"+parent.id)[0].remove(); }}}>
-            <div>
-              <TreeNode props = {parent} css = {{top: String((row-1)*160)+'px', right: '0rem', left: String(parentLeft)+'px'}} />
+          <Draggable onDrag = {(drag) =>{ dragging = true; RepositionSubTree(drag, parent); if(parent.nodeId && document.getElementsByClassName(parent.nodeId+"_"+parent.id).length > 0){ document.getElementsByClassName(parent.nodeId+"_"+parent.id)[0].remove(); }}}>
+            <div id = {parent.id} className={parent.id} onMouseUp={() => {if(dragging){dragging = false; parent.id = id; }}} style = {{position:'absolute',top: String((row-1)*160)+'px' , left: String(parentLeft)+'px', display: 'table', border: '1px solid red', height: '80px', width: '80px'}}>
+              <TreeNode props = {parent} css = {{ left: String(parentLeft)+'px'}} />
             </div>
           </Draggable>
         
@@ -281,20 +274,24 @@ function App() {
     //root.render(createPortal(<LineTo delay id={parent.id+"_"+child.id} from={parent.id} to={child.id} className={parent.id+"_"+child.id} />) );
   }
 
-  function RepositionSubTree(dragEvent, node)
+  function RepositionSubTree(dragEvent, node, scroll = null)
   {
-    const X = dragEvent.x;
-    const Y = dragEvent.y;
+    if(scroll != null){
+      console.log("SCROLL DRAG! "+scroll);
+    }
+    const nodeElement = document.getElementById(node.id);
+    const positionAfter = GetElementPosition(nodeElement);
+    const X = positionAfter.X;
+    const Y = positionAfter.Y;
 
     if(!('position' in node))
     {
-      const nodeElement = document.getElementById(node.id);
-      node['position'] = GetElementPosition(nodeElement);
+      node['position'] = positionAfter;
     }  
 
-    const position = node['position'];
-    const xOffset = X-position.X;
-    const yOffset = Y-position.Y;
+    const positionBefore = node['position'];
+    const xOffset = X-positionBefore.X;
+    const yOffset = Y-positionBefore.Y;
 
     DepthFirstMethod(RepositionDescendants, node, {X: xOffset, Y: yOffset});
     /*
@@ -356,7 +353,7 @@ function App() {
 
   return (
     <>
-      <div id = 'tree-root' onLoad={() => {SetPositions(tree)}}>
+      <div onMouseUp = {() => {dragging = false;}} id = 'tree-root'>
         {RenderChildren(tree)}
         {AddLines(tree)}
       </div>
