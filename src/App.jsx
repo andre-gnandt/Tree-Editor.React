@@ -136,27 +136,41 @@ function App() {
     var maxLevel = maxLevels[String(row-1)];
 
     var parentNodePosition = new Object();
+
+    
     
     children.forEach(child => {
 
-      var maxRight =  'Right' in maxLevel ? maxLevel.Right : null;
-      var maxLeft = 'Left' in maxLevel ? maxLevel.Left : null; 
+      var maxRight =  'Right' in maxLevel ? maxLevel['Right'] : null;
+      var maxLeft = 'Left' in maxLevel ? maxLevel['Left'] : null; 
       var left = 0;
+
+      if(row === 2)
+      {
+        console.log('-------------');
+        console.log("Node title: "+child.title);
+        console.log("Maxleft: "+maxLeft);
+        console.log("Maxright: "+maxRight);
+        console.log('-------------');
+      }
 
       if(path === 'middle')
       {
         var leftSpace = 0;
     
-        if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven/2 : -1*leftCount; }
-        if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd/2 : leftCount; }
+        if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven : -1*leftCount; childCountEven++; }
+        if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd : leftCount; childCountOdd++; }
 
         left = leftSpace+parentLeft;
 
         var pathSplitter = 'middle'; 
 
-        if(i == 0) pathSplitter = 'middle';
-        else if(i%2 == 0) pathSplitter = 'left';
-        else if(i%2 == 1) pathSplitter = 'right';
+        if(i == 0){ pathSplitter = 'middle';}
+        else if(i%2 == 0){ pathSplitter = 'left';}
+        else if(i%2 == 1){ pathSplitter = 'right';}
+
+        if(pathSplitter === 'left' && maxLeft != null && left > maxLeft-elementWidth) left = maxLeft-elementWidth;
+        if(pathSplitter === 'right' && maxRight != null && left < maxRight+elementWidth) left = maxRight+elementWidth;
 
         childElements.push((
           <>    
@@ -166,9 +180,9 @@ function App() {
         var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
         var positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
         if(positionAboveChildren != null && 
-          (pathSplitter === "middle" && positionAboveChildren <= maxRight-elementWidth && positionAboveChildren >= maxLeft+elementWidth ) ||
-          (pathSplitter === "left" && positionAboveChildren <= maxLeft-elementWidth  ) ||
-          (pathSplitter === "right" && positionAboveChildren >= maxRight+elementWidth  ))
+         ( (pathSplitter === "middle" ) ||
+          (pathSplitter === "left" && ( maxLeft == null || positionAboveChildren <= maxLeft-elementWidth ) ) ||
+          (pathSplitter === "right" && ( maxRight == null || positionAboveChildren >= maxRight+elementWidth ) )))
         {
            left = positionAboveChildren; 
         }
@@ -177,8 +191,9 @@ function App() {
         if(maxRight == null || left > maxRight) maxLevel["Right"] = left;
 
         if(parent){
-          if(i >= children.length-2 && i%2 == 0){ parentNodePosition["Left"] = left; }
-          if(i >= children.length-2 && i%2 == 1){ parentNodePosition["Right"] = left; }
+          if(i >= children.length-2 && children.length > 1  && i%2 == 0){ parentNodePosition["Left"] = left; }
+          if(i >= children.length-2 && children.length > 1 && i%2 == 1){ parentNodePosition["Right"] = left; }
+          if(children.length == 1){ parentNodePosition["Left"] = left; parentNodePosition["Right"] = left; }
           if(i >= children.length-1)
           {
             childPositions[String(parent.id)] = parentNodePosition;
@@ -204,20 +219,21 @@ function App() {
         var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
 
         var positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
-        if(positionAboveChildren != null && positionAboveChildren >= maxRight+elementWidth){
+        if(positionAboveChildren != null && (maxRight == null ||  positionAboveChildren >= maxRight+elementWidth)){
            left = positionAboveChildren; 
         }
 
         maxLevel["Right"] = left;
 
-        if(maxLeft == null || left < maxLeft) maxLevels["Left"] = left;
+        if(maxLeft == null || left < maxLeft) maxLevel["Left"] = left;
 
-        if(i==0 && parent){ parentNodePosition["Left"] = left; }
-        if(i >= children.length-1 && parent)
+        if(children.length == 1 && parent){parentNodePosition["Left"] = left; parentNodePosition["Right"] = left;}
+        if(children.length > 1 && i==0 && parent){ parentNodePosition["Left"] = left; }
+        if(children.length > 1 && i >= children.length-1 && parent)
         { 
           parentNodePosition["Right"] = left;
-          childPositions[String(parent.id)] = parentNodePosition;
         }
+        if(i >= children.length-1 && parent)  childPositions[String(parent.id)] = parentNodePosition;
 
         childElements.push((AppendChildNode(child, left, row)));
       }
@@ -225,9 +241,7 @@ function App() {
         {
           var leftSpace = 0;
           leftSpace = leftCount*((children.length-1)/2-i);
-
-          if(child.children.length > 0){ left = child["Left"]+(child["Right"]-child["Left"])/2; }
-          else{ left = leftSpace+parentLeft; }
+          left = leftSpace+parentLeft;
   
           var pathSplitter = 'left'; 
           
@@ -240,20 +254,21 @@ function App() {
           var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
   
           var positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
-          if(positionAboveChildren != null && positionAboveChildren <= maxRight-elementWidth){
+          if(positionAboveChildren != null && (maxLeft == null || positionAboveChildren <= maxLeft-elementWidth)){
              left = positionAboveChildren; 
           }
   
           maxLevel["Left"] = left;
   
-          if(maxLeft == null || left > maxRight) maxLevels["Right"] = left;
+          if(maxLeft == null || left > maxRight) maxLevel["Right"] = left;
   
-          if(i== 0 && parent){ parentNodePosition["Right"] = left; }
-          if(i >= children.length-1 && parent)
+          if(children.length == 1 && parent){parentNodePosition["Right"] = left; parentNodePosition["Left"] = left; }
+          if(children.length > 1 && i== 0 && parent){ parentNodePosition["Right"] = left; }
+          if(children.length > 1 && i >= children.length-1 && parent)
           { 
             parentNodePosition["Left"] = left;
-            childPositions[String(parent.id)] = parentNodePosition;
           }
+          if(i >= children.length-1 && parent) childPositions[String(parent.id)] = parentNodePosition;
 
           childElements.push((AppendChildNode(child, left, row)));
         }
