@@ -19,9 +19,6 @@ function App() {
   var dragging = false;
   var mouseOverNode = null;
 
-  console.log("Render Tree: ");
-  console.log(tree);
-
   function SetParentNodes(node)
   {
     node.children.forEach(child => {
@@ -51,20 +48,22 @@ function App() {
     
     if(mouseOverNode)
     {
-      console.log(nodeDictionary);
+      //console.log(nodeDictionary);
 
       const oldParentNode = nodeDictionary[node.nodeId];
       const newParentNode = nodeDictionary[mouseOverNode];
 
+      /*
       console.log('old parent node');
       console.log(oldParentNode);
       console.log('new parent node');
       console.log(newParentNode);
+      */
       
       
       node.nodeId = mouseOverNode;
       const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === node.id);
-      console.log('remove index:'+removeOldChildIndex);
+      //console.log('remove index:'+removeOldChildIndex);
       if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
       newParentNode.children.push(node);
       
@@ -78,15 +77,9 @@ function App() {
       nodeDictionary = new Object();
       dragging = false;
       mouseOverNode = null;
-      
-      console.log("new tree:");
-      console.log(tree);
 
       setTree(newTree);
-      console.log("re rendered!");
       CorrectTransforms(tree);
-      //const treeRoot = createRoot(document.getElementById('tree-root'));
-      //treeRoot.render(RenderChildren());
     }
     else
     {
@@ -435,8 +428,6 @@ function App() {
   {
     if(node != null && ('children' in node))
     {
-      console.log("node: ");
-      console.log(node);
       const nodeElement = document.getElementById(node.id);
       nodeElement.style.transform = 'none';
 
