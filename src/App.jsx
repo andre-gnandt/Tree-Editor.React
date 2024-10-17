@@ -45,6 +45,9 @@ function App() {
   function OnDropNode(mouse, node)
   {
     dragging = false;
+    const nodeElement = document.getElementById(node.id);
+    nodeElement.style.zIndex = 0;
+    nodeElement.style.pointerEvents = 'auto';
     
     if(mouseOverNode)
     {
@@ -88,13 +91,32 @@ function App() {
 
   }
 
+  function StartDrag(node)
+  {
+    dragging = true;
+    const nodeElement = document.getElementById(node.id);
+    nodeElement.style.zIndex = 1;
+    nodeElement.style.pointerEvents = 'none';
+    
+    RemoveLine(node);
+  }
+
+  function RemoveLine(node)
+  {
+    if(node.nodeId)
+    {
+      const line = document.getElementsByClassName(node.nodeId+"_"+node.id);
+      if(line && line.length > 0) line[0].remove();
+    }
+  }
+
   function AppendChildNode(child, left, row)
   {
     return (
       <>
-        <Draggable onStop = {(drag) => {OnDropNode(drag, child); }} onDrag = {(drag) =>{ dragging = true; RepositionSubTree(drag, child); if(child.nodeId && document.getElementsByClassName(child.nodeId+"_"+child.id).length > 0){ document.getElementsByClassName(child.nodeId+"_"+child.id)[0].remove(); }}}>
-          <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id}} style = {{position:'fixed',top: String((row)*160)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', height: '80px', width: '80px'}}>
-            <TreeNode props = {child} css = {{ left: String(left)+'px'}} />
+        <Draggable onStart={(drag) => {StartDrag(child);}} onStop = {(drag) => {OnDropNode(drag, child); }} onDrag = {(drag) =>{RepositionSubTree(drag, child);}}>
+          <div id = {child.id} className={child.id} onMouseOver={() => {console.log("mouse hovering node: "+child.id);}} pointer onMouseLeave={() => {mouseOverNode = null; console.log("mouse leave node: "+child.id);}} onMouseEnter={() => {mouseOverNode = child.id; console.log("mouse enter node: "+child.id);}} style = {{zIndex: 0, position:'fixed',top: String((row)*160)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', height: '80px', width: '80px'}}>
+            <TreeNode props = {child}/>
           </div>
         </Draggable>
       </>
@@ -119,10 +141,9 @@ function App() {
     if(children == null){return (<></>);}
 
     var elementWidth = 160;
-    //var 
-    let widthCount = (children.length-1)*elementWidth;
+
     const childElements = [];
-    const childTrees = [];
+
     var i = 0;
     var leftCount = elementWidth;
     var childCountOdd = 0;
@@ -442,7 +463,7 @@ function App() {
     <>
       <div id = 'line-container'>
       </div>
-      <div onMouseEnter = {() => {mouseOverNode = null;}} id = 'tree-root'>
+      <div id = 'tree-root'>
         {RenderChildren()}  
       </div>
     </>
