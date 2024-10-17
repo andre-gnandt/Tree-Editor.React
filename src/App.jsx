@@ -83,6 +83,8 @@ function App() {
       console.log(tree);
 
       setTree(newTree);
+      console.log("re rendered!");
+      CorrectTransforms(tree);
       //const treeRoot = createRoot(document.getElementById('tree-root'));
       //treeRoot.render(RenderChildren());
     }
@@ -98,7 +100,7 @@ function App() {
     return (
       <>
         <Draggable onStop = {(drag) => {OnDropNode(drag, child); }} onDrag = {(drag) =>{ dragging = true; RepositionSubTree(drag, child); if(child.nodeId && document.getElementsByClassName(child.nodeId+"_"+child.id).length > 0){ document.getElementsByClassName(child.nodeId+"_"+child.id)[0].remove(); }}}>
-          <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id}} style = {{position:'absolute',top: String((row)*160)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', height: '80px', width: '80px'}}>
+          <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id}} style = {{position:'fixed',top: String((row)*160)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', height: '80px', width: '80px'}}>
             <TreeNode props = {child} css = {{ left: String(left)+'px'}} />
           </div>
         </Draggable>
@@ -146,6 +148,7 @@ function App() {
       var maxLeft = 'Left' in maxLevel ? maxLevel['Left'] : null; 
       var left = 0;
 
+      /*
       if(row === 2)
       {
         console.log('-------------');
@@ -154,6 +157,7 @@ function App() {
         console.log("Maxright: "+maxRight);
         console.log('-------------');
       }
+      */
 
       if(path === 'middle')
       {
@@ -426,6 +430,21 @@ function App() {
         });
       }
   };
+
+  function CorrectTransforms(node)
+  {
+    if(node != null && ('children' in node))
+    {
+      console.log("node: ");
+      console.log(node);
+      const nodeElement = document.getElementById(node.id);
+      nodeElement.style.transform = 'none';
+
+      node.children.forEach(child => {
+        CorrectTransforms(child);
+      })
+    }
+  }
 
   //{AddLines(tree)}
   return (
