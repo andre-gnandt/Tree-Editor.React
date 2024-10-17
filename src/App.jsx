@@ -177,10 +177,6 @@ function App() {
         {
            left = positionAboveChildren; 
         }
-        //console.log("positionAboveChildren");
-        //console.log("value: "+positionAboveChildren);
-        //console.log("id: "+child.id);
-        //console.log("coordinates: "+childPositionsOfNode["Left"]+"  "+childPositionsOfNode["Right"]);
 
         if(maxLeft == null || left < maxLeft) maxLevel["Left"] = left;
         if(maxRight == null || left > maxRight) maxLevel["Right"] = left;
@@ -190,9 +186,6 @@ function App() {
         if(i >= children.length-1)
         {
           childPositions[String(parent.id)] = parentNodePosition;
-          //console.log("setParentPositions");
-          //console.log("id: "+parent.id);
-          //console.log("coordinates: "+parentNodePosition["Left"]+"  "+parentNodePosition["Right"]);
         }
         
 
@@ -206,8 +199,7 @@ function App() {
       {
         var leftSpace = 0;
         var left = 0;
-        //if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven/2 : -1*leftCount; }
-        //if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd/2 : leftCount; }
+
         leftSpace = leftCount*(-1*(children.length-1)/2+i);
         left = leftSpace+parentLeft; 
 
@@ -225,10 +217,6 @@ function App() {
         if(positionAboveChildren != null && positionAboveChildren >= maxRight+elementWidth){
            left = positionAboveChildren; 
         }
-        //console.log("positionAboveChildren");
-        //console.log("value: "+positionAboveChildren);
-        //console.log("id: "+child.id);
-        //console.log("coordinates: "+childPositionsOfNode["Left"]+"  "+childPositionsOfNode["Right"]);
 
         maxLevel["Right"] = left;
 
@@ -239,9 +227,6 @@ function App() {
         { 
           parentNodePosition["Right"] = left;
           childPositions[String(parent.id)] = parentNodePosition;
-          //console.log("setParentPositions");
-          //console.log("id: "+parent.id);
-          //console.log("coordinates: "+parentNodePosition["Left"]+"  "+parentNodePosition["Right"]);
         }
 
         childElements.push((
@@ -254,8 +239,7 @@ function App() {
         {
           var leftSpace = 0;
           var left = 0;
-          //if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven/2 : -1*leftCount; }
-          //if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd/2 : leftCount; }
+
           leftSpace = leftCount*((children.length-1)/2-i);
 
           if(child.children.length > 0){ left = child["Left"]+(child["Right"]-child["Left"])/2; }
@@ -275,10 +259,6 @@ function App() {
           if(positionAboveChildren != null && positionAboveChildren <= maxRight-elementWidth){
              left = positionAboveChildren; 
           }
-          //console.log("positionAboveChildren");
-          //console.log("value: "+positionAboveChildren);
-          //console.log("id: "+child.id);
-          //console.log("coordinates: "+childPositionsOfNode["Left"]+"  "+childPositionsOfNode["Right"]);
   
           maxLevel["Left"] = left;
   
@@ -289,9 +269,6 @@ function App() {
           { 
             parentNodePosition["Left"] = left;
             childPositions[String(parent.id)] = parentNodePosition;
-            //console.log("setParentPositions");
-            //console.log("id: "+parent.id);
-            //console.log("coordinates: "+parentNodePosition["Left"]+"  "+parentNodePosition["Right"]);
           }
   
           childElements.push((
