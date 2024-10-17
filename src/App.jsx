@@ -82,8 +82,9 @@ function App() {
       console.log("new tree:");
       console.log(tree);
 
-      const treeRoot = createRoot(document.getElementById('tree-root'));
-      treeRoot.render(RenderChildren());
+      setTree(newTree);
+      //const treeRoot = createRoot(document.getElementById('tree-root'));
+      //treeRoot.render(RenderChildren());
     }
     else
     {
