@@ -11,13 +11,15 @@ import Draggable from 'react-draggable';
 const TreeNode = (props, css) => {
     const[dialog, setDialog] = useState(false);
     if(props == null || props.props == null || !('id' in props.props)) return (<></>);   
+
+    //onClick={() => {setDialog(true)}
     
         return(
             <>
                 
-                    <button style = {{display: 'table-cell', height: '80px', width: '80px'}}  onClick={() => {setDialog(true)}}>
-                        {props.props.title}
-                    </button>                    
+                <button style = {{display: 'table-cell', height: '80px', width: '80px'}}>
+                    {props.props.title}
+                </button>                    
              
                 <Dialog header = {"HEADER"} visible = {dialog} style={{ width: '50vw' }} onHide={() => {if (!dialog) return; setDialog(false)}} > 
                     <NodeDetails input = {props.props}/>
