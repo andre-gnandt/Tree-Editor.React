@@ -51,38 +51,25 @@ function App() {
     
     if(mouseOverNode)
     {
-      //console.log(nodeDictionary);
-
+      
+      RemoveLines(tree);
       const oldParentNode = nodeDictionary[node.nodeId];
       const newParentNode = nodeDictionary[mouseOverNode];
-
-      /*
-      console.log('old parent node');
-      console.log(oldParentNode);
-      console.log('new parent node');
-      console.log(newParentNode);
-      */
-      
-      
       node.nodeId = mouseOverNode;
+
+      mouseOverNode = null;
+
       const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === node.id);
-      //console.log('remove index:'+removeOldChildIndex);
       if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
       newParentNode.children.push(node);
       
-
-      mouseOverNode = null;
-
       const newTree = {...tree}
-      
-      maxLevels = new Object();
-      childPositions = new Object();
-      nodeDictionary = new Object();
-      dragging = false;
-      mouseOverNode = null;
-
       setTree(newTree);
       CorrectTransforms(tree);
+      AddLines(tree);
+      
+      //const lineContainer = createRoot(document.getElementById('line-container'));
+      //lineContainer.render(AddLines(tree));
     }
     else
     {
@@ -103,6 +90,8 @@ function App() {
 
   function RemoveLine(node)
   {
+    console.log("removing line:");
+    console.log(node.nodeId+"_"+node.id);
     if(node.nodeId)
     {
       const line = document.getElementsByClassName(node.nodeId+"_"+node.id);
@@ -115,7 +104,7 @@ function App() {
     return (
       <>
         <Draggable onStart={(drag) => {StartDrag(child);}} onStop = {(drag) => {OnDropNode(drag, child); }} onDrag = {(drag) =>{RepositionSubTree(drag, child);}}>
-          <div id = {child.id} className={child.id} onMouseOver={() => {console.log("mouse hovering node: "+child.id);}} pointer onMouseLeave={() => {mouseOverNode = null; console.log("mouse leave node: "+child.id);}} onMouseEnter={() => {mouseOverNode = child.id; console.log("mouse enter node: "+child.id);}} style = {{zIndex: 0, position:'fixed',top: String((row)*160)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', height: '80px', width: '80px'}}>
+          <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id;}} style = {{zIndex: 0, position:'fixed',top: String((row)*160)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', height: '80px', width: '80px'}}>
             <TreeNode props = {child}/>
           </div>
         </Draggable>
@@ -161,17 +150,6 @@ function App() {
       var maxRight =  'Right' in maxLevel ? maxLevel['Right'] : null;
       var maxLeft = 'Left' in maxLevel ? maxLevel['Left'] : null; 
       var left = 0;
-
-      /*
-      if(row === 2)
-      {
-        console.log('-------------');
-        console.log("Node title: "+child.title);
-        console.log("Maxleft: "+maxLeft);
-        console.log("Maxright: "+maxRight);
-        console.log('-------------');
-      }
-      */
 
       if(path === 'middle')
       {
@@ -321,15 +299,20 @@ function App() {
     return {X:x, Y:y};
   }
 
-  function DepthFirstMethod(method, node, data)
+  function DepthFirstMethod(method, node, data = null, sendChild = true, returnerMethod = null)
   {
     if(node == null || !('children' in node)){return (<></>)}
 
     node.children.forEach(child => 
       {
-        DepthFirstMethod(method, child, data);
-        method(data, node, child);
+        DepthFirstMethod(method, child, data, sendChild, returnerMethod);
+        if(data && sendChild){ method(data, node, child); }
+        else if(data && !sendChild){ method(data, node); }
+        else if(!data && sendChild){ method(node, child); }
+        else{ method(node);}
       });
+
+    //return returnerMethod;
   }
 
   function RepositionDescendants(data, parent, child)
@@ -401,6 +384,17 @@ function App() {
     });
     */
   }
+
+  function RemoveLines(node)
+  {
+    //DepthFirstMethod(RemoveLine, tree, null, false);
+
+    RemoveLine(node);
+    node.children.forEach(child => {
+      RemoveLines(child);
+    })
+
+  } 
     
   function AddLines(node)
   {
@@ -419,8 +413,8 @@ function App() {
       }
     );
 
-    return(
-      <>
+    const lineJSX = 
+      (<>
         {lines.map(child => {
             
             return (
@@ -430,7 +424,10 @@ function App() {
             }
         )}
       </>
-    )
+    );
+
+    const lineContainer = createRoot(document.getElementById('line-container'));
+    lineContainer.render(lineJSX);
   }
 
   function SetPositions(node)
@@ -461,10 +458,11 @@ function App() {
   //{AddLines(tree)}
   return (
     <>
+      <button style = {{position: 'fixed', left: '5rem', top: '0rem'}} onClick={() => {AddLines(tree)}}> Add Lines</button>
       <div id = 'line-container'>
       </div>
       <div id = 'tree-root'>
-        {RenderChildren()}  
+        {RenderChildren()} 
       </div>
     </>
   );
