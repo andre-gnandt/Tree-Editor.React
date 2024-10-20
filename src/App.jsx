@@ -19,6 +19,13 @@ function App() {
   var dragging = false;
   var mouseOverNode = null;
 
+  
+  useEffect(() => {
+    AddLines(tree);
+    ResetElementPositions(tree);
+  });
+  
+
   function SetParentNodes(node)
   {
     node.children.forEach(child => {
@@ -42,6 +49,19 @@ function App() {
     firstRender.current = false;
   }
 
+  function ResetElementPositions(node)
+  {
+    if(node){
+
+      delete node['line'];
+      delete node['position'];
+
+      node.children.forEach(child => {
+        ResetElementPositions(child);
+      })
+    }
+  }
+
   function OnDropNode(mouse, node)
   {
     dragging = false;
@@ -49,7 +69,7 @@ function App() {
     nodeElement.style.zIndex = 0;
     nodeElement.style.pointerEvents = 'auto';
     
-    if(mouseOverNode)
+    if(mouseOverNode && mouseOverNode !== node.id)
     {
       
       RemoveLines(tree);
@@ -63,19 +83,21 @@ function App() {
       if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
       newParentNode.children.push(node);
       
-      const newTree = {...tree}
-      setTree(newTree);
+      //const newTree = {...tree}
+      //setTree(newTree);
+      const treeContainer = createRoot(document.getElementById('tree-root'));
+      maxLevels = new Object();
+      childPositions = new Object();
+      nodeDictionary = new Object();
+      treeContainer.render((RenderChildren()));
+      ResetElementPositions(tree);
       CorrectTransforms(tree);
       AddLines(tree);
-      
-      //const lineContainer = createRoot(document.getElementById('line-container'));
-      //lineContainer.render(AddLines(tree));
     }
     else
     {
-
+      ResetSubtree(node);
     }
-
   }
 
   function StartDrag(node)
@@ -99,13 +121,13 @@ function App() {
     }
   }
 
-  function AppendChildNode(child, left, row)
+  function AppendChildNode(child, left, row, nodeSize)
   {
     return (
       <>
         <Draggable onStart={(drag) => {StartDrag(child);}} onStop = {(drag) => {OnDropNode(drag, child); }} onDrag = {(drag) =>{RepositionSubTree(drag, child);}}>
-          <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id;}} style = {{zIndex: 0, position:'fixed',top: String((row)*160)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', height: '80px', width: '80px'}}>
-            <TreeNode props = {child}/>
+          <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id;}} style = {{zIndex: 0, position:'absolute',top: String((row)*nodeSize*2)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}>
+            <TreeNode props = {child} css = {{nodeSize: nodeSize}}/>
           </div>
         </Draggable>
       </>
@@ -129,7 +151,8 @@ function App() {
 
     if(children == null){return (<></>);}
 
-    var elementWidth = 160;
+    var nodeSize = 40;
+    var elementWidth = nodeSize*2;
 
     const childElements = [];
 
@@ -197,7 +220,7 @@ function App() {
           }
         }
 
-        childElements.push((AppendChildNode(child, left, row)));
+        childElements.push((AppendChildNode(child, left, row, nodeSize)));
       }
       else if(path === 'right')
       {
@@ -232,7 +255,7 @@ function App() {
         }
         if(i >= children.length-1 && parent)  childPositions[String(parent.id)] = parentNodePosition;
 
-        childElements.push((AppendChildNode(child, left, row)));
+        childElements.push((AppendChildNode(child, left, row, nodeSize)));
       }
       else if(path === 'left')
         {
@@ -267,11 +290,11 @@ function App() {
           }
           if(i >= children.length-1 && parent) childPositions[String(parent.id)] = parentNodePosition;
 
-          childElements.push((AppendChildNode(child, left, row)));
+          childElements.push((AppendChildNode(child, left, row, nodeSize)));
         }
 
         child["left"] = left;
-        child["top"] = (row)*160;
+        child["top"] = (row)*elementWidth;
 
       i++;
     });
@@ -315,6 +338,30 @@ function App() {
     //return returnerMethod;
   }
 
+  function ResetSubtree(node)
+  {
+    console.log("reset node: "+node.title);
+    console.log("left: "+node['left']);
+    console.log("top: "+node['top']);
+    const nodeElement = document.getElementById(node.id);
+    nodeElement.style.left = String(node['left'])+"px";
+    nodeElement.style.top = String(node['top'])+"px";
+    //nodeElement.style.transform = 'none';
+
+    const lineElements = node.nodeId ? document.getElementsByClassName(node.nodeId+"_"+node.id) : [];
+    if(lineElements && lineElements.length > 0)
+    {
+      const line = lineElements[0];
+      const lineStyle = node['line'];
+      line.style.top = String(lineStyle.top)+"px";
+      line.style.left = String(lineStyle.left)+"px";
+    }
+    
+    node.children.forEach(child => {
+      ResetSubtree(child);
+    })
+  }
+
   function RepositionDescendants(data, parent, child)
   {
     /*
@@ -332,6 +379,7 @@ function App() {
   
     childElement.style.top = String((child["top"]+Y))+"px";
     childElement.style.left = String((child["left"]+X))+"px";
+    //childElement.style.transform = 'none';
 
     if(line)
     {
@@ -345,6 +393,7 @@ function App() {
 
       line.style.top = String(top+Y)+"px";
       line.style.left = String(left+X)+"px";
+      //line.style.transform = 'none';
     }
   
     //ReactDOM.createPortal(<LineTo delay id={parent.id+"_"+child.id} from={parent.id} to={child.id} className={parent.id+"_"+child.id} />, document.body);
@@ -357,6 +406,7 @@ function App() {
       console.log("SCROLL DRAG! "+scroll);
     }
     const nodeElement = document.getElementById(node.id);
+  
     const positionAfter = GetElementPosition(nodeElement);
     const X = positionAfter.X;
     const Y = positionAfter.Y;
@@ -395,7 +445,12 @@ function App() {
     })
 
   } 
-    
+
+  function AddLine(node)
+  {
+    if(node.nodeId) createRoot(document.getElementById('line-container')).render(<LineTo delay id = {node.nodeId+"_"+node.id} from={node.nodeId} to={node.id} className = {node.nodeId+"_"+node.id} />);
+  }
+  
   function AddLines(node)
   {
     

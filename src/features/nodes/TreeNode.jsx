@@ -8,7 +8,7 @@ import './DetailsList.css';
 import NodeDetails from './NodeDetails';
 import Draggable from 'react-draggable';
 
-const TreeNode = (props, css) => {
+const TreeNode = (props) => {
     const[dialog, setDialog] = useState(false);
     if(props == null || props.props == null || !('id' in props.props)) return (<></>);   
 
@@ -17,8 +17,8 @@ const TreeNode = (props, css) => {
         return(
             <>
                 
-                <button style = {{display: 'table-cell', height: '80px', width: '80px'}}>
-                    {props.props.title}
+                <button style = {{ display: 'table-cell', height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
+                    
                 </button>                    
              
                 <Dialog header = {"HEADER"} visible = {dialog} style={{ width: '50vw' }} onHide={() => {if (!dialog) return; setDialog(false)}} > 
