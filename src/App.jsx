@@ -25,20 +25,23 @@ function App() {
     AddLines(tree);
   });
   
-
-  function SetParentNodes(node)
+  function ReRenderTree()
   {
-    node.children.forEach(child => {
-      child.parent = node;
-      SetParentNodes(child);
-    });
+    const treeContainer = createRoot(document.getElementById('tree-root'));
+    maxLevels = new Object();
+    childPositions = new Object();
+    nodeDictionary = new Object();
+    RemoveLines(tree);
+    treeContainer.render((RenderChildren()));
+    CorrectTransforms(tree);
+    ResetElementPositions(tree);
+    AddLines(tree);
   }
 
   function GetTrees(){
     fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
         result => { 
           var nodes = result[1];
-          //SetParentNodes(nodes);
           setTree(nodes);
         }
     );   
@@ -71,8 +74,6 @@ function App() {
     
     if(mouseOverNode && mouseOverNode !== node.id)
     {
-      
-      RemoveLines(tree);
       const oldParentNode = nodeDictionary[node.nodeId];
       const newParentNode = nodeDictionary[mouseOverNode];
       node.nodeId = mouseOverNode;
@@ -83,24 +84,7 @@ function App() {
       if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
       newParentNode.children.push(node);
       
-      /*
-      maxLevels = new Object();
-      childPositions = new Object();
-      nodeDictionary = new Object();
-      const newTree = {...tree}
-      setTree(newTree);
-      */
-      
-      
-      const treeContainer = createRoot(document.getElementById('tree-root'));
-      maxLevels = new Object();
-      childPositions = new Object();
-      nodeDictionary = new Object();
-      treeContainer.render((RenderChildren()));
-      ResetElementPositions(tree);
-      CorrectTransforms(tree);
-      AddLines(tree);
-      
+      ReRenderTree();
     }
     else
     {
@@ -121,8 +105,6 @@ function App() {
 
   function RemoveLine(node)
   {
-    console.log("removing line:");
-    console.log(node.nodeId+"_"+node.id);
     if(node.nodeId)
     {
       const line = document.getElementsByClassName(node.nodeId+"_"+node.id);
@@ -143,7 +125,6 @@ function App() {
     );
   }
 
-  //Add proper position check, depending on whether it is a left, right, or middle sided node to render the parent position for a middle pathway.
   function RenderChildren(parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
   {
     var children = null;
@@ -392,7 +373,6 @@ function App() {
 
       line.style.top = String(top+Y)+"px";
       line.style.left = String(left+X)+"px";
-      //line.style.transform = 'none';
     }
   }
 
@@ -417,18 +397,6 @@ function App() {
     const yOffset = Y-positionBefore.Y;
 
     DepthFirstMethod(RepositionDescendants, node, {X: xOffset, Y: yOffset});
-    /*
-    node.children.forEach(child => {
-      const childElement = document.getElementById(child.id);
-      
-      const position = node['position'];
-      const xOffset = X-position.X;
-      const yOffset = Y-position.Y;
-
-      childElement.style.top = String((child["top"]+yOffset))+"px";
-      childElement.style.left = String((child["left"]+xOffset))+"px";
-    });
-    */
   }
 
   function RemoveLines(node)
@@ -506,7 +474,6 @@ function App() {
     }
   }
 
-  //{AddLines(tree)}
   return (
     <>
       <div id = 'line-container'>
