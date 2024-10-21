@@ -6,6 +6,7 @@ import TreeNode from './features/nodes/TreeNode';
 import LineTo from 'react-lineto';
 import './App.css'
 import Draggable from 'react-draggable';
+import { DraggableCore } from 'react-draggable';
 import { createRoot } from 'react-dom/client';
 import { createPortal } from 'react-dom';
 import ReactDOM from 'react-dom'
@@ -22,7 +23,6 @@ function App() {
   
   useEffect(() => {
     AddLines(tree);
-    ResetElementPositions(tree);
   });
   
 
@@ -83,8 +83,15 @@ function App() {
       if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
       newParentNode.children.push(node);
       
-      //const newTree = {...tree}
-      //setTree(newTree);
+      /*
+      maxLevels = new Object();
+      childPositions = new Object();
+      nodeDictionary = new Object();
+      const newTree = {...tree}
+      setTree(newTree);
+      */
+      
+      
       const treeContainer = createRoot(document.getElementById('tree-root'));
       maxLevels = new Object();
       childPositions = new Object();
@@ -93,10 +100,12 @@ function App() {
       ResetElementPositions(tree);
       CorrectTransforms(tree);
       AddLines(tree);
+      
     }
     else
     {
       ResetSubtree(node);
+      AddLine(node);
     }
   }
 
@@ -125,7 +134,7 @@ function App() {
   {
     return (
       <>
-        <Draggable onStart={(drag) => {StartDrag(child);}} onStop = {(drag) => {OnDropNode(drag, child); }} onDrag = {(drag) =>{RepositionSubTree(drag, child);}}>
+        <Draggable position={{x: 0, y: 0}} onStart={() => {StartDrag(child);}} onStop = {(drag) => {OnDropNode(drag, child); }} onDrag = {(drag) =>{RepositionSubTree(drag, child);}}>
           <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id;}} style = {{zIndex: 0, position:'absolute',top: String((row)*nodeSize*2)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}>
             <TreeNode props = {child} css = {{nodeSize: nodeSize}}/>
           </div>
@@ -340,13 +349,10 @@ function App() {
 
   function ResetSubtree(node)
   {
-    console.log("reset node: "+node.title);
-    console.log("left: "+node['left']);
-    console.log("top: "+node['top']);
+
     const nodeElement = document.getElementById(node.id);
     nodeElement.style.left = String(node['left'])+"px";
     nodeElement.style.top = String(node['top'])+"px";
-    //nodeElement.style.transform = 'none';
 
     const lineElements = node.nodeId ? document.getElementsByClassName(node.nodeId+"_"+node.id) : [];
     if(lineElements && lineElements.length > 0)
@@ -364,13 +370,6 @@ function App() {
 
   function RepositionDescendants(data, parent, child)
   {
-    /*
-    if(document.getElementsByClassName(parent.id+"_"+child.id).length > 0)
-    {
-      document.getElementsByClassName(parent.id+"_"+child.id)[0].remove();
-    }
-      */
-
     const X = data.X;
     const Y = data.Y;
 
@@ -379,7 +378,7 @@ function App() {
   
     childElement.style.top = String((child["top"]+Y))+"px";
     childElement.style.left = String((child["left"]+X))+"px";
-    //childElement.style.transform = 'none';
+    childElement.style.transform = 'none';
 
     if(line)
     {
@@ -395,9 +394,6 @@ function App() {
       line.style.left = String(left+X)+"px";
       //line.style.transform = 'none';
     }
-  
-    //ReactDOM.createPortal(<LineTo delay id={parent.id+"_"+child.id} from={parent.id} to={child.id} className={parent.id+"_"+child.id} />, document.body);
-    //root.render(createPortal(<LineTo delay id={parent.id+"_"+child.id} from={parent.id} to={child.id} className={parent.id+"_"+child.id} />) );
   }
 
   function RepositionSubTree(dragEvent, node, scroll = null)
@@ -513,7 +509,6 @@ function App() {
   //{AddLines(tree)}
   return (
     <>
-      <button style = {{position: 'fixed', left: '5rem', top: '0rem'}} onClick={() => {AddLines(tree)}}> Add Lines</button>
       <div id = 'line-container'>
       </div>
       <div id = 'tree-root'>
