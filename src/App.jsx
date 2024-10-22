@@ -116,8 +116,9 @@ function App() {
   {
     return (
       <>
-        <Draggable position={{x: 0, y: 0}} onStart={() => {StartDrag(child);}} onStop = {(drag) => {OnDropNode(drag, child); }} onDrag = {(drag) =>{RepositionSubTree(drag, child);}}>
-          <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id;}} style = {{zIndex: 0, position:'absolute',top: String((row)*nodeSize*2)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}>
+        <Draggable position={{x: 0, y: 0}} onStop = {(drag) => {if(dragging){OnDropNode(drag, child);} }} onDrag = {(drag) =>{if(!dragging){StartDrag(child);} RepositionSubTree(drag, child);}}>
+          <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id;}} 
+          style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 0, position:'absolute',top: String((row)*nodeSize*2)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}>
             <TreeNode props = {child} css = {{nodeSize: nodeSize}}/>
           </div>
         </Draggable>
@@ -141,7 +142,7 @@ function App() {
 
     if(children == null){return (<></>);}
 
-    var nodeSize = 40;
+    var nodeSize = 60;
     var elementWidth = nodeSize*2;
 
     const childElements = [];
@@ -412,7 +413,10 @@ function App() {
 
   function AddLine(node)
   {
-    if(node.nodeId) createRoot(document.getElementById('line-container')).render(<LineTo delay id = {node.nodeId+"_"+node.id} from={node.nodeId} to={node.id} className = {node.nodeId+"_"+node.id} />);
+    if(node.nodeId) createRoot(document.getElementById('line-container')).render
+    (
+      <LineTo delay id = {node.nodeId+"_"+node.id} from={node.nodeId} to={node.id} className = {node.nodeId+"_"+node.id} />
+    );
   }
   
   function AddLines(node)

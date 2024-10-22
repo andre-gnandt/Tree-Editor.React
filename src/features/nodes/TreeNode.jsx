@@ -11,16 +11,35 @@ import Draggable from 'react-draggable';
 const TreeNode = (props) => {
     const[dialog, setDialog] = useState(false);
     if(props == null || props.props == null || !('id' in props.props)) return (<></>);   
+    var buttonMouseDown = new Object();
+    var buttonMouseUp = new Object();
 
-    //onClick={() => {setDialog(true)}
+    function GetElementPosition(element)
+    {
+        var position = element.getBoundingClientRect();
+        var x = position.left;
+        var y = position.top;
+
+        return {X:x, Y:y};
+    }
+
+    function ValidateButtonClick(element)
+    {
+        console.log("buttonUp");
+        console.log(buttonMouseUp);
+        buttonMouseUp = GetElementPosition(element);
+        if(buttonMouseUp.X === buttonMouseDown.X && buttonMouseUp.Y === buttonMouseDown.Y)
+        {
+            setDialog(true);
+        }
+    }
     
         return(
-            <>
-                
-                <button style = {{ display: 'table-cell', height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
-                    
-                </button>                    
-             
+            <>               
+                <button onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target); console.log("buttonDown");
+        console.log(buttonMouseDown);}} onClick={(event) => {ValidateButtonClick(event.target);}} style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(props.css.nodeSize)+'px', maxWidth: String(props.css.nodeSize)+'px',  height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
+                    {props.props.title}
+                </button>                                 
                 <Dialog header = {"HEADER"} visible = {dialog} style={{ width: '50vw' }} onHide={() => {if (!dialog) return; setDialog(false)}} > 
                     <NodeDetails input = {props.props}/>
                 </Dialog>               
