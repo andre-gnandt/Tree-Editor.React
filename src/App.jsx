@@ -1,17 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
-//import { render} from 'react-dom';
-import NodeDetails   from './features/nodes/NodeDetails'
-//import  GetTrees   from './api/nodes/nodesApi';
 import TreeNode from './features/nodes/TreeNode';
 import LineTo from 'react-lineto';
 import './App.css'
 import Draggable from 'react-draggable';
-import { DraggableCore } from 'react-draggable';
+import { useSelector, useDispatch } from 'react-redux';
 import { createRoot } from 'react-dom/client';
-import { createPortal } from 'react-dom';
-import ReactDOM from 'react-dom'
 
 function App() {
+  //const reduxNode = useSelector(state => state.node);
+  //const dispatch = useDispatch();
   const firstRender = useRef(true);
   const [tree, setTree] = useState(null);
   var maxLevels = new Object();

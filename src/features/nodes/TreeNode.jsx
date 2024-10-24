@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Dialog } from 'primereact/dialog';
-import { useSelector, useDispatch } from 'react-redux'
-import { cloneNode, updateNodeData, updateNodeNumber } from './nodeSlice'
-import { InputText } from 'primereact/inputtext';
-import updateNode from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import './DetailsList.css';
 import NodeDetails from './NodeDetails';
-import Draggable from 'react-draggable';
+import { Provider } from 'react-redux';
+import { store } from '/LocalTreeData.React/src/store';
 
 const TreeNode = (props) => {
     const[dialog, setDialog] = useState(false);
@@ -25,8 +22,6 @@ const TreeNode = (props) => {
 
     function ValidateButtonClick(element)
     {
-        console.log("buttonUp");
-        console.log(buttonMouseUp);
         buttonMouseUp = GetElementPosition(element);
         if(buttonMouseUp.X === buttonMouseDown.X && buttonMouseUp.Y === buttonMouseDown.Y)
         {
@@ -36,12 +31,13 @@ const TreeNode = (props) => {
     
         return(
             <>               
-                <button onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target); console.log("buttonDown");
-        console.log(buttonMouseDown);}} onClick={(event) => {ValidateButtonClick(event.target);}} style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(props.css.nodeSize)+'px', maxWidth: String(props.css.nodeSize)+'px',  height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
+                <button onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(props.css.nodeSize)+'px', maxWidth: String(props.css.nodeSize)+'px',  height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
                     {props.props.title}
                 </button>                                 
                 <Dialog header = {"HEADER"} visible = {dialog} style={{ width: '50vw' }} onHide={() => {if (!dialog) return; setDialog(false)}} > 
-                    <NodeDetails input = {props.props}/>
+                    <Provider store = {store}>
+                        <NodeDetails input = {props.props}/>
+                    </Provider>
                 </Dialog>               
             </> 
         );

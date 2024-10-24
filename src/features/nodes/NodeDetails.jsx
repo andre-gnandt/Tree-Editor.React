@@ -6,8 +6,8 @@ import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import './DetailsList.css';
 
 const NodeDetails = (input) => {
-    const dispatch = useDispatch();
     const node = useSelector(state => state.node);
+    const dispatch = useDispatch();
     const firstRender = useRef(true);
     const props = input.input
 
