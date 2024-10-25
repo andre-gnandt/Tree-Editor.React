@@ -92,6 +92,8 @@ function App() {
 
   function StartDrag(node)
   {
+    console.log("start drag");
+    console.log("dialog: "+node["dialog"]);
     dragging = true;
     const nodeElement = document.getElementById(node.id);
     nodeElement.style.zIndex = 1;
@@ -113,9 +115,12 @@ function App() {
   {
     return (
       <>
-        <Draggable position={{x: 0, y: 0}} onStop = {(drag) => {if(dragging){OnDropNode(drag, child);} }} onDrag = {(drag) =>{if(!dragging){StartDrag(child);} RepositionSubTree(drag, child);}}>
+        <Draggable position={{x: 0, y: 0}} onStart = {() => { if(child["dialog"])return false; }} onStop = {(drag) => {if(dragging){OnDropNode(drag, child);} }} 
+          onDrag = {(drag) =>{if(!dragging){StartDrag(child);} RepositionSubTree(drag, child);}}>
+          
           <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id;}} 
-          style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 0, position:'absolute',top: String((row)*nodeSize*2)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}>
+            style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 0, position:'absolute',top: String((row)*nodeSize*2)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}>
+            
             <TreeNode props = {child} css = {{nodeSize: nodeSize}}/>
           </div>
         </Draggable>
@@ -283,6 +288,7 @@ function App() {
 
         child["left"] = left;
         child["top"] = (row)*elementWidth;
+        child["dialog"] = false;
 
       i++;
     });
@@ -380,7 +386,6 @@ function App() {
       console.log("SCROLL DRAG! "+scroll);
     }
     const nodeElement = document.getElementById(node.id);
-  
     const positionAfter = GetElementPosition(nodeElement);
     const X = positionAfter.X;
     const Y = positionAfter.Y;
@@ -395,6 +400,7 @@ function App() {
     const yOffset = Y-positionBefore.Y;
 
     DepthFirstMethod(RepositionDescendants, node, {X: xOffset, Y: yOffset});
+    
   }
 
   function RemoveLines(node)

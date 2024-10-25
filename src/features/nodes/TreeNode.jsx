@@ -25,6 +25,7 @@ const TreeNode = (props) => {
         buttonMouseUp = GetElementPosition(element);
         if(buttonMouseUp.X === buttonMouseDown.X && buttonMouseUp.Y === buttonMouseDown.Y)
         {
+            props.props["dialog"] = true;
             setDialog(true);
         }
     }
@@ -33,8 +34,8 @@ const TreeNode = (props) => {
             <>               
                 <button onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(props.css.nodeSize)+'px', maxWidth: String(props.css.nodeSize)+'px',  height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
                     {props.props.title}
-                </button>                                 
-                <Dialog header = {"HEADER"} visible = {dialog} style={{ width: '50vw' }} onHide={() => {if (!dialog) return; setDialog(false)}} > 
+                </button>                                
+                <Dialog header = {"HEADER"} visible = {dialog} style={{ width: '50vw' }} onHide={() => {if (!dialog) return; props.props["dialog"] = false; setDialog(false);}} > 
                     <Provider store = {store}>
                         <NodeDetails input = {props.props}/>
                     </Provider>
