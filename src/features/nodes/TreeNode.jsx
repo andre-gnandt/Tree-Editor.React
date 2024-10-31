@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Dialog } from 'primereact/dialog';
-import './DetailsList.css';
+import './detailsList.css'
 import NodeDetails from './NodeDetails';
 import { Provider } from 'react-redux';
 import { store } from '/LocalTreeData.React/src/store';
@@ -29,17 +29,17 @@ const TreeNode = (props) => {
             setDialog(true);
         }
     }
-    
+
         return(
             <>               
                 <button onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(props.css.nodeSize)+'px', maxWidth: String(props.css.nodeSize)+'px',  height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
                     {props.props.title}
                 </button>                                
-                <Dialog header = {"HEADER"} visible = {dialog} style={{ width: '50vw' }} onHide={() => {if (!dialog) return; props.props["dialog"] = false; setDialog(false);}} > 
+                <Dialog className={"dialogContent"} headerStyle={{background: 'white'}} contentStyle={{background: 'white'}} header = {"HEADER"} visible = {dialog} onHide={() => {if (!dialog) return; props.props["dialog"] = false; setDialog(false);}} > 
                     <Provider store = {store}>
                         <NodeDetails input = {props.props}/>
                     </Provider>
-                </Dialog>               
+                </Dialog>                 
             </> 
         );
 }

@@ -144,7 +144,7 @@ function App() {
 
     if(children == null){return (<></>);}
 
-    var nodeSize = 60;
+    var nodeSize = 80;
     var elementWidth = nodeSize*2;
 
     const childElements = [];

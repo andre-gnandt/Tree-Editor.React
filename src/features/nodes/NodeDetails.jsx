@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { cloneNode, updateNodeData, updateNodeNumber } from './nodeSlice'
-import { InputText } from 'primereact/inputtext';
+import { InputText} from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
 import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
-import './DetailsList.css';
+import './detailsList.css';
 
 const NodeDetails = (input) => {
     const node = useSelector(state => state.node);
@@ -30,14 +31,51 @@ const NodeDetails = (input) => {
     }
 
         return(
-            <div>
+            <div className='container'>
                 <div>
                     <h1>{node.title}</h1>
                 </div>
-                <div>
-                    Data: <InputText onChange = {(e) => handleChange(e.target.value, updateNodeData)} value = {node.data} />
+                <div className="entryContainer">
+                    <div className = "fullWidthLeft">
+                        Description:  
+                    </div> 
+                    <div className="fullWidthRight">
+                        <InputText className = "input" onChange = {(e) => handleChange(e.target.value, updateNodeNumber)} value = {node.number ? node.number : ""} />
+                    </div>
                 </div>
-                    Number: <InputText onChange = {(e) => handleChange(e.target.value, updateNodeNumber)} value = {node.number ? node.number : ""} />
+                <div className="entryContainer">
+                    <div className = "fullWidthLeft">
+                        Data: 
+                    </div>
+                    <div className="fullWidthRight">
+                        <InputText className = "input" onChange = {(e) => handleChange(e.target.value, updateNodeData)} value = {node.data} />    
+                    </div>
+                </div>
+                <div className="entryContainer">
+                    <div className = "fullWidthLeft">
+                        Number:  
+                    </div> 
+                    <div className="fullWidthRight">
+                        <InputText className = "input" type = 'number' onChange = {(e) => handleChange(e.target.value, updateNodeNumber)} value = {node.number ? node.number : ""} />
+                    </div>
+                </div>
+                <div className="entryContainer">
+                    <div className = "fullWidthLeft">
+                        Rank:  
+                    </div> 
+                    <div className="fullWidthRight">
+                        <InputText className = "input" onChange = {(e) => handleChange(e.target.value, updateNodeNumber)} value = {node.number ? node.number : ""} />
+                    </div>
+                </div>
+                <div className="entryContainer">
+                    <div className = "fullWidthLeft">
+                        Parent:  
+                    </div> 
+                    <div className="fullWidthRight">
+                        <InputText className = "input" onChange = {(e) => handleChange(e.target.value, updateNodeNumber)} value = {node.number ? node.number : ""} />
+                    </div>
+                </div>
+                
                 <div>
                     <button onClick = {() => {updateNode(node.id, node); setNode(props); }}> Save </button>
                     <button onClick = {() => handleChange(props, cloneNode)} > Reset </button>
