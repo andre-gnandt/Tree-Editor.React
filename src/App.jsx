@@ -7,17 +7,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { createRoot } from 'react-dom/client';
 
 function App() {
-  //const reduxNode = useSelector(state => state.node);
-  //const dispatch = useDispatch();
   const firstRender = useRef(true);
   const [tree, setTree] = useState(null);
   var maxLevels = new Object();
   var childPositions = new Object();
   var nodeDictionary = new Object();
+  var nodeList = [];
   var dragging = false;
   var mouseOverNode = null;
 
-  
   useEffect(() => {
     AddLines(tree);
   });
@@ -92,8 +90,6 @@ function App() {
 
   function StartDrag(node)
   {
-    console.log("start drag");
-    console.log("dialog: "+node["dialog"]);
     dragging = true;
     const nodeElement = document.getElementById(node.id);
     nodeElement.style.zIndex = 1;
@@ -121,7 +117,7 @@ function App() {
           <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id;}} 
             style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 0, position:'absolute',top: String((row)*nodeSize*2)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}>
             
-            <TreeNode props = {child} css = {{nodeSize: nodeSize}}/>
+            <TreeNode props = {child} css = {{nodeSize: nodeSize}} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
           </div>
         </Draggable>
       </>
@@ -135,6 +131,7 @@ function App() {
     { 
       children = parent.children;
       nodeDictionary[parent.id] = parent;
+      nodeList.push(parent);
     }
     else if(tree != null && tree.children != null)
     {

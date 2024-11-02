@@ -22,8 +22,10 @@ export const nodeSlice = createSlice({
         state.data = action.payload.data;
         state.title = action.payload.title;
         state.level = action.payload.level;
+        state.description = action.payload.description;
         state.number = action.payload.number;
         state.nodeId = action.payload.nodeId;
+        state.rank = action.payload.rank;
         state.isDeleted = action.payload.isDeleted;
     },
     updateNodeData: (state, action) => {

@@ -52,6 +52,22 @@
     color: rgb(49, 152, 170);
 }
 
+.title-required {
+    text-align: center;
+    width: 100%;
+    font-size: 10vh;
+    font-family: 'Courier, monospace';
+    height: 10vh;
+    max-height: 33vh;
+    border: 4px solid red;
+    color: rgb(49, 152, 170);
+}
+
+.title-required:focus {
+    background-color: rgba(204, 255, 255, 0.9);
+    color: rgb(39, 77, 245) !important;
+}
+
 .title:hover {
     border: 5px solid rgba(204, 255, 255, 0.9);;
 }
@@ -69,7 +85,7 @@
     font-size: 3vh;
     border-color: rgba(204, 223, 255, 0.9);
     color: rgba(204, 223, 255, 1);
-    
+    border-radius: 2vh;
 }
 
 .input:focus {

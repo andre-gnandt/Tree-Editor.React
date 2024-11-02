@@ -3,14 +3,23 @@ import { useSelector, useDispatch } from 'react-redux'
 import { cloneNode, updateNodeData, updateNodeNumber, updateNodeDescription, updateNodeTitle, updateNodeRank, updateNodeParent} from './nodeSlice'
 import { InputText} from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { Dropdown } from 'primereact/dropdown';
 import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import './detailsList.css';
 
-const NodeDetails = (input, create = false) => {
+const NodeDetails = (input) => {
+    const[hideButtons, setHideButtons] = useState(0);
+    const changeCount = useRef(0);
+    const titlePresent = useRef(true);
+    const[titleRequired, setTitleRequired] = useState(titlePresent.current);
+
+    const create = 'create' in input ? input['create'] : false;
     const node = useSelector(state => state.node);
     const dispatch = useDispatch();
     const firstRender = useRef(true);
     const props = input.input;
+    const nodeDictionary = input.nodeDictionary;
+    const nodeList = input.nodeList.sort(CompareNodes);
 
     if(firstRender.current){
         dispatch(cloneNode(props));
@@ -18,6 +27,7 @@ const NodeDetails = (input, create = false) => {
 
     const handleChange = (value, method) => {
         firstRender.current = false;
+        if(value == "") value = null;
         dispatch(method(value));
     }
 
@@ -31,6 +41,35 @@ const NodeDetails = (input, create = false) => {
         prop.nodeId = node.nodeId;
         prop.id = node.id;
         prop.isDeleted = node.isDeleted;
+    }
+
+    function CompareNodes(a, b)
+    {
+        if ( a.title < b.title ){                                                                   
+            return -1;
+          }
+          if ( a.title > b.title ){
+            return 1;
+          }
+          return 0;
+    }
+
+    function CheckValueChange(originalValue, previousValue, newValue)
+    {
+        const previousChangeCount = changeCount.current;
+        if(previousValue ==  originalValue && newValue != originalValue)
+        {
+            changeCount.current++;
+        }
+        else if(previousValue !=  originalValue && newValue == originalValue)
+        {
+            changeCount.current--;
+        }
+
+        if((previousChangeCount == 0 && changeCount.current != 0) || (previousChangeCount != 0 && changeCount.current == 0))
+        {
+            setHideButtons(changeCount.current);
+        }
     }
 
     function RenderCreateOrSaveButton()
@@ -47,6 +86,24 @@ const NodeDetails = (input, create = false) => {
         );
     }
 
+    function HandleSaveOrCreate()
+    {
+        if(!node.title || node.title.length === 0)
+        {
+            titlePresent.current = false;
+            setTitleRequired(false);
+        }
+        else if(!create)
+        {
+            updateNode(node.id, node); 
+            setNode(props);
+        }
+        else
+        {
+
+        }    
+    }
+
         return(
             <div className='container'>
                 <div style = {{display: 'flex', height: '33vh', marginBottom: '5.275vh'}}>
@@ -57,9 +114,9 @@ const NodeDetails = (input, create = false) => {
                             autoResize 
                             rows = {1} 
                             placeholder="Title" 
-                            className='title'
+                            className= {titleRequired ? "title" : "title-required"}
                             spellCheck = {false}
-                            onChange = {(e) => handleChange(e.target.value, updateNodeTitle)} value = {node.title} />
+                            onChange = {(e) => {CheckValueChange(props.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title} />
                     </div>
                 </div>
                 <div className="entryContainer">
@@ -67,7 +124,7 @@ const NodeDetails = (input, create = false) => {
                         Description:  
                     </div> 
                     <div className="fullWidthRight">
-                        <InputText unstyled className = "input" onChange = {(e) => handleChange(e.target.value, updateNodeDescription)} value = {node.number ? node.number : ""} />
+                        <InputText className = "input" onChange = {(e) => {CheckValueChange(props.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
                     </div>
                 </div>
                 <div className="entryContainer">
@@ -75,7 +132,7 @@ const NodeDetails = (input, create = false) => {
                         Data: 
                     </div>
                     <div className="fullWidthRight">
-                        <InputText className = "input" onChange = {(e) => handleChange(e.target.value, updateNodeData)} value = {node.data} />    
+                        <InputText className = "input" onChange = {(e) => {CheckValueChange(props.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
                     </div>
                 </div>
                 <div className="entryContainer">
@@ -83,7 +140,7 @@ const NodeDetails = (input, create = false) => {
                         Number:  
                     </div> 
                     <div className="fullWidthRight">
-                        <InputText className = "input" keyfilter='int' onChange = {(e) => handleChange(e.target.value, updateNodeNumber)} value = {node.number ? node.number : ""} />
+                        <InputText className = "input" keyfilter='int' onChange = {(e) => {CheckValueChange(props.number, node.number, e.target.value); handleChange(e.target.value, updateNodeNumber);}} value = {node.number ? node.number : ""} />
                     </div>
                 </div>
                 <div className="entryContainer">
@@ -99,13 +156,21 @@ const NodeDetails = (input, create = false) => {
                         Parent:  
                     </div> 
                     <div className="fullWidthRight">
-                        <InputText className = "input" onChange = {(e) => handleChange(e.target.value, updateNodeParent)} value = {node.number ? node.number : ""} />
+                        <Dropdown 
+                            
+                            onChange = {(e) => {CheckValueChange(props.nodeId, node.nodeId, e.target.value); handleChange(e.target.value, updateNodeParent);}} 
+                            value = {node.nodeId ? node.nodeId : ""} 
+                            options = {nodeList}
+                            optionLabel='title'
+                            />
                     </div>
-                </div>
-                
+                </div> 
                 <div style = {{display: 'flex'}}>
-                    <button className='button' style = {{marginRight: '2px'}} onClick = {() => {updateNode(node.id, node); setNode(props); }}> {RenderCreateOrSaveButton()} </button>
-                    <button className='button' onClick = {() => handleChange(props, cloneNode)} > Reset </button>
+                    <div hidden = {hideButtons === 0}  id = 'node-details-button-container' style = {{display: 'flex', marginTop: '8vh'}}>
+                        <button hidden = {hideButtons === 0} className='button' style = {{marginRight: '2px'}} onClick = {() => {HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                        <button hidden = {hideButtons === 0} className='button' onClick = {() => handleChange(props, cloneNode)} > Reset </button>
+                    </div>
+                    <div hidden = {titleRequired} style = {{marginLeft: '2vw', width: '100%', color: 'red', marginTop: '8vh', textAlign: 'bottom'}}>Title is required. Highlighted in red above.</div>
                 </div>
             </div> );
 }
