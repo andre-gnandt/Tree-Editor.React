@@ -5,8 +5,10 @@ const initialState = {
   data: null,
   title: "UNKWOWN",
   level: 0,
+  description: null,
   number: null,
   nodeId: null,
+  rank: null,
   children: []
 }
 
@@ -30,11 +32,20 @@ export const nodeSlice = createSlice({
     },
     updateNodeTitle: (state, action) => {
         state.title = action.payload;
-    } 
+    },
+    updateNodeDescription: (state, action) => {
+      state.description = action.payload;
+    },
+    updateNodeRank: (state, action) => {
+      state.rank = action.payload;
+    },
+    updateNodeParent: (state, action) => {
+      state.nodeId = action.payload;
+    },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { cloneNode, updateNodeData, updateNodeNumber, updateNodeTitle} = nodeSlice.actions
+export const { cloneNode, updateNodeData, updateNodeNumber, updateNodeTitle, updateNodeDescription, updateNodeRank, updateNodeParent} = nodeSlice.actions
 
 export default nodeSlice.reducer

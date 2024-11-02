@@ -3,6 +3,12 @@
     height: max(90vh, 7.5cm);
 }
 
+.thumbnail-container {
+    height: 33vh;
+    width: 33vh;
+    margin-right: 4vh;
+}
+
 .container {
     padding: 2.5vw 2.5vw 2.5vw 2.5vw;
 }
@@ -24,6 +30,13 @@
     width: 24.42vw;
     height: 6.5vh;
     font-family: 'Courier, monospace';
+}
+
+.title-container {
+    width: calc(40vw - 37vh);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .input {
