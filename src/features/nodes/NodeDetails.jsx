@@ -6,13 +6,11 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import './detailsList.css';
 
-const NodeDetails = (input) => {
-    const[resizeTitle, setResizeTitle] = useState(true);
+const NodeDetails = (input, create = false) => {
     const node = useSelector(state => state.node);
     const dispatch = useDispatch();
     const firstRender = useRef(true);
-    const props = input.input
-    const imageSize = 33;
+    const props = input.input;
 
     if(firstRender.current){
         dispatch(cloneNode(props));
@@ -32,24 +30,35 @@ const NodeDetails = (input) => {
         prop.level = node.level;
         prop.nodeId = node.nodeId;
         prop.id = node.id;
+        prop.isDeleted = node.isDeleted;
     }
 
-    function ResizeTitle(element)
+    function RenderCreateOrSaveButton()
     {
-       
+        if(create)
+        {
+            return (
+                <>Create</>
+            );
+        }
+        
+        return (
+            <>Save</>
+        );
     }
-        // marginTop: '10vh'
+
         return(
             <div className='container'>
-                <div style = {{display: 'flex', height: String(imageSize)+'vh', marginBottom: '5.275vh'}}>
+                <div style = {{display: 'flex', height: '33vh', marginBottom: '5.275vh'}}>
                     <div className="thumbnail-container">
                     </div>
                     <div className='title-container'>
                         <InputTextarea 
-                            autoResize = {resizeTitle} 
+                            autoResize 
                             rows = {1} 
                             placeholder="Title" 
-                            style = {{textAlign: 'center' , width: '100%', fontSize: '8vh', height: '8vh'}} 
+                            className='title'
+                            spellCheck = {false}
                             onChange = {(e) => handleChange(e.target.value, updateNodeTitle)} value = {node.title} />
                     </div>
                 </div>
@@ -58,7 +67,7 @@ const NodeDetails = (input) => {
                         Description:  
                     </div> 
                     <div className="fullWidthRight">
-                        <InputText className = "input" onChange = {(e) => handleChange(e.target.value, updateNodeDescription)} value = {node.number ? node.number : ""} />
+                        <InputText unstyled className = "input" onChange = {(e) => handleChange(e.target.value, updateNodeDescription)} value = {node.number ? node.number : ""} />
                     </div>
                 </div>
                 <div className="entryContainer">
@@ -74,7 +83,7 @@ const NodeDetails = (input) => {
                         Number:  
                     </div> 
                     <div className="fullWidthRight">
-                        <InputText className = "input" type = 'number' onChange = {(e) => handleChange(e.target.value, updateNodeNumber)} value = {node.number ? node.number : ""} />
+                        <InputText className = "input" keyfilter='int' onChange = {(e) => handleChange(e.target.value, updateNodeNumber)} value = {node.number ? node.number : ""} />
                     </div>
                 </div>
                 <div className="entryContainer">
@@ -94,9 +103,9 @@ const NodeDetails = (input) => {
                     </div>
                 </div>
                 
-                <div>
-                    <button onClick = {() => {updateNode(node.id, node); setNode(props); }}> Save </button>
-                    <button onClick = {() => handleChange(props, cloneNode)} > Reset </button>
+                <div style = {{display: 'flex'}}>
+                    <button className='button' style = {{marginRight: '2px'}} onClick = {() => {updateNode(node.id, node); setNode(props); }}> {RenderCreateOrSaveButton()} </button>
+                    <button className='button' onClick = {() => handleChange(props, cloneNode)} > Reset </button>
                 </div>
             </div> );
 }
