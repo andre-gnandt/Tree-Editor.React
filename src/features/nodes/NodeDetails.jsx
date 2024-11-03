@@ -40,12 +40,22 @@ const NodeDetails = (input) => {
         prop.title = node.title;
         prop.number = node.number;
         prop.description = node.description;
-        prop.rank = node.rank;
+        prop.rankId = node.rankId;
         prop.level = node.level;
         prop.nodeId = node.nodeId;
         prop.id = node.id;
         prop.isDeleted = node.isDeleted;
     }
+
+    function createNode(node){
+        const postOptions =  {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: ""
+        }
+        postOptions.body = JSON.stringify(node);
+        fetch("http://localhost:11727/api/Nodes/", postOptions);
+    };
 
     function RemoveDescendants(node)
     {
@@ -114,9 +124,10 @@ const NodeDetails = (input) => {
         }
         else
         {
-
+            createNode(node);
         }    
     }
+
 
     //style = {{marginBottom: (hideButtons === 0) ? '0vh' : '3.275vh'}}
         return(
@@ -171,16 +182,16 @@ const NodeDetails = (input) => {
                         Parent:  
                     </div> 
                     <div className="fullWidthRight">
-                        <Dropdown 
-                            
+                        <Dropdown  
+                            className = "dropdown"
                             panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: 'red'}}
-                            style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
-                            onFocus={() => {}}
-                            className='input'
+                            //style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
+                            onFocus={(event) => {}}
+                            //className='input'
                             disabled = {node.nodeId ? false : true}
                             filter
-                            onChange = {(e) => {CheckValueChange(props.nodeId, node.nodeId, e.target.value); handleChange(e.target.value.id, updateNodeParent);}} 
-                            value = {node.nodeId ? node.nodeId : "None (This is the root node)"} 
+                            onChange = {(e) => {CheckValueChange(props.nodeId, node.nodeId, e.target.value.id); handleChange(e.target.value.id, updateNodeParent);}} 
+                            value = {nodeList.current.find((object) => object.id === node.nodeId)}
                             options = {nodeList.current}
                             optionLabel='title'
                             />

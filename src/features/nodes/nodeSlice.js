@@ -8,7 +8,7 @@ const initialState = {
   description: null,
   number: null,
   nodeId: null,
-  rank: null,
+  rankId: null,
   children: [],
   isDeleted: false,
 }
@@ -25,7 +25,7 @@ export const nodeSlice = createSlice({
         state.description = action.payload.description;
         state.number = action.payload.number;
         state.nodeId = action.payload.nodeId;
-        state.rank = action.payload.rank;
+        state.rankId = action.payload.rankId;
         state.isDeleted = action.payload.isDeleted;
     },
     updateNodeData: (state, action) => {
@@ -41,7 +41,7 @@ export const nodeSlice = createSlice({
       state.description = action.payload;
     },
     updateNodeRank: (state, action) => {
-      state.rank = action.payload;
+      state.rankId = action.payload;
     },
     updateNodeParent: (state, action) => {
       state.nodeId = action.payload;

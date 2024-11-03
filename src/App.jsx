@@ -4,17 +4,39 @@ import LineTo from 'react-lineto';
 import './App.css'
 import Draggable from 'react-draggable';
 import { useSelector, useDispatch } from 'react-redux';
+import { Provider } from 'react-redux';
+import { store } from '/LocalTreeData.React/src/store';
+import { Dialog } from 'primereact/dialog';
 import { createRoot } from 'react-dom/client';
+import NodeDetails from './features/nodes/NodeDetails';
+import 'primeicons/primeicons.css';
 
 function App() {
   const firstRender = useRef(true);
   const [tree, setTree] = useState(null);
+  const [createNode, setCreateNode] = useState(null);
   var maxLevels = new Object();
   var childPositions = new Object();
   var nodeDictionary = new Object();
   var nodeList = [];
   var dragging = false;
   var mouseOverNode = null;
+  const nodeDimension = 80;
+  const iconSize = nodeDimension*0.7;
+
+  const newNode = 
+  {
+    id: "00000000-0000-0000-0000-000000000000",
+    data: null,
+    title: null,
+    level: 0,
+    description: null,
+    number: null,
+    nodeId: tree ? tree.id : null,
+    rankId: null,
+    children: [],
+    isDeleted: false,
+  };
 
   useEffect(() => {
     AddLines(tree);
@@ -36,7 +58,7 @@ function App() {
   function GetTrees(){
     fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
         result => { 
-          var nodes = result[1];
+          var nodes = result[2];
           setTree(nodes);
         }
     );   
@@ -141,7 +163,7 @@ function App() {
 
     if(children == null){return (<></>);}
 
-    var nodeSize = 80;
+    var nodeSize = nodeDimension;
     var elementWidth = nodeSize*2;
 
     const childElements = [];
@@ -478,13 +500,37 @@ function App() {
     }
   }
 
+  function RenderCreateDialog()
+  {
+    if(tree && tree.id && newNode)
+    {
+      return(
+        <>
+          <Dialog className={"dialogContent"} showHeader = {false} headerStyle={{background: 'white', height: '0px'}} contentStyle={{background: 'white'}} visible = {createNode} onHide={() => {if (!createNode) return; setCreateNode(false);}} > 
+            <Provider store = {store}>
+              <NodeDetails create = {true} render = {ReRenderTree} input = {newNode} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
+            </Provider>
+          </Dialog>
+        </>
+      );
+    }
+
+    return <></>;
+  }
+
   return (
     <>
+      <div id = 'button-container' style = {{top: '0px', width: '100vw', height: String(iconSize)+"px"}}>
+        <div style = {{height: '100%', width: String(iconSize)+"px", float: 'right', marginRight: '35px'}}>
+          <i className='pi pi-upload' style = {{fontSize: iconSize, color: 'green'}} onClick = {() => { setCreateNode(true);}} />
+        </div>
+      </div>
       <div id = 'line-container'>
       </div>
       <div id = 'tree-root'>
         {RenderChildren()} 
       </div>
+      {RenderCreateDialog()}
     </>
   );
 }
