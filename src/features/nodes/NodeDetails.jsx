@@ -123,16 +123,16 @@ const NodeDetails = (input) => {
                     <div className = "fullWidthLeft">
                         Description:  
                     </div> 
-                    <div className="fullWidthRight" style = {{maxHeight: '13vh', height: '13vh'}}>
-                        <InputTextarea autoResize rows={3} className = "input" onChange = {(e) => {CheckValueChange(props.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
+                    <div className="fullWidthRight" style = {{height: '17vh'}}>
+                        <InputTextarea  autoResize style = {{height: '17vh'}} rows={5} className = "input" onChange = {(e) => {CheckValueChange(props.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
                     </div>
                 </div>
                 <div className="entryContainer">
-                    <div className = "fullWidthLeft" style = {{maxHeight: '13vh', height: '13vh'}}>
+                    <div className = "fullWidthLeft">
                         Data: 
                     </div>
-                    <div className="fullWidthRight">
-                        <InputTextarea rows={3} className = "input" onChange = {(e) => {CheckValueChange(props.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
+                    <div className="fullWidthRight" style = {{height: '26vh'}}>
+                        <InputTextarea autoResize rows={7} style = {{height: '26vh'}} className = "input-data" onChange = {(e) => {CheckValueChange(props.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
                     </div>
                 </div>
                 <div className="entryContainer">
