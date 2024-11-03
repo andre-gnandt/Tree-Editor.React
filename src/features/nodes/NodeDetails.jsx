@@ -27,7 +27,6 @@ const NodeDetails = (input) => {
 
     const handleChange = (value, method) => {
         firstRender.current = false;
-        if(value == "") value = null;
         dispatch(method(value));
     }
 
@@ -104,6 +103,7 @@ const NodeDetails = (input) => {
         }    
     }
 
+    //style = {{marginBottom: (hideButtons === 0) ? '0vh' : '3.275vh'}}
         return(
             <div className='container'>
                 <div style = {{display: 'flex', height: '33vh', marginBottom: '5.275vh'}}>
@@ -114,7 +114,7 @@ const NodeDetails = (input) => {
                             autoResize 
                             rows = {1} 
                             placeholder="Title" 
-                            className= {titleRequired ? "title" : "title-required"}
+                            className= {(titleRequired) ? "title" : "title-required"}
                             spellCheck = {false}
                             onChange = {(e) => {CheckValueChange(props.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title} />
                     </div>
@@ -123,16 +123,16 @@ const NodeDetails = (input) => {
                     <div className = "fullWidthLeft">
                         Description:  
                     </div> 
-                    <div className="fullWidthRight">
-                        <InputText className = "input" onChange = {(e) => {CheckValueChange(props.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
+                    <div className="fullWidthRight" style = {{maxHeight: '13vh', height: '13vh'}}>
+                        <InputTextarea autoResize rows={3} className = "input" onChange = {(e) => {CheckValueChange(props.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
                     </div>
                 </div>
                 <div className="entryContainer">
-                    <div className = "fullWidthLeft">
+                    <div className = "fullWidthLeft" style = {{maxHeight: '13vh', height: '13vh'}}>
                         Data: 
                     </div>
                     <div className="fullWidthRight">
-                        <InputText className = "input" onChange = {(e) => {CheckValueChange(props.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
+                        <InputTextarea rows={3} className = "input" onChange = {(e) => {CheckValueChange(props.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
                     </div>
                 </div>
                 <div className="entryContainer">
@@ -140,7 +140,7 @@ const NodeDetails = (input) => {
                         Number:  
                     </div> 
                     <div className="fullWidthRight">
-                        <InputText className = "input" keyfilter='int' onChange = {(e) => {CheckValueChange(props.number, node.number, e.target.value); handleChange(e.target.value, updateNodeNumber);}} value = {node.number ? node.number : ""} />
+                        <InputText className = "input" type = 'number' keyfilter='int' onChange = {(e) => {CheckValueChange(props.number, node.number, e.target.value); handleChange(e.target.value, updateNodeNumber);}} value = {node.number ? node.number : ""} />
                     </div>
                 </div>
                 <div className="entryContainer">
@@ -157,20 +157,21 @@ const NodeDetails = (input) => {
                     </div> 
                     <div className="fullWidthRight">
                         <Dropdown 
-                            
+                            disabled = {node.nodeId ? false : true}
+                            filter
                             onChange = {(e) => {CheckValueChange(props.nodeId, node.nodeId, e.target.value); handleChange(e.target.value, updateNodeParent);}} 
-                            value = {node.nodeId ? node.nodeId : ""} 
+                            value = {node.nodeId ? node.nodeId : "None (This is the root node)"} 
                             options = {nodeList}
                             optionLabel='title'
                             />
                     </div>
                 </div> 
-                <div style = {{display: 'flex'}}>
-                    <div hidden = {hideButtons === 0}  id = 'node-details-button-container' style = {{display: 'flex', marginTop: '8vh'}}>
-                        <button hidden = {hideButtons === 0} className='button' style = {{marginRight: '2px'}} onClick = {() => {HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
-                        <button hidden = {hideButtons === 0} className='button' onClick = {() => handleChange(props, cloneNode)} > Reset </button>
+                <div hidden = {changeCount.current === 0 && titleRequired} style = {{height: (changeCount.current === 0 && titleRequired)? '0vh':'auto', display: 'flex'}}>
+                    <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{display: 'flex', marginTop: '8vh'}}>
+                        <button hidden = {changeCount.current === 0} className='button' style = {{marginRight: '2px'}} onClick = {() => {HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                        <button hidden = {changeCount.current === 0} className='button' onClick = {() => {titlePresent.current = true; changeCount.current = 0; handleChange(props, cloneNode); }} > Reset </button>
                     </div>
-                    <div hidden = {titleRequired} style = {{marginLeft: '2vw', width: '100%', color: 'red', marginTop: '8vh', textAlign: 'bottom'}}>Title is required. Highlighted in red above.</div>
+                    <div hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', marginTop: '8vh', textAlign: 'bottom'}}>Title is required. Highlighted in red above.</div>
                 </div>
             </div> );
 }
