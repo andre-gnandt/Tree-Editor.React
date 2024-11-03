@@ -8,10 +8,13 @@ import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import './detailsList.css';
 
 const NodeDetails = (input) => {
+    console.log("Render children function: ");
+    console.log(input.render);
     const[hideButtons, setHideButtons] = useState(0);
     const changeCount = useRef(0);
     const titlePresent = useRef(true);
     const[titleRequired, setTitleRequired] = useState(titlePresent.current);
+    const nodeList = useRef([]);
 
     const create = 'create' in input ? input['create'] : false;
     const node = useSelector(state => state.node);
@@ -19,10 +22,12 @@ const NodeDetails = (input) => {
     const firstRender = useRef(true);
     const props = input.input;
     const nodeDictionary = input.nodeDictionary;
-    const nodeList = input.nodeList.sort(CompareNodes);
 
     if(firstRender.current){
         dispatch(cloneNode(props));
+        nodeList.current = input.nodeList;
+        RemoveDescendants(props);
+        nodeList.current = nodeList.current.sort(CompareNodes);
     }
 
     const handleChange = (value, method) => {
@@ -40,6 +45,15 @@ const NodeDetails = (input) => {
         prop.nodeId = node.nodeId;
         prop.id = node.id;
         prop.isDeleted = node.isDeleted;
+    }
+
+    function RemoveDescendants(node)
+    {
+        const removeIndex = nodeList.current.findIndex((object) => object.id === node.id);
+        if(removeIndex > -1)  nodeList.current.splice(removeIndex, 1);
+        node.children.forEach(child => {
+            RemoveDescendants(child);
+        });
     }
 
     function CompareNodes(a, b)
@@ -96,6 +110,7 @@ const NodeDetails = (input) => {
         {
             updateNode(node.id, node); 
             setNode(props);
+            //input.render();
         }
         else
         {
@@ -157,11 +172,16 @@ const NodeDetails = (input) => {
                     </div> 
                     <div className="fullWidthRight">
                         <Dropdown 
+                            
+                            panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: 'red'}}
+                            style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
+                            onFocus={() => {}}
+                            className='input'
                             disabled = {node.nodeId ? false : true}
                             filter
-                            onChange = {(e) => {CheckValueChange(props.nodeId, node.nodeId, e.target.value); handleChange(e.target.value, updateNodeParent);}} 
+                            onChange = {(e) => {CheckValueChange(props.nodeId, node.nodeId, e.target.value); handleChange(e.target.value.id, updateNodeParent);}} 
                             value = {node.nodeId ? node.nodeId : "None (This is the root node)"} 
-                            options = {nodeList}
+                            options = {nodeList.current}
                             optionLabel='title'
                             />
                     </div>

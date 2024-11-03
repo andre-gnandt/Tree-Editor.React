@@ -117,7 +117,7 @@ function App() {
           <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id;}} 
             style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 0, position:'absolute',top: String((row)*nodeSize*2)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}>
             
-            <TreeNode props = {child} css = {{nodeSize: nodeSize}} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
+            <TreeNode render = {ReRenderTree} props = {child} css = {{nodeSize: nodeSize}} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
           </div>
         </Draggable>
       </>
