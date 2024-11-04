@@ -119,8 +119,15 @@ const NodeDetails = (input) => {
         else if(!create)
         {
             updateNode(node.id, node); 
+            const oldParentNode = nodeDictionary[props.nodeId];
             setNode(props);
-            //input.render();
+            const newParentNode = nodeDictionary[node.nodeId];
+
+            const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === node.id);
+            if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
+            newParentNode.children.push(node);
+
+            input.render();
         }
         else
         {
