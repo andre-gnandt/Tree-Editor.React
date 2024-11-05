@@ -50,7 +50,7 @@ function App() {
     childPositions = new Object();
     nodeDictionary = new Object();
     RemoveLines(tree);
-    treeContainer.render((RenderChildren()));
+    treeContainer.render((RenderChildren(tree)));
     CorrectTransforms(tree);
     ResetElementPositions(tree);
     AddLines(tree);
@@ -140,14 +140,14 @@ function App() {
           <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id;}} 
             style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 0, position:'absolute',top: String((row)*nodeSize*2)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}>
             
-            <TreeNode render = {ReRenderTree} props = {child} css = {{nodeSize: nodeSize}} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
+            <TreeNode tree = {tree} render = {ReRenderTree} props = {child} css = {{nodeSize: nodeSize}} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
           </div>
         </Draggable>
       </>
     );
   }
 
-  function RenderChildren(parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
+  function RenderChildren(tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
   {
     var children = null;
     if(parent != null)
@@ -207,7 +207,7 @@ function App() {
 
         childElements.push((
           <>    
-              {RenderChildren(child, row + 1, left, pathSplitter, false)}       
+              {RenderChildren(tree, child, row + 1, left, pathSplitter, false)}       
           </>));
 
         var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
@@ -247,7 +247,7 @@ function App() {
 
         childElements.push((
           <>    
-              {RenderChildren(child, row + 1, left, pathSplitter, false)}       
+              {RenderChildren(tree, child, row + 1, left, pathSplitter, false)}       
           </>));
         var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
 
@@ -282,7 +282,7 @@ function App() {
   
           childElements.push((
             <>    
-                {RenderChildren(child, row + 1, left, pathSplitter, false)}       
+                {RenderChildren(tree, child, row + 1, left, pathSplitter, false)}       
             </>));
           var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
   
@@ -531,7 +531,7 @@ function App() {
       <div id = 'line-container'>
       </div>
       <div id = 'tree-root'>
-        {RenderChildren()} 
+        {RenderChildren(tree)} 
       </div>
     </>
   );

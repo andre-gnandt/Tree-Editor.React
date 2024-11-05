@@ -29,7 +29,7 @@ const NodeDetails = (input) => {
 
     if(firstRender.current){
         dispatch(cloneNode(props));
-        nodeList.current = input.nodeList;
+        nodeList.current = [...input.nodeList];
         RemoveDescendants(props);
         nodeList.current = nodeList.current.sort(CompareNodes);
     }
@@ -130,6 +130,8 @@ const NodeDetails = (input) => {
             const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === node.id);
             if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
             newParentNode.children.push(node);
+
+            
 
             input.render();
         }
