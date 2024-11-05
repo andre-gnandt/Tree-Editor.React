@@ -9,6 +9,7 @@ import { store } from '/LocalTreeData.React/src/store';
 import { Dialog } from 'primereact/dialog';
 import { createRoot } from 'react-dom/client';
 import NodeDetails from './features/nodes/NodeDetails';
+import CreateNode from './features/nodes/CreateNode';
 import 'primeicons/primeicons.css';
 
 function App() {
@@ -500,6 +501,7 @@ function App() {
     }
   }
 
+  /*
   function RenderCreateDialog()
   {
     if(tree && tree.id && newNode)
@@ -517,12 +519,13 @@ function App() {
 
     return <></>;
   }
+  */
 
   return (
     <>
       <div id = 'button-container' style = {{top: '0px', width: '100vw', height: String(iconSize)+"px"}}>
         <div style = {{height: '100%', width: String(iconSize)+"px", float: 'right', marginRight: '35px'}}>
-          <i className='pi pi-upload' style = {{fontSize: iconSize, color: 'green'}} onClick = {() => { setCreateNode(true);}} />
+          <CreateNode iconSize = {iconSize} render = {ReRenderTree} tree = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
         </div>
       </div>
       <div id = 'line-container'>
@@ -530,7 +533,6 @@ function App() {
       <div id = 'tree-root'>
         {RenderChildren()} 
       </div>
-      {RenderCreateDialog()}
     </>
   );
 }
