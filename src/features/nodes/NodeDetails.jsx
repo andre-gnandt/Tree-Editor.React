@@ -8,8 +8,6 @@ import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import './detailsList.css';
 
 const NodeDetails = (input) => {
-    console.log("Render children function: ");
-    console.log(input.render);
     const[hideButtons, setHideButtons] = useState(0);
     const changeCount = useRef(0);
     const titlePresent = useRef(true);
@@ -22,6 +20,12 @@ const NodeDetails = (input) => {
     const firstRender = useRef(true);
     const props = input.input;
     const nodeDictionary = input.nodeDictionary;
+
+    console.log("Render Node Details: ");
+    console.log("node prop: ");
+    console.log(input.input);
+    console.log("node state: ");
+    console.log(node);
 
     if(firstRender.current){
         dispatch(cloneNode(props));
@@ -149,7 +153,7 @@ const NodeDetails = (input) => {
                             placeholder="Title" 
                             className= {(titleRequired) ? "title" : "title-required"}
                             spellCheck = {false}
-                            onChange = {(e) => {CheckValueChange(props.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title} />
+                            onChange = {(e) => {CheckValueChange(props.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title ? node.title : ""} />
                     </div>
                 </div>
                 <div className="entryContainer">
