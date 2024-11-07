@@ -1,29 +1,45 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Dialog } from 'primereact/dialog';
-import { useSelector, useDispatch } from 'react-redux'
-import { cloneNode, updateNodeData, updateNodeNumber } from './nodeSlice'
-import { InputText } from 'primereact/inputtext';
-import updateNode from '/LocalTreeData.React/src/api/nodes/nodesApi';
-import './DetailsList.css';
+import './detailsList.css'
 import NodeDetails from './NodeDetails';
-import Draggable from 'react-draggable';
+import { Provider } from 'react-redux';
+import { store } from '/LocalTreeData.React/src/store';
 
-const TreeNode = (props, css) => {
+const TreeNode = (props) => {
     const[dialog, setDialog] = useState(false);
     if(props == null || props.props == null || !('id' in props.props)) return (<></>);   
-    
+    var buttonMouseDown = new Object();
+    var buttonMouseUp = new Object();
+
+    function GetElementPosition(element)
+    {
+        var position = element.getBoundingClientRect();
+        var x = position.left;
+        var y = position.top;
+
+        return {X:x, Y:y};
+    }
+
+    function ValidateButtonClick(element)
+    {
+        buttonMouseUp = GetElementPosition(element);
+        if(buttonMouseUp.X === buttonMouseDown.X && buttonMouseUp.Y === buttonMouseDown.Y)
+        {
+            props.props["dialog"] = true;
+            setDialog(true);
+        }
+    }
+
         return(
-            <>
-                <Draggable>
-                    <div id = {props.props.id} className={props.props.id} style = {{position:'absolute', right: props.css.right, top: props.css.top, left: props.css.left, display: 'table', border: '1px solid red', height: '80px', width: '80px'}}>
-                        <button style = {{display: 'table-cell', height: '80px', width: '80px'}}  onClick={() => {setDialog(true)}}>
-                            {props.props.title}
-                        </button>                    
-                    </div> 
-                </Draggable>
-                <Dialog header = {"HEADER"} visible = {dialog} style={{ width: '50vw' }} onHide={() => {if (!dialog) return; setDialog(false)}} > 
-                    <NodeDetails input = {props.props}/>
-                </Dialog>               
+            <>               
+                <button onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(props.css.nodeSize)+'px', maxWidth: String(props.css.nodeSize)+'px',  height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
+                    {props.props.title}
+                </button>                                
+                <Dialog className={"dialogContent"} showHeader = {false} headerStyle={{background: 'white', height: '0px'}} contentStyle={{background: 'white'}} visible = {dialog} onHide={() => {if (!dialog) return; props.props["dialog"] = false; setDialog(false);}} > 
+                    <Provider store = {store}>
+                        <NodeDetails tree = {props.tree} render = {props.render} input = {props.props} nodeList = {props.nodeList} nodeDictionary = {props.nodeDictionary}/>
+                    </Provider>
+                </Dialog>                 
             </> 
         );
 }

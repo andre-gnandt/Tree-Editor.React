@@ -1,6 +1,7 @@
 const putOptions = {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
+    type: 'PUT',
     body: ""
 }
 
