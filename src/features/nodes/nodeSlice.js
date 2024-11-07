@@ -10,6 +10,7 @@ const initialState = {
   nodeId: null,
   rankId: null,
   children: [],
+  files: [],
   isDeleted: false,
 }
 
@@ -27,6 +28,7 @@ export const nodeSlice = createSlice({
         state.nodeId = action.payload.nodeId;
         state.rankId = action.payload.rankId;
         state.isDeleted = action.payload.isDeleted;
+        state.files = action.payload.files;
     },
     updateNodeData: (state, action) => {
         state.data = action.payload;

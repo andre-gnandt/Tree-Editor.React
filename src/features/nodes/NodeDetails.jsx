@@ -21,12 +21,6 @@ const NodeDetails = (input) => {
     const props = input.input;
     const nodeDictionary = input.nodeDictionary;
 
-    console.log("Render Node Details: ");
-    console.log("node prop: ");
-    console.log(input.input);
-    console.log("node state: ");
-    console.log(node);
-
     if(firstRender.current){
         dispatch(cloneNode(props));
         nodeList.current = [...input.nodeList];
@@ -49,6 +43,7 @@ const NodeDetails = (input) => {
         prop.nodeId = node.nodeId;
         prop.id = node.id;
         prop.isDeleted = node.isDeleted;
+        prop.files = node.files;
     }
 
     function createNode(node){
@@ -123,21 +118,27 @@ const NodeDetails = (input) => {
         else if(!create)
         {
             updateNode(node.id, node); 
-            const oldParentNode = nodeDictionary[props.nodeId];
-            setNode(props);
-            const newParentNode = nodeDictionary[node.nodeId];
-
-            const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === node.id);
-            if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
-            newParentNode.children.push(node);
-
             
+            if(node.nodeId != props.nodeId)
+            {
+                const oldParentNode = nodeDictionary[props.nodeId];
+                const newParentNode = nodeDictionary[node.nodeId];
+                const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === node.id);
+                if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
+                newParentNode.children.push(node);
 
-            input.render();
+                setNode(props);
+                input.render(true);
+            }
+            else{
+                setNode(props);
+            }
         }
         else
         {
             createNode(node);
+            setNode(props);
+            //input.render(tree, true);
         }    
     }
 

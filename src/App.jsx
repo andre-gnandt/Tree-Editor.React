@@ -14,7 +14,8 @@ import 'primeicons/primeicons.css';
 
 function App() {
   const firstRender = useRef(true);
-  const [tree, setTree] = useState(null);
+  const [treeState, setTree] = useState(null);
+  var tree = {...treeState};
   const [createNode, setCreateNode] = useState(null);
   var maxLevels = new Object();
   var childPositions = new Object();
@@ -36,6 +37,7 @@ function App() {
     nodeId: tree ? tree.id : null,
     rankId: null,
     children: [],
+    files: [],
     isDeleted: false,
   };
 
@@ -43,17 +45,24 @@ function App() {
     AddLines(tree);
   });
   
-  function ReRenderTree()
+  function ReRenderTree(callback = false)
   {
+    nodeList = [];
+    nodeDictionary = [];
+    var inputTree = tree;
+    if(callback){
+      inputTree = structuredClone(tree);
+      tree = inputTree;
+    }
     const treeContainer = createRoot(document.getElementById('tree-root'));
     maxLevels = new Object();
     childPositions = new Object();
     nodeDictionary = new Object();
-    RemoveLines(tree);
-    treeContainer.render((RenderChildren(tree)));
-    CorrectTransforms(tree);
-    ResetElementPositions(tree);
-    AddLines(tree);
+    RemoveLines(inputTree);
+    treeContainer.render((RenderChildren(inputTree)));
+    CorrectTransforms(inputTree);
+    ResetElementPositions(inputTree);
+    AddLines(inputTree);
   }
 
   function GetTrees(){
@@ -149,6 +158,7 @@ function App() {
 
   function RenderChildren(tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
   {
+   
     var children = null;
     if(parent != null)
     { 
@@ -178,8 +188,6 @@ function App() {
     var maxLevel = maxLevels[String(row-1)];
 
     var parentNodePosition = new Object();
-
-    
     
     children.forEach(child => {
 
@@ -306,9 +314,9 @@ function App() {
           childElements.push((AppendChildNode(child, left, row, nodeSize)));
         }
 
-        child["left"] = left;
+        child["left"] = left; 
         child["top"] = (row)*elementWidth;
-        child["dialog"] = false;
+        child['dialog'] = false;
 
       i++;
     });
