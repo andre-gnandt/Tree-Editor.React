@@ -6,11 +6,10 @@ const UploadAndDisplayImage = (thumbnailUpload = false) => {
   // Define a state variable to store the selected image
   const firstRender = useRef(true);
   const uploadName = useRef(null);
+  const [defaultFile, setDefaultFile] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [nodeFiles, setNodeFiles] = useState(null);
   const reader = new FileReader();
-
-  console.log(nodeFiles);
 
   const putOptions = {
     method: 'PUT',
@@ -18,7 +17,6 @@ const UploadAndDisplayImage = (thumbnailUpload = false) => {
     type: 'PUT',
     body: ""
 }
-
 const node = 
 {
     id: "01587A75-805E-4D22-B772-06294EFBCB5B",
@@ -28,11 +26,14 @@ const node =
     description: '3',
     number: 8,
     nodeId: '961D76A6-77CD-46C8-9E22-4FC9AB394BDC',
+    thumbnailId: ('F14F3002-2C5B-4E3A-2453-08DCFFC3FF74').toLowerCase(),
     rankId: null,
     children: [],
-    files: [],
+    files: nodeFiles ? [...nodeFiles] : [],
     isDeleted: false,
 };
+
+
 
 if(firstRender.current)
 { 
@@ -46,6 +47,7 @@ if(firstRender.current)
     fetch("http://localhost:11727/api/Files/Get-Files-By-Node/"+id).then(res=> res.json()).then(
         result => {
           value = result;
+          setDefaultFile(node.thumbnailId ? value.find((object) => object.id === node.thumbnailId) : null);
           setNodeFiles(value);
         }
     );
@@ -74,7 +76,23 @@ if(firstRender.current)
     if(thumbnailUpload) node['thumbnailId'] = selectedImage.name;
     node.files.push(file);
 
+    console.log()
     //updateNode(node.id, node);
+  }
+
+  function RemoveSelectedImage()
+  {
+    if(selectedImage)
+      {
+        var index = node.files.findIndex((file) => file.name === selectedImage.name);
+        if(index > -1) node.files.splice(index,1);
+      }
+  }
+
+  function RemoveImage()
+  {
+    setDefaultFile(null); 
+    setSelectedImage(null);
   }
 
   // Return the JSX for rendering
@@ -85,19 +103,26 @@ if(firstRender.current)
       <h3>using React Hooks</h3>
 
       {/* Conditionally render the selected image if it exists */}
-      {selectedImage && (
+      {(selectedImage || defaultFile )&& (
+        <>
         <div>
+       
           {/* Display the selected image */}
           <img
             alt="not found"
             width={"250px"}
-            src={URL.createObjectURL(selectedImage)}
-            onClick={(event) => {console.log(event.target)}}
+            src={selectedImage ? URL.createObjectURL(selectedImage) : defaultFile.base64}
           />
+          
           <br /> <br />
+          
           {/* Button to remove the selected image */}
-          <button onClick={() => setSelectedImage(null)}>Remove</button>
+          <div>{selectedImage ? selectedImage.name : defaultFile.name}</div>
+          <button onClick={() => {RemoveImage();}}>Remove</button>
+          <button onClick={() => updateNode(node.id, node)}>Update Node</button>
+          
         </div>
+        </>
       )}
 
       <br />
@@ -119,7 +144,7 @@ if(firstRender.current)
             {
               fileName = originalName+"-"+String(i);
             }
-            matchingIndex = node.files.findIndex((object) => object.name === fileName);
+            matchingIndex = node.files.findIndex((object) => object.name == fileName);
             i++;
           }
 
