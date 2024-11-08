@@ -27,21 +27,6 @@ function App() {
   const nodeDimension = 80;
   const iconSize = nodeDimension*0.7;
 
-  const newNode = 
-  {
-    id: "00000000-0000-0000-0000-000000000000",
-    data: null,
-    title: null,
-    level: 0,
-    description: null,
-    number: null,
-    nodeId: tree ? tree.id : null,
-    rankId: null,
-    children: [],
-    files: [],
-    isDeleted: false,
-  };
-
   useEffect(() => {
     //AddLines(tree);
   });

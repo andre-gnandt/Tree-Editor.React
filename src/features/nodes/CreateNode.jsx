@@ -25,6 +25,7 @@ const CreateNode = (props) => {
         nodeId: tree ? tree.id : null,
         rankId: null,
         children: [],
+        files: [],
         isDeleted: false,
     };
 

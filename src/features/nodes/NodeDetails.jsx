@@ -45,6 +45,7 @@ const NodeDetails = (input) => {
         prop.id = node.id;
         prop.isDeleted = node.isDeleted;
         prop.files = node.files;
+        prop.thumbnailId = node.thumbnailId;
     }
 
     function createNode(node){
