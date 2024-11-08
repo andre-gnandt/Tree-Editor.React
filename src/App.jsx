@@ -11,6 +11,7 @@ import { createRoot } from 'react-dom/client';
 import NodeDetails from './features/nodes/NodeDetails';
 import CreateNode from './features/nodes/CreateNode';
 import 'primeicons/primeicons.css';
+import UploadAndDisplayImage from './features/UploadAndDisplayImage';
 
 function App() {
   const firstRender = useRef(true);
@@ -42,7 +43,7 @@ function App() {
   };
 
   useEffect(() => {
-    AddLines(tree);
+    //AddLines(tree);
   });
   
   function ReRenderTree(callback = false)
@@ -530,7 +531,7 @@ function App() {
     return <></>;
   }
   */
-
+/*
   return (
     <>
       <div id = 'button-container' style = {{top: '0px', width: '100vw', height: String(iconSize)+"px"}}>
@@ -544,7 +545,15 @@ function App() {
         {RenderChildren(tree)} 
       </div>
     </>
-  );
+  );*/
+
+  return (
+    <>
+      <div>
+        <UploadAndDisplayImage/>
+      </div>
+    </>
+  )
 }
 
 export default App

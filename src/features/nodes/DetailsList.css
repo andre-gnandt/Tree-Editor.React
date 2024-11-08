@@ -5,6 +5,12 @@
     --form-focused-color: rgb(39, 77, 245);
 }
 
+.image {
+    object-fit: cover; 
+    height: 100%;
+    width: 100%;
+}
+
 .dialogContent {
     width: max(45vw, 5cm);
     height: max(90vh, 7.5cm);
@@ -14,6 +20,9 @@
     height: 33vh;
     width: 33vh;
     margin-right: 4vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .container {

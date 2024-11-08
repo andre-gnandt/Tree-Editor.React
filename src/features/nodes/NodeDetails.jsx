@@ -6,6 +6,7 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import './detailsList.css';
+import UploadAndDisplayImage from '../UploadAndDisplayImage';
 
 const NodeDetails = (input) => {
     const[hideButtons, setHideButtons] = useState(0);
@@ -142,12 +143,12 @@ const NodeDetails = (input) => {
         }    
     }
 
-
     //style = {{marginBottom: (hideButtons === 0) ? '0vh' : '3.275vh'}}
         return(
             <div className='container'>
                 <div style = {{display: 'flex', height: '33vh', marginBottom: '5.275vh'}}>
                     <div className="thumbnail-container">
+                        <img onClick={(event) => {console.log(event.target.dimensions);}} src = {base64} className='image'/>
                     </div>
                     <div className='title-container'>
                         <InputTextarea 
