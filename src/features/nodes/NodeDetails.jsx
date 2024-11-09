@@ -149,7 +149,7 @@ const NodeDetails = (input) => {
             <div className='container'>
                 <div style = {{display: 'flex', height: '33vh', marginBottom: '5.275vh'}}>
                     <div className="thumbnail-container">
-                        <img onClick={(event) => {console.log(event.target.dimensions);}} className='image'/>
+                        <img className='image'/>
                     </div>
                     <div className='title-container'>
                         <InputTextarea 

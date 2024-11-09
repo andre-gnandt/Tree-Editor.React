@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
+import '../nodes/detailsList.css';
 
 // Define a functional component named UploadAndDisplayImage
 const UploadFile = (props) => {
@@ -21,8 +22,6 @@ const UploadFile = (props) => {
 }
 
 node.files = nodeFiles? [...nodeFiles] : [];
-
-
 
 if(firstRender.current)
 { 
@@ -56,7 +55,7 @@ if(firstRender.current)
     {
       id: "00000000-0000-0000-0000-000000000000",
       nodeid: node.id,
-      name: selectedImage.name,
+      name: uploadName.current,
       size: String(selectedImage.size),
       type: selectedImage.type,
       data: Array.from(new Uint8Array(event.target.result, 0)),
@@ -69,17 +68,9 @@ if(firstRender.current)
     //updateNode(node.id, node);
   }
 
-  function RemoveSelectedImage()
-  {
-    if(selectedImage)
-      {
-        var index = node.files.findIndex((file) => file.name === selectedImage.name);
-        if(index > -1) node.files.splice(index,1);
-      }
-  }
-
   function RemoveImage()
   {
+    node.thumbnailId = null;
     setDefaultFile(null); 
     setSelectedImage(null);
   }
@@ -87,11 +78,6 @@ if(firstRender.current)
   // Return the JSX for rendering
   return (
     <div>
-      {/* Header */}
-      <h1>Upload and Display Image</h1>
-      <h3>using React Hooks</h3>
-
-      {/* Conditionally render the selected image if it exists */}
       {(selectedImage || defaultFile )&& (
         <>
         <div>
@@ -113,10 +99,6 @@ if(firstRender.current)
         </div>
         </>
       )}
-
-      <br />
-
-      {/* Input element to select an image file */}
       <input
         type="file"
         name="myImage"
