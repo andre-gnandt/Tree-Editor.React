@@ -7,6 +7,9 @@ import { Dropdown } from 'primereact/dropdown';
 import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import './detailsList.css';
 import UploadAndDisplayImage from '../UploadAndDisplayImage';
+import UploadFile from '../utils/UploadFile';
+import { Provider } from 'react-redux';
+import { store } from '/LocalTreeData.React/src/store';
 
 const NodeDetails = (input) => {
     const[hideButtons, setHideButtons] = useState(0);
@@ -23,6 +26,7 @@ const NodeDetails = (input) => {
     const nodeDictionary = input.nodeDictionary;
 
     if(firstRender.current){
+        firstRender.current = false;
         dispatch(cloneNode(props));
         nodeList.current = [...input.nodeList];
         RemoveDescendants(props);
@@ -30,7 +34,6 @@ const NodeDetails = (input) => {
     }
 
     const handleChange = (value, method) => {
-        firstRender.current = false;
         dispatch(method(value));
     }
 
@@ -147,9 +150,11 @@ const NodeDetails = (input) => {
     //style = {{marginBottom: (hideButtons === 0) ? '0vh' : '3.275vh'}}
         return(
             <div className='container'>
-                <div style = {{display: 'flex', height: '33vh', marginBottom: '5.275vh'}}>
+                <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
                     <div className="thumbnail-container">
-                        <img className='image'/>
+                        <Provider store = {store}>
+                            <UploadFile node = {input.input} thumbnailUpload = {(props.thumbnailId)} create = {create} />
+                        </Provider>  
                     </div>
                     <div className='title-container'>
                         <InputTextarea 

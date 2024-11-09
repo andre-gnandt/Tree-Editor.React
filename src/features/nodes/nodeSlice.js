@@ -32,6 +32,10 @@ export const nodeSlice = createSlice({
         state.files = action.payload.files;
         state.thumbnailId = action.payload.thumbnailId;
     },
+    setStateProperty: (state, action) =>
+    {
+      state[action.payload.key] = action.payload.value;
+    },
     updateNodeData: (state, action) => {
         state.data = action.payload;
     },
@@ -54,6 +58,6 @@ export const nodeSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { cloneNode, updateNodeData, updateNodeNumber, updateNodeTitle, updateNodeDescription, updateNodeRank, updateNodeParent} = nodeSlice.actions
+export const { setStateProperty, cloneNode, updateNodeData, updateNodeNumber, updateNodeTitle, updateNodeDescription, updateNodeRank, updateNodeParent} = nodeSlice.actions
 
 export default nodeSlice.reducer
