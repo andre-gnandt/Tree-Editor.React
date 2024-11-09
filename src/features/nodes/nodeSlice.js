@@ -30,7 +30,7 @@ export const nodeSlice = createSlice({
         state.rankId = action.payload.rankId;
         state.isDeleted = action.payload.isDeleted;
         state.files = action.payload.files;
-        state.thumbnailId = actiong.payload.thumbnailId;
+        state.thumbnailId = action.payload.thumbnailId;
     },
     updateNodeData: (state, action) => {
         state.data = action.payload;

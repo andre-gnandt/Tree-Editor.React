@@ -12,6 +12,7 @@ import NodeDetails from './features/nodes/NodeDetails';
 import CreateNode from './features/nodes/CreateNode';
 import 'primeicons/primeicons.css';
 import UploadAndDisplayImage from './features/UploadAndDisplayImage';
+import UploadFile from './features/utils/UploadFile';
 
 function App() {
   const firstRender = useRef(true);
@@ -28,7 +29,7 @@ function App() {
   const iconSize = nodeDimension*0.7;
 
   useEffect(() => {
-    //AddLines(tree);
+    AddLines(tree);
   });
   
   function ReRenderTree(callback = false)
@@ -516,7 +517,7 @@ function App() {
     return <></>;
   }
   */
-/*
+
   return (
     <>
       <div id = 'button-container' style = {{top: '0px', width: '100vw', height: String(iconSize)+"px"}}>
@@ -530,15 +531,17 @@ function App() {
         {RenderChildren(tree)} 
       </div>
     </>
-  );*/
+  );
 
+  /*
   return (
     <>
       <div>
-        <UploadAndDisplayImage/>
+        <UploadFile/>
       </div>
     </>
-  )
+  );
+  */
 }
 
 export default App
