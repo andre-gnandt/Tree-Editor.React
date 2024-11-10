@@ -6,6 +6,7 @@ import '../nodes/detailsList.css';
 
 // Define a functional component named UploadAndDisplayImage
 const UploadFile = (props) => {
+  if(props.files == null){ return <></>;}
   // Define a state variable to store the selected image
   const stateNode = useSelector(state => state.node);
   const dispatch = useDispatch();
@@ -16,44 +17,37 @@ const UploadFile = (props) => {
   const firstRender = useRef(true);
   const uploadName = useRef(null);
   const newUpload = useRef(false);
-  const [defaultFile, setDefaultFile] = useState(null);
+  
   const [selectedImage, setSelectedImage] = useState(null);
-  const [nodeFiles, setNodeFiles] = useState(null);
+  const nodeFiles = props.node.files;
   const reader = new FileReader();
 
-  console.log("RE RENDER");
+  function GetImageSource()
+    {
+        var index = nodeFiles.findIndex((object) => object.id.toLowerCase() === node.thumbnailId.toLowerCase());
+        if(index != -1)
+        {
+            return nodeFiles[index];
+        }
+
+        var file = nodeFiles.find((object) => object.name === node.thumbnailId);
+        return file;
+    }
+
+  const [defaultFile, setDefaultFile] = useState(node.thumbnailId ? GetImageSource() : null);
+  console.log("RE RENDER File Uploader");
+
+  node.files = nodeFiles? [...nodeFiles] : [];
+  //setDefaultFile(node.thumbnailId ? node.files.find((object) => object.id.toLowerCase() === node.thumbnailId.toLowerCase()) : null);
+
+  const SetStateThumbnail = (value) => {
+      firstRender.current = false;
+      dispatch(setStateProperty({key: 'thumbnailId', value: value}));
+  }
 
   const SetStateFiles = (value) => {
     firstRender.current = false;
     dispatch(setStateProperty({key: 'files', value: value}));
-  }
-
-  if(firstRender.current)
-    { 
-      firstRender.current = false;
-      SetStateFiles(node.files);
-      if(!create) GetFilesByNodeId(node.id);
-    }
-
-
-node.files = nodeFiles? [...nodeFiles] : [];
-
-const SetStateThumbnail = (value) => {
-    firstRender.current = false;
-    dispatch(setStateProperty({key: 'thumbnailId', value: value}));
-}
-
-  function GetFilesByNodeId(id)
-  {
-    var value = null;
-    fetch("http://localhost:11727/api/Files/Get-Files-By-Node/"+id).then(res=> res.json()).then(
-        result => {
-          value = result;
-          setDefaultFile(node.thumbnailId ? value.find((object) => object.id.toLowerCase() === node.thumbnailId.toLowerCase()) : null);
-          setNodeFiles(value);
-          SetStateFiles(value);
-        }
-    );
   }
 
   if(selectedImage && newUpload.current)
@@ -123,7 +117,7 @@ const SetStateThumbnail = (value) => {
                     <img
                         alt="not found"
                         className = 'image'
-                        src={selectedImage ? URL.createObjectURL(selectedImage) : defaultFile.base64}
+                        src={selectedImage ? URL.createObjectURL(selectedImage) : defaultFile.base64 }
                     />
                     
                     <br /> <br />
@@ -158,7 +152,7 @@ const SetStateThumbnail = (value) => {
 
             uploadName.current = fileName;
             newUpload.current = true;
-            setSelectedImage(event.target.files[0]); // Update the state with the selected file
+            setSelectedImage(event.target.files[0]); 
             }}
         />
         </div>

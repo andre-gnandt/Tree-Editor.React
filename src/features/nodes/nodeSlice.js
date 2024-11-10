@@ -35,6 +35,8 @@ export const nodeSlice = createSlice({
     setStateProperty: (state, action) =>
     {
       state[action.payload.key] = action.payload.value;
+      console.log("files");
+        console.log(state.files);
     },
     updateNodeData: (state, action) => {
         state.data = action.payload;

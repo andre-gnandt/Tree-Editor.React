@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { cloneNode, updateNodeData, updateNodeNumber, updateNodeDescription, updateNodeTitle, updateNodeRank, updateNodeParent} from './nodeSlice'
+import { cloneNode, setStateProperty, updateNodeData, updateNodeNumber, updateNodeDescription, updateNodeTitle, updateNodeRank, updateNodeParent} from './nodeSlice'
 import { InputText} from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
@@ -26,9 +26,17 @@ const NodeDetails = (input) => {
     const nodeDictionary = input.nodeDictionary;
     const renderTreeNode = input.renderTreeNode;
 
+    console.log("RE RENDER Node Details");
+
+    const SetStateFiles = (value) => {
+        firstRender.current = false;
+        dispatch(setStateProperty({key: 'files', value: value}));
+      }
+
     if(firstRender.current){
         firstRender.current = false;
         dispatch(cloneNode(props));
+        SetStateFiles(input.files);
         nodeList.current = [...input.nodeList];
         RemoveDescendants(props);
         nodeList.current = nodeList.current.sort(CompareNodes);
@@ -169,7 +177,7 @@ const NodeDetails = (input) => {
                 <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
                     <div className="thumbnail-container">
                         <Provider store = {store}>
-                            <UploadFile fileChangeCallBack = {FileChangeCallBack} node = {input.input} thumbnailUpload = {(props.thumbnailId)} create = {create} />
+                            <UploadFile fileChangeCallBack = {FileChangeCallBack} files = {input.files} node = {input.input} thumbnailUpload = {(props.thumbnailId)} create = {create} />
                         </Provider>  
                     </div>
                     <div className='title-container'>
