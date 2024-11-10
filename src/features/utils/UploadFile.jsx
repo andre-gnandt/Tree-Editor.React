@@ -58,6 +58,7 @@ const SetStateThumbnail = (value) => {
 
   if(selectedImage && newUpload.current)
   {
+
     newUpload.current = false;
     console.log(selectedImage);
     console.log(uploadName.current);
@@ -66,26 +67,30 @@ const SetStateThumbnail = (value) => {
   }
 
   function GetFileData(event)
-  {    
-    const file = 
-    {
-      id: "00000000-0000-0000-0000-000000000000",
-      nodeid: node.id,
-      name: uploadName.current,
-      size: String(selectedImage.size),
-      type: selectedImage.type,
-      data: Array.from(new Uint8Array(event.target.result, 0)),
-      isDeleted: false
-    };
-    if(thumbnailUpload)
-    {
-         node['thumbnailId'] = uploadName.current;
-         SetStateThumbnail(uploadName.current);
-    }
+  { 
+    if(selectedImage)
+    {   
+      const file = 
+      {
+        id: "00000000-0000-0000-0000-000000000000",
+        nodeid: node.id,
+        name: uploadName.current,
+        size: String(selectedImage.size),
+        type: selectedImage.type,
+        data: Array.from(new Uint8Array(event.target.result, 0)),
+        base64: URL.createObjectURL(selectedImage), // only used here to render image in tree without making any backend calls (not base64 in this unique case)
+        isDeleted: false
+      };
+      if(thumbnailUpload)
+      {
+          node['thumbnailId'] = uploadName.current;
+          SetStateThumbnail(uploadName.current);
+      }
 
-    node.files.push(file);
-    SetStateFiles(node.files);
-    fileChangeCallBack(true);
+      node.files.push(file);
+      SetStateFiles(node.files);
+      fileChangeCallBack(true);
+    }
   }
 
   function RemoveImage()

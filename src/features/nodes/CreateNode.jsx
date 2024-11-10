@@ -26,6 +26,7 @@ const CreateNode = (props) => {
         rankId: null,
         children: [],
         files: [],
+        thumbnailId: null,
         isDeleted: false,
     };
 

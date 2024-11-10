@@ -7,9 +7,16 @@ import { store } from '/LocalTreeData.React/src/store';
 
 const TreeNode = (props) => {
     const[dialog, setDialog] = useState(false);
+    const[manualReRender, setManualReRender] = useState(1); //used for callback re renders
     if(props == null || props.props == null || !('id' in props.props)) return (<></>);   
     var buttonMouseDown = new Object();
     var buttonMouseUp = new Object();
+
+    //used for callback re renders
+    const RenderTreeNode = () =>
+    {
+        setManualReRender(-1*manualReRender);
+    }
 
     function GetElementPosition(element)
     {
@@ -41,7 +48,7 @@ const TreeNode = (props) => {
                 }                                   
                 <Dialog className={"dialogContent"} showHeader = {false} headerStyle={{background: 'white', height: '0px'}} contentStyle={{background: 'white'}} visible = {dialog} onHide={() => {if (!dialog) return; props.props["dialog"] = false; setDialog(false);}} > 
                     <Provider store = {store}>
-                        <NodeDetails tree = {props.tree} render = {props.render} input = {props.props} nodeList = {props.nodeList} nodeDictionary = {props.nodeDictionary}/>
+                        <NodeDetails renderTreeNode = {RenderTreeNode} tree = {props.tree} render = {props.render} input = {props.props} nodeList = {props.nodeList} nodeDictionary = {props.nodeDictionary}/>
                     </Provider>
                 </Dialog>                 
             </> 

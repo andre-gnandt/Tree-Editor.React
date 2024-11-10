@@ -24,6 +24,7 @@ const NodeDetails = (input) => {
     const firstRender = useRef(true);
     const props = input.input;
     const nodeDictionary = input.nodeDictionary;
+    const renderTreeNode = input.renderTreeNode;
 
     if(firstRender.current){
         firstRender.current = false;
@@ -151,6 +152,7 @@ const NodeDetails = (input) => {
             }
             else{
                 setNode(props);
+                renderTreeNode();
             }
         }
         else
