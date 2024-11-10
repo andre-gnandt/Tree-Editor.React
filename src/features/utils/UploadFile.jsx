@@ -44,7 +44,6 @@ const UploadFile = (props) => {
   console.log("RE RENDER File Uploader");
 
   node.files = nodeFiles? [...nodeFiles] : [];
-  //setDefaultFile(node.thumbnailId ? node.files.find((object) => object.id.toLowerCase() === node.thumbnailId.toLowerCase()) : null);
 
   const SetStateThumbnail = (value) => {
       firstRender.current = false;
@@ -78,7 +77,7 @@ const UploadFile = (props) => {
         size: String(selectedImage.size),
         type: selectedImage.type,
         data: Array.from(new Uint8Array(event.target.result, 0)),
-        base64: URL.createObjectURL(selectedImage), // only used here to render image in tree without making any backend calls (not base64 in this unique case)
+        base64: URL.createObjectURL(selectedImage), // only used here to render image in tree without making any api calls (not base64 in this unique case)
         isDeleted: false
       };
       if(thumbnailUpload)
@@ -87,7 +86,8 @@ const UploadFile = (props) => {
           SetStateThumbnail(uploadName.current);
       }
 
-      node.files.push(file);
+      //node.files.push(file);  --to be added back once file gallery is created
+      node.files = [file]; //to be removed once file gallery is created
       SetStateFiles(node.files);
       fileChangeCallBack(true);
     }
@@ -99,6 +99,7 @@ const UploadFile = (props) => {
     SetStateThumbnail(null);
     setDefaultFile(null); 
     setSelectedImage(null);
+    SetStateFiles([]); //to be removed when file gallery is created
       
     if(props.node.thumbnailId) 
     {
