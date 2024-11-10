@@ -12,6 +12,7 @@ const UploadFile = (props) => {
   const thumbnailUpload =  true;
   const node = {...props.node};
   const create = props.create;
+  const fileChangeCallBack = props.fileChangeCallBack;
   const firstRender = useRef(true);
   const uploadName = useRef(null);
   const newUpload = useRef(false);
@@ -84,6 +85,7 @@ const SetStateThumbnail = (value) => {
 
     node.files.push(file);
     SetStateFiles(node.files);
+    fileChangeCallBack();
   }
 
   function RemoveImage()
@@ -92,6 +94,7 @@ const SetStateThumbnail = (value) => {
     SetStateThumbnail(null);
     setDefaultFile(null); 
     setSelectedImage(null);
+    fileChangeCallBack();
   }
 
   // Return the JSX for rendering

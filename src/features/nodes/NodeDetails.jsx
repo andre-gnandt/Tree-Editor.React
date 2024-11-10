@@ -37,6 +37,12 @@ const NodeDetails = (input) => {
         dispatch(method(value));
     }
 
+    const FileChangeCallBack = () => 
+    {
+        changeCount.current++;
+        setHideButtons(changeCount.current);
+    }
+
     const setNode = (prop) => {
         prop.data = node.data;
         prop.title = node.title;
@@ -153,7 +159,7 @@ const NodeDetails = (input) => {
                 <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
                     <div className="thumbnail-container">
                         <Provider store = {store}>
-                            <UploadFile node = {input.input} thumbnailUpload = {(props.thumbnailId)} create = {create} />
+                            <UploadFile fileChangeCallBack = {FileChangeCallBack} node = {input.input} thumbnailUpload = {(props.thumbnailId)} create = {create} />
                         </Provider>  
                     </div>
                     <div className='title-container'>
