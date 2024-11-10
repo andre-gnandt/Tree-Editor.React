@@ -16,6 +16,7 @@ const NodeDetails = (input) => {
     const changeCount = useRef(0);
     const titlePresent = useRef(true);
     const[titleRequired, setTitleRequired] = useState(titlePresent.current);
+    const[resetFiles, setResetFiles] = useState({reset: false});
     const nodeList = useRef([]);
 
     const create = 'create' in input ? input['create'] : false;
@@ -177,7 +178,7 @@ const NodeDetails = (input) => {
                 <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
                     <div className="thumbnail-container">
                         <Provider store = {store}>
-                            <UploadFile fileChangeCallBack = {FileChangeCallBack} files = {input.files} node = {input.input} thumbnailUpload = {(props.thumbnailId)} create = {create} />
+                            <UploadFile reset = {resetFiles} fileChangeCallBack = {FileChangeCallBack} files = {input.files} node = {input.input} thumbnailUpload = {(props.thumbnailId)} create = {create} />
                         </Provider>  
                     </div>
                     <div className='title-container'>
@@ -245,7 +246,7 @@ const NodeDetails = (input) => {
                 <div hidden = {changeCount.current === 0 && titleRequired} style = {{height: (changeCount.current === 0 && titleRequired)? '0vh':'auto', display: 'flex'}}>
                     <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{display: 'flex', marginTop: '8vh'}}>
                         <button hidden = {changeCount.current === 0} className='button' style = {{marginRight: '2px'}} onClick = {() => {HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
-                        <button hidden = {changeCount.current === 0} className='button' onClick = {() => {titlePresent.current = true; changeCount.current = 0; handleChange(props, cloneNode); }} > Reset </button>
+                        <button hidden = {changeCount.current === 0} className='button' onClick = {() => {titlePresent.current = true; changeCount.current = 0; setResetFiles({reset: true}); handleChange(props, cloneNode); }} > Reset </button>
                     </div>
                     <div hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', marginTop: '8vh', textAlign: 'bottom'}}>Title is required. Highlighted in red above.</div>
                 </div>

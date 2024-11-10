@@ -17,10 +17,17 @@ const UploadFile = (props) => {
   const firstRender = useRef(true);
   const uploadName = useRef(null);
   const newUpload = useRef(false);
-  
-  const [selectedImage, setSelectedImage] = useState(null);
   const nodeFiles = props.node.files;
   const reader = new FileReader();
+  
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [defaultFile, setDefaultFile] = useState(node.thumbnailId ? GetImageSource() : null);
+  if(props.reset.reset)
+  {
+    props.reset.reset = false;
+    setDefaultFile(node.thumbnailId ? GetImageSource() : null);
+    setSelectedImage(null);
+  }
 
   function GetImageSource()
     {
@@ -34,7 +41,6 @@ const UploadFile = (props) => {
         return file;
     }
 
-  const [defaultFile, setDefaultFile] = useState(node.thumbnailId ? GetImageSource() : null);
   console.log("RE RENDER File Uploader");
 
   node.files = nodeFiles? [...nodeFiles] : [];
