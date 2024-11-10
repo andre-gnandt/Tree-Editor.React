@@ -37,9 +37,17 @@ const NodeDetails = (input) => {
         dispatch(method(value));
     }
 
-    const FileChangeCallBack = () => 
+    const FileChangeCallBack = (showButtons) => 
     {
-        changeCount.current++;
+        if(showButtons)
+        {
+            changeCount.current++;
+        }
+        else 
+        {
+            changeCount.current = 0;
+        }
+
         setHideButtons(changeCount.current);
     }
 

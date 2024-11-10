@@ -85,7 +85,7 @@ const SetStateThumbnail = (value) => {
 
     node.files.push(file);
     SetStateFiles(node.files);
-    fileChangeCallBack();
+    fileChangeCallBack(true);
   }
 
   function RemoveImage()
@@ -94,7 +94,15 @@ const SetStateThumbnail = (value) => {
     SetStateThumbnail(null);
     setDefaultFile(null); 
     setSelectedImage(null);
-    fileChangeCallBack();
+      
+    if(props.node.thumbnailId) 
+    {
+      fileChangeCallBack(true);
+    }
+    else
+    {
+      fileChangeCallBack(false);
+    }
   }
 
   // Return the JSX for rendering
