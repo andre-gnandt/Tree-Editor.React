@@ -19,7 +19,14 @@ function App() {
   const [treeState, setTree] = useState(null);
   var tree = {...treeState};
   const [createNode, setCreateNode] = useState(null);
+  
   var maxLevels = new Object();
+  var scrollXBefore = 0;
+  var scrollXAfter = 0;
+  var scrollYBefore = 0;
+  var scrollYAfter = 0;
+  var scrollDistanceX = 0;
+  var scrollDistanceY = 0;
   var childPositions = new Object();
   var nodeDictionary = new Object();
   var nodeList = [];
@@ -31,6 +38,7 @@ function App() {
   useEffect(() => {
     AddLines(tree);
   });
+ 
   
   function ReRenderTree(callback = false)
   {
@@ -110,6 +118,7 @@ function App() {
   function StartDrag(node)
   {
     dragging = true;
+
     const nodeElement = document.getElementById(node.id);
     nodeElement.style.zIndex = 1;
     nodeElement.style.pointerEvents = 'none';
@@ -130,13 +139,29 @@ function App() {
   {
     return (
       <>
-        <Draggable position={{x: 0, y: 0}} onStart = {() => { if(child["dialog"])return false; }} onStop = {(drag) => {if(dragging){OnDropNode(drag, child);} }} 
-          onDrag = {(drag) =>{if(!dragging){StartDrag(child);} RepositionSubTree(drag, child);}}>
+        <Draggable 
+            position={{x: 0, y: 0}} 
+            onStart = {() => { if(child["dialog"])return false; scrollXBefore = window.scrollX; scrollYBefore = window.scrollY;}} 
+            onStop = {(drag) => {if(dragging){OnDropNode(drag, child);} }} 
+            onDrag = {(drag) =>{if(!dragging){StartDrag(child);} RepositionSubTree(drag, child);}}
+        >
           
-          <div id = {child.id} className={child.id} onMouseLeave={() => {mouseOverNode = null;}} onMouseEnter={() => {mouseOverNode = child.id;}} 
-            style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 0, position:'absolute',top: String((row)*nodeSize*2)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}>
+          <div 
+            id = {child.id} 
+            className={child.id} 
+            onMouseLeave={() => {mouseOverNode = null;}} 
+            onMouseEnter={() => {mouseOverNode = child.id;}} 
+            style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 0, position:'absolute',top: String((row)*nodeSize*2)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
+          >
             
-            <TreeNode tree = {tree} render = {ReRenderTree} props = {child} css = {{nodeSize: nodeSize}} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
+            <TreeNode 
+              tree = {tree} 
+              render = {ReRenderTree} 
+              props = {child} 
+              css = {{nodeSize: nodeSize}} 
+              nodeList = {nodeList} 
+              nodeDictionary = {nodeDictionary}
+            />
           </div>
         </Draggable>
       </>
@@ -399,9 +424,12 @@ function App() {
 
   function RepositionSubTree(dragEvent, node, scroll = null)
   {
-    if(scroll != null){
-      console.log("SCROLL DRAG! "+scroll);
-    }
+
+    scrollDistanceX = window.scrollX-scrollXBefore;
+    scrollDistanceY = window.scrollY-scrollYBefore;
+
+    console.log("ScrollDistance Y "+scrollDistanceY);
+
     const nodeElement = document.getElementById(node.id);
     const positionAfter = GetElementPosition(nodeElement);
     const X = positionAfter.X;
@@ -413,11 +441,13 @@ function App() {
     }  
 
     const positionBefore = node['position'];
-    const xOffset = X-positionBefore.X;
-    const yOffset = Y-positionBefore.Y;
+    const xOffset = X-positionBefore.X+scrollDistanceX;
+    const yOffset = Y-positionBefore.Y+scrollDistanceY;
 
     DepthFirstMethod(RepositionDescendants, node, {X: xOffset, Y: yOffset});
     
+    //scrollXBefore = window.scrollX;
+    //scrollYBefore = window.scrollY;
   }
 
   function RemoveLines(node)
