@@ -6,7 +6,6 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import './detailsList.css';
-import UploadAndDisplayImage from '../UploadAndDisplayImage';
 import UploadFile from '../utils/UploadFile';
 import { Provider } from 'react-redux';
 import { store } from '/LocalTreeData.React/src/store';
@@ -27,7 +26,6 @@ const NodeDetails = (input) => {
     const nodeDictionary = input.nodeDictionary;
     const renderTreeNode = input.renderTreeNode;
 
-    console.log("RE RENDER Node Details");
 
     const SetStateFiles = (value) => {
         firstRender.current = false;

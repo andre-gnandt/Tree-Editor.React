@@ -28,6 +28,9 @@ const TreeNode = (props) => {
           value = result;
           setFiles(value);
           props.props.files = value;
+          //if(files != null){
+            setDialog(true);
+          //}
         }
     );
   }
@@ -49,9 +52,11 @@ const TreeNode = (props) => {
             props.props["dialog"] = true;
             GetFilesByNodeId(props.props.id);
              
+            /*
             if(files != null){
                 setDialog(true);
             }
+                */
         }
     }
 

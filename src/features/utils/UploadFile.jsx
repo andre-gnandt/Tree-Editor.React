@@ -7,7 +7,6 @@ import '../nodes/detailsList.css';
 // Define a functional component named UploadAndDisplayImage
 const UploadFile = (props) => {
   if(props.files == null){ return <></>;}
-  // Define a state variable to store the selected image
   const stateNode = useSelector(state => state.node);
   const dispatch = useDispatch();
   const thumbnailUpload =  true;
@@ -111,57 +110,57 @@ const UploadFile = (props) => {
     }
   }
 
+  function FitThumbnailImage(fitToContainer)
+  {
+    if(fitToContainer) document.getElementById("thumbnail-expander").className = "thumbnail-expanded";
+    if(!fitToContainer) document.getElementById("thumbnail-expander").className = "thumbnail-fit";
+  }
+
   // Return the JSX for rendering
   return (
   <>
-    <div style = {{height: '100%', width: '100%'}}>
-        <div style = {{height: '33vh', width: '100%'}}>
+    <div id = 'thumbnail-uploader' style = {{height: '100%', width: '100%'}}>
+        <div style = {{height: '33vh', width: '100%'}} className="title-container" onMouseOver={() => {FitThumbnailImage(false);}} onMouseOut = {() => {FitThumbnailImage(true);}}>
             {(selectedImage || defaultFile )&& (
                 <>
-                <div>
-            
-                    {/* Display the selected image */}
+                  <div id = 'thumbnail-expander' className="thumbnail-expanded">
                     <img
                         alt="not found"
                         className = 'image'
                         src={selectedImage ? URL.createObjectURL(selectedImage) : defaultFile.base64 }
                     />
-                    
-                    <br /> <br />
-                    
-                    {/* Button to remove the selected image */}
-                    <div>{selectedImage ? selectedImage.name : defaultFile.name}</div>
-                    <button onClick={() => {RemoveImage();}}>Remove</button>
-                </div>
+                  </div>
                 </>
             )}
         </div>
         <div>
-        <input
-            type="file"
-            name="myImage"
-            // Event handler to capture file selection and update the state
-            onChange={(event) => {// Log the selected file
-            var fileName = event.target.files[0].name;
-            var originalName = fileName;
-            var matchingIndex = -2
-            var i = 0
+          
+            <div>{selectedImage ? selectedImage.name : defaultFile.name}</div>
+            <button onClick={() => {RemoveImage();}}>Remove</button>
+          <input
+              type="file"
+              title = " " 
+              onChange={(event) => {
+              var fileName = event.target.files[0].name;
+              var originalName = fileName;
+              var matchingIndex = -2
+              var i = 0
 
-            while(matchingIndex !== -1)
-            {
-                if(matchingIndex > -1)
-                {
-                fileName = originalName+"-"+String(i);
-                }
-                matchingIndex = node.files.findIndex((object) => object.name == fileName);
-                i++;
-            }
+              while(matchingIndex !== -1)
+              {
+                  if(matchingIndex > -1)
+                  {
+                  fileName = originalName+"-"+String(i);
+                  }
+                  matchingIndex = node.files.findIndex((object) => object.name == fileName);
+                  i++;
+              }
 
-            uploadName.current = fileName;
-            newUpload.current = true;
-            setSelectedImage(event.target.files[0]); 
-            }}
-        />
+              uploadName.current = fileName;
+              newUpload.current = true;
+              setSelectedImage(event.target.files[0]); 
+              }}
+          />
         </div>
     </div>
   </>
