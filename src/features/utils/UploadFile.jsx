@@ -2,12 +2,13 @@ import React, { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import { setStateProperty } from "../nodes/nodeSlice";
+import { FileUpload } from 'primereact/fileupload';
 import '../nodes/detailsList.css';
 
 // Define a functional component named UploadAndDisplayImage
 const UploadFile = (props) => {
   if(props.files == null){ return <></>;}
-  const stateNode = useSelector(state => state.node);
+  //const stateNode = useSelector(state => state.node);
   const dispatch = useDispatch();
   const thumbnailUpload =  true;
   const node = {...props.node};
@@ -133,34 +134,55 @@ const UploadFile = (props) => {
                 </>
             )}
         </div>
-        <div>
-          
-            <div>{selectedImage ? selectedImage.name : defaultFile.name}</div>
-            <button onClick={() => {RemoveImage();}}>Remove</button>
-          <input
-              type="file"
-              title = " " 
-              onChange={(event) => {
-              var fileName = event.target.files[0].name;
-              var originalName = fileName;
-              var matchingIndex = -2
-              var i = 0
+        <div style = {{}}>
 
-              while(matchingIndex !== -1)
-              {
-                  if(matchingIndex > -1)
-                  {
-                  fileName = originalName+"-"+String(i);
-                  }
-                  matchingIndex = node.files.findIndex((object) => object.name == fileName);
-                  i++;
-              }
+            {(selectedImage || defaultFile) ? (
+              <>
+                <div className="text-overflow" style = {{height: '4vh', width: '100%'}}>{selectedImage ? selectedImage.name : defaultFile.name}</div>
+                <div style = {{display: 'flex'}}>
+                  <button className="button" style = {{width: '15vh', height: '5vh', marginRight: '2vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
+                  <button className="button" style = {{width: '15vh', height: '5vh'}} onClick={() => {RemoveImage();}}>Remove</button>
+                </div>
+              </>
+            ) : 
+            (
+              <>
+                <div style = {{height: '4vh', width: '100%'}}></div>
+                <button className="button" style = {{width: '15vh', height: '5vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
+              </>
+            )}  
 
-              uploadName.current = fileName;
-              newUpload.current = true;
-              setSelectedImage(event.target.files[0]); 
-              }}
-          />
+                 
+            <input
+                type="file"
+                id = 'file-upload-button'
+                accept="image/png, image/gif, image/jpeg"
+                style = {{visibility: 'hidden'}}
+                //style = {{height: '7vh', width: '17vh'}}
+                //className="button"
+                onChange={(event) => {
+                var fileName = event.target.files[0].name;
+                var originalName = fileName;
+                var matchingIndex = -2
+                var i = 0
+            
+                while(matchingIndex !== -1)
+                {
+                    if(matchingIndex > -1)
+                    {
+                    fileName = originalName+"-"+String(i);
+                    }
+                    matchingIndex = node.files.findIndex((object) => object.name == fileName);
+                    i++;
+                }
+
+                uploadName.current = fileName;
+                newUpload.current = true;
+                setSelectedImage(event.target.files[0]); 
+                }}
+            />
+            {///<label for="img" className="button">Upload</label>
+            }
         </div>
     </div>
   </>

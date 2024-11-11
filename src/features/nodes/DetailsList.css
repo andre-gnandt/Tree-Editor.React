@@ -173,6 +173,12 @@ li > span {
     border-color: var(--form-focused-color);
 }
 
+.text-overflow {
+    text-overflow: ellipsis; 
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .input:focus {
     font-family: 'Courier, monospace';
     font-size: 3vh;
@@ -181,10 +187,12 @@ li > span {
     border-color: var(--form-focused-color);
 }
 
+
 .button {
     color: white;
     background-color: rgb(49, 152, 170);
     border: none;
+    padding: 0px 0px 0px 0px;
 }
 .button:hover {
     background-color: var(--form-focused-color);
