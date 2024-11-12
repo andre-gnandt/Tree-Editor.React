@@ -37,9 +37,10 @@ function App() {
   var mouseOverNode = null;
   const minimumNodeSize = 1.15/pixelsToCentimetres; //1.4 cm in pixels
   var nodeDimension = 80;
-  var iconSize =  '8vh';
+  const iconSize =  '8vh';
   var iconSizeInPixels = 0.08*window.innerHeight;
-  var preRender = true;
+  const horizontalBorder = 15; //in pixels
+  var testRender = false;
 
   useEffect(() => {
     AddLines(tree);
@@ -186,7 +187,7 @@ function App() {
   {
     const maximumNodeSize = window.innerHeight*0.5
     const verticalSpace = 0.92*window.innerHeight;
-    const horizontalSpace = window.innerWidth - 30;
+    const horizontalSpace = window.innerWidth -  (2*horizontalBorder);
 
     const maxHeight = verticalSpace/treeHeight;
     const maxWidth = horizontalSpace/treeWidth;
@@ -202,16 +203,36 @@ function App() {
   {
     if(tree && tree.children)
     {
-      preRender  = true;
-      SetTreeDimensions(tree);
-
-      preRender = false;
-      nodeDimension = GetNodeDimensions();      
+      testRender = false;
       maxLevels = new Object();
       childPositions = new Object();
       nodeDictionary = new Object();
+      SetTreeDimensions(tree);
+   
+      maxLevels = new Object();
+      childPositions = new Object();
+      nodeDictionary = new Object();
+     
+      testRender = true;
+      PrepRenderChildren(tree, parent, row, parentLeft, path);
+      testRender = false;
 
-      return RenderChildren(tree, parent, row, parentLeft, path);
+      const newTreeWidth = treeWidth*nodeDimension;
+      const horizontalSpace = window.innerWidth -  (2*horizontalBorder);
+      var offSet = 0;
+
+      if(newTreeWidth > horizontalSpace)
+      {
+        offSet = horizontalBorder-treeWidthMin;
+      }
+      else
+      {
+        const bufferSpace = horizontalSpace-newTreeWidth;
+        const leftMost = bufferSpace/2+horizontalBorder;
+        offSet = leftMost-treeWidthMin;
+      }
+
+      return RenderChildren(tree, 0, offSet);
     }
 
     return <></>;
@@ -225,9 +246,10 @@ function App() {
     treeHeight = 0;
     treeWidth = 0;
 
-    RenderChildren(tree);
+    PrepRenderChildren(tree);
     treeWidth = treeWidthMax-treeWidthMin+1;
     treeHeight = treeHeight > 1 ? ((treeHeight-1)*1.5)+1 : treeHeight;
+    nodeDimension = GetNodeDimensions(); 
   }
 
   function SetTreeWidths(value)
@@ -243,7 +265,40 @@ function App() {
     }
   }
 
-  function RenderChildren(tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
+  function CenterFullTree(node, offsetValue)
+  {
+
+  }
+
+  function RenderChildren(node, row = 1, offset = 0)
+  {
+      const elements = [];
+      elements.push((AppendChildNode(node, node["left"]+offset, row, nodeDimension)));
+      
+      node["left"] = node['left'] + offset;
+      node.children.forEach(child => {
+        elements.push((
+          <>
+            {RenderChildren(child, row+1, offset)}
+          </>
+        ));
+      });
+
+      return(
+        <>       
+            {elements.map(child => {
+                
+                return (
+                <>
+                  {child}
+                </> );
+                }
+            )}        
+        </>
+      );
+  }
+
+  function PrepRenderChildren(tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
   {
     
     var children = null;
@@ -261,7 +316,7 @@ function App() {
 
     if(children == null){return (<></>);}
 
-    if(preRender) treeHeight = (row) > treeHeight ? (row) : treeHeight;
+    treeHeight = (row) > treeHeight ? (row) : treeHeight;
     
     var nodeSize = nodeDimension;
     var elementWidth = nodeSize*1.5;
@@ -302,10 +357,7 @@ function App() {
         if(pathSplitter === 'left' && maxLeft != null && left > maxLeft-elementWidth) left = maxLeft-elementWidth;
         if(pathSplitter === 'right' && maxRight != null && left < maxRight+elementWidth) left = maxRight+elementWidth;
 
-        childElements.push((
-          <>    
-              {RenderChildren(tree, child, row + 1, left, pathSplitter, false)}       
-          </>));
+        PrepRenderChildren(tree, child, row + 1, left, pathSplitter, false);
 
         var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
         var positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
@@ -330,10 +382,12 @@ function App() {
           }
         }
       
-        if(!preRender)
+        /*
+        if(!preRender && !testRender)
         {
           childElements.push((AppendChildNode(child, left, row, nodeSize)));
         }
+        */
       }
       else if(path === 'right')
       {
@@ -345,10 +399,7 @@ function App() {
         
         if(maxRight != null && left < maxRight+elementWidth) left = maxRight+elementWidth;
 
-        childElements.push((
-          <>    
-              {RenderChildren(tree, child, row + 1, left, pathSplitter, false)}       
-          </>));
+        PrepRenderChildren(tree, child, row + 1, left, pathSplitter, false);
         var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
 
         var positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
@@ -368,10 +419,12 @@ function App() {
         }
         if(i >= children.length-1 && parent)  childPositions[String(parent.id)] = parentNodePosition;
 
-        if(!preRender)
-          {
-            childElements.push((AppendChildNode(child, left, row, nodeSize)));
-          }
+        /*
+        if(!preRender && !testRender)
+        {
+          childElements.push((AppendChildNode(child, left, row, nodeSize)));
+        }
+        */
       }
       else if(path === 'left')
         {
@@ -383,10 +436,8 @@ function App() {
           
           if(maxLeft != null && left > maxLeft-elementWidth) left = maxLeft-elementWidth;
   
-          childElements.push((
-            <>    
-                {RenderChildren(tree, child, row + 1, left, pathSplitter, false)}       
-            </>));
+          PrepRenderChildren(tree, child, row + 1, left, pathSplitter, false);    
+            
           var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
   
           var positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
@@ -406,25 +457,28 @@ function App() {
           }
           if(i >= children.length-1 && parent) childPositions[String(parent.id)] = parentNodePosition;
 
-          if(!preRender)
-            {
-              childElements.push((AppendChildNode(child, left, row, nodeSize)));
-            }
+          /*
+        if(!preRender && !testRender)
+        {
+          childElements.push((AppendChildNode(child, left, row, nodeSize)));
+        }
+        */
         }
 
-        if(!preRender)
+        if(testRender)
         {
           child["left"] = left; 
           child["top"] = (row)*elementWidth;
           child['dialog'] = false;
         }
-        else
-        {
-          SetTreeWidths(left);
-        }
+              
+        SetTreeWidths(left);
+        
+        
       i++;
     });
 
+    /*
     if(!preRender)
     {
       return(
@@ -440,6 +494,7 @@ function App() {
         </>
       );
     }
+    */
   }
 
   function GetElementPosition(element)
