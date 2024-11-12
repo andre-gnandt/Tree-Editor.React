@@ -18,6 +18,7 @@ function App() {
   var tree = {...treeState};
   const [createNode, setCreateNode] = useState(null);
   
+  const pixelsToCentimetres = PixelSizeInCentimetres();
   var maxLevels = new Object();
   var scrollXBefore = 0;
   var scrollXAfter = 0;
@@ -34,16 +35,22 @@ function App() {
   var nodeList = [];
   var dragging = false;
   var mouseOverNode = null;
-  const minimumNodeSize = 1.4; //In centimetres
-  const maximumNodeSize = 50; //50vh
+  const minimumNodeSize = 1.15/pixelsToCentimetres; //1.4 cm in pixels
   var nodeDimension = 80;
-  var iconSize = '8vh';
+  var iconSize =  '8vh';
   var iconSizeInPixels = 0.08*window.innerHeight;
   var preRender = true;
 
   useEffect(() => {
     AddLines(tree);
   });
+
+  function PixelSizeInCentimetres() {
+    var cpi = 2.54; // centimeters per inch
+    var dpi = 96; // dots per inch
+    var ppd = window.devicePixelRatio; // pixels per dot
+    return (cpi / (dpi * ppd));
+  }
   
   function ReRenderTree(callback = false)
   {
@@ -174,6 +181,23 @@ function App() {
     );
   }
 
+  //units used are pixels
+  function GetNodeDimensions()
+  {
+    const maximumNodeSize = window.innerHeight*0.5
+    const verticalSpace = 0.92*window.innerHeight;
+    const horizontalSpace = window.innerWidth - 30;
+
+    const maxHeight = verticalSpace/treeHeight;
+    const maxWidth = horizontalSpace/treeWidth;
+
+    const maxDimension = (maxHeight < maxWidth ? maxHeight : maxWidth);
+    const minimumCheck = maxDimension < minimumNodeSize ? minimumNodeSize : maxDimension;
+    const maximumCheck = minimumCheck > maximumNodeSize ? maximumNodeSize  : minimumCheck;
+
+    return maximumCheck;
+  }
+
   function RenderTree(tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
   {
     if(tree && tree.children)
@@ -182,7 +206,7 @@ function App() {
       SetTreeDimensions(tree);
 
       preRender = false;
-      nodeDimension = 80;
+      nodeDimension = GetNodeDimensions();      
       maxLevels = new Object();
       childPositions = new Object();
       nodeDictionary = new Object();
