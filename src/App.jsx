@@ -42,6 +42,8 @@ function App() {
   const horizontalBorder = 15; //in pixels
   var testRender = false;
 
+  window.addEventListener('resize', (event) => {ReRenderTree(tree)});
+
   useEffect(() => {
     AddLines(tree);
   });
