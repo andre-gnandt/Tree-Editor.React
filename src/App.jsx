@@ -11,8 +11,6 @@ import { createRoot } from 'react-dom/client';
 import NodeDetails from './features/nodes/NodeDetails';
 import CreateNode from './features/nodes/CreateNode';
 import 'primeicons/primeicons.css';
-import UploadAndDisplayImage from './features/UploadAndDisplayImage';
-import UploadFile from './features/utils/UploadFile';
 
 function App() {
   const firstRender = useRef(true);
@@ -27,18 +25,25 @@ function App() {
   var scrollYAfter = 0;
   var scrollDistanceX = 0;
   var scrollDistanceY = 0;
+  var treeWidth = 0;
+  var treeHeight = 0;
+  var treeWidthMin = null;
+  var treeWidthMax = null;
   var childPositions = new Object();
   var nodeDictionary = new Object();
   var nodeList = [];
   var dragging = false;
   var mouseOverNode = null;
-  const nodeDimension = 80;
-  const iconSize = nodeDimension*0.7;
+  const minimumNodeSize = 1.4; //In centimetres
+  const maximumNodeSize = 50; //50vh
+  var nodeDimension = 80;
+  var iconSize = '8vh';
+  var iconSizeInPixels = 0.08*window.innerHeight;
+  var preRender = true;
 
   useEffect(() => {
     AddLines(tree);
   });
- 
   
   function ReRenderTree(callback = false)
   {
@@ -76,7 +81,8 @@ function App() {
 
   function ResetElementPositions(node)
   {
-    if(node){
+    if(node)
+    {
 
       delete node['line'];
       delete node['position'];
@@ -151,7 +157,7 @@ function App() {
             className={child.id} 
             onMouseLeave={() => {mouseOverNode = null;}} 
             onMouseEnter={() => {mouseOverNode = child.id;}} 
-            style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 0, position:'absolute',top: String((row)*nodeSize*2)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
+            style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 0, position:'absolute',top: String((row)*nodeSize*1.5)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
           >
             
             <TreeNode 
@@ -168,9 +174,54 @@ function App() {
     );
   }
 
+  function RenderTree(tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
+  {
+    if(tree && tree.children)
+    {
+      preRender  = true;
+      SetTreeDimensions(tree);
+
+      preRender = false;
+      nodeDimension = 80;
+      maxLevels = new Object();
+      childPositions = new Object();
+      nodeDictionary = new Object();
+
+      return RenderChildren(tree, parent, row, parentLeft, path);
+    }
+
+    return <></>;
+  }
+
+  function SetTreeDimensions(tree)
+  {
+    nodeDimension = 1;
+    treeWidthMax = null;
+    treeWidthMin = null;
+    treeHeight = 0;
+    treeWidth = 0;
+
+    RenderChildren(tree);
+    treeWidth = treeWidthMax-treeWidthMin+1;
+    treeHeight = treeHeight > 1 ? ((treeHeight-1)*1.5)+1 : treeHeight;
+  }
+
+  function SetTreeWidths(value)
+  {
+    if(treeWidthMax == null){
+      treeWidthMax = value;
+      treeWidthMin = value;
+    }
+    else
+    {
+      treeWidthMax = value > treeWidthMax ? value : treeWidthMax;
+      treeWidthMin = value < treeWidthMin ? value : treeWidthMin;
+    }
+  }
+
   function RenderChildren(tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
   {
-   
+    
     var children = null;
     if(parent != null)
     { 
@@ -186,8 +237,10 @@ function App() {
 
     if(children == null){return (<></>);}
 
+    if(preRender) treeHeight = (row) > treeHeight ? (row) : treeHeight;
+    
     var nodeSize = nodeDimension;
-    var elementWidth = nodeSize*2;
+    var elementWidth = nodeSize*1.5;
 
     const childElements = [];
 
@@ -253,9 +306,10 @@ function App() {
           }
         }
       
-         
-
-        childElements.push((AppendChildNode(child, left, row, nodeSize)));
+        if(!preRender)
+        {
+          childElements.push((AppendChildNode(child, left, row, nodeSize)));
+        }
       }
       else if(path === 'right')
       {
@@ -290,7 +344,10 @@ function App() {
         }
         if(i >= children.length-1 && parent)  childPositions[String(parent.id)] = parentNodePosition;
 
-        childElements.push((AppendChildNode(child, left, row, nodeSize)));
+        if(!preRender)
+          {
+            childElements.push((AppendChildNode(child, left, row, nodeSize)));
+          }
       }
       else if(path === 'left')
         {
@@ -325,28 +382,40 @@ function App() {
           }
           if(i >= children.length-1 && parent) childPositions[String(parent.id)] = parentNodePosition;
 
-          childElements.push((AppendChildNode(child, left, row, nodeSize)));
+          if(!preRender)
+            {
+              childElements.push((AppendChildNode(child, left, row, nodeSize)));
+            }
         }
 
-        child["left"] = left; 
-        child["top"] = (row)*elementWidth;
-        child['dialog'] = false;
-
+        if(!preRender)
+        {
+          child["left"] = left; 
+          child["top"] = (row)*elementWidth;
+          child['dialog'] = false;
+        }
+        else
+        {
+          SetTreeWidths(left);
+        }
       i++;
     });
 
-    return(
-      <>       
-          {childElements.map(child => {
-              
-              return (
-              <>
-                {child}
-              </> );
-              }
-          )}        
-      </>
-    );
+    if(!preRender)
+    {
+      return(
+        <>       
+            {childElements.map(child => {
+                
+                return (
+                <>
+                  {child}
+                </> );
+                }
+            )}        
+        </>
+      );
+    }
   }
 
   function GetElementPosition(element)
@@ -528,26 +597,6 @@ function App() {
     }
   }
 
-  /*
-  function RenderCreateDialog()
-  {
-    if(tree && tree.id && newNode)
-    {
-      return(
-        <>
-          <Dialog className={"dialogContent"} showHeader = {false} headerStyle={{background: 'white', height: '0px'}} contentStyle={{background: 'white'}} visible = {createNode} onHide={() => {if (!createNode) return; setCreateNode(false);}} > 
-            <Provider store = {store}>
-              <NodeDetails create = {true} render = {ReRenderTree} input = {newNode} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
-            </Provider>
-          </Dialog>
-        </>
-      );
-    }
-
-    return <></>;
-  }
-  */
-
   return (
     <>
       <div id = 'button-container' style = {{top: '0px', width: '100vw', height: String(iconSize)+"px"}}>
@@ -558,20 +607,10 @@ function App() {
       <div id = 'line-container'>
       </div>
       <div id = 'tree-root'>
-        {RenderChildren(tree)} 
+        {RenderTree(tree)} 
       </div>
     </>
   );
-
-  /*
-  return (
-    <>
-      <div>
-        <UploadFile/>
-      </div>
-    </>
-  );
-  */
 }
 
 export default App
