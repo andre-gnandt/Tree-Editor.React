@@ -66,7 +66,7 @@ function App() {
     childPositions = new Object();
     nodeDictionary = new Object();
     RemoveLines(inputTree);
-    treeContainer.render((RenderChildren(inputTree)));
+    treeContainer.render((RenderTree(inputTree)));
     CorrectTransforms(inputTree);
     ResetElementPositions(inputTree);
     AddLines(inputTree);
