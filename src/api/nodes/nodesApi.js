@@ -5,9 +5,11 @@ const putOptions = {
     body: ""
 }
 
-export function updateNode(id, node){
+export async function updateNode(id, node){
     putOptions.body = JSON.stringify(node);
-    fetch("http://localhost:11727/api/Nodes/"+id, putOptions);
+    await fetch("http://localhost:11727/api/Nodes/"+id, putOptions)
+    .then((response)=>response.json())
+    .then((responseJson)=>{return responseJson});
 };
 
 export function GetNode(id){

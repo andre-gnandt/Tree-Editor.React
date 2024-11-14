@@ -75,6 +75,10 @@ function App() {
       {
         AlterTreeStructureForCreateNode(inputTree, newNode)
       }
+      else if(callback === "new root")
+      {
+        AlterTreeAtructureForCreateRoot(inputTree, newNode);
+      }
     }
 
     const treeContainer = createRoot(document.getElementById('tree-root'));
@@ -134,9 +138,31 @@ function App() {
     parentNode.children.push(childNode);
   }
 
-  //function AlterTreeStructureForNodeChangedToRoot()
+  function RemoveChildFromNode(oldParentNode, childId)
+  {
+      const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === childId);
+      if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
+  }
 
-  //function AlterTreeAtructureForCreateRoot()
+  /*
+  function AlterTreeStructureForNodeChangedToRoot(tree, nodeId, oldParentNodeId, node = null, oldParentNode = null)
+  {
+    if(!node) node = FindNodeInTree(nodeId, tree);
+    if(!oldParentNode) oldParentNode = FindNodeInTree(oldParentNodeId, tree);
+
+    RemoveChildFromNode(oldParentNode, node.id);
+    const oldRootNode = tree;
+    AddNodeToChildren(node, oldRootNode);
+    oldRootNode.nodeId = node.id;
+  }
+  */
+
+  function AlterTreeAtructureForCreateRoot(tree, newNode)
+  {
+    const oldRootNode = tree;
+    AddNodeToChildren(newNode, oldRootNode);
+    oldRootNode.nodeId = newNode.id;
+  }
 
   function AlterTreeStructureForCreateNode(tree, newNode, parentNode = null)
   {
@@ -149,10 +175,9 @@ function App() {
       if(!node) node = FindNodeInTree(nodeId, tree);
       if(!oldParentNode) oldParentNode = FindNodeInTree(oldParentNodeId, tree);
       if(!newParentNode) newParentNode = FindNodeInTree(newParentNodeId, tree);
+      
       node.nodeId = newParentNodeId;
-
-      const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === node.id);
-      if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
+      RemoveChildFromNode(oldParentNode, node.id);
       newParentNode.children.push(node);
       
   }

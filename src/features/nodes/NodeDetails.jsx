@@ -19,11 +19,13 @@ const NodeDetails = (input) => {
     const nodeList = useRef([]);
 
     const create = 'create' in input ? input['create'] : false;
+    const root = 'root' in input ? input['root'] : false;
     const node = useSelector(state => state.node);
     const dispatch = useDispatch();
     const firstRender = useRef(true);
     const props = input.input;
-    const nodeDictionary = input.nodeDictionary;
+    const tree = input.tree;
+    //const nodeDictionary = input.nodeDictionary;
     const renderTreeNode = input.renderTreeNode;
 
     console.log("state:");
@@ -128,7 +130,7 @@ const NodeDetails = (input) => {
 
     function RenderCreateOrSaveButton()
     {
-        if(create)
+        if(create || root)
         {
             return (
                 <>Create</>
@@ -142,14 +144,14 @@ const NodeDetails = (input) => {
 
     async function HandleSaveOrCreate()
     {
-        if(!node.title || node.title.length === 0)
+        if(!node.title || node.title.trim().length === 0)
         {
             titlePresent.current = false;
             setTitleRequired(false);
         }
-        else if(!create)
+        else if(!create && !root)
         {
-            updateNode(node.id, node); 
+            await updateNode(node.id, node); 
             
             if(node.nodeId != props.nodeId)
             {
@@ -158,14 +160,13 @@ const NodeDetails = (input) => {
                 input.render("update", null, node.id, node.nodeId, oldParentId);
             }
             else{
-                setStateProperty();
+                //setStateProperty();
                 setNode(props);
                 renderTreeNode();
             }
         }
-        else
-        {
-            
+        else if(create)
+        {            
             var resultNode = await createNode(node);
             setNode(props);
             props['id'] = resultNode.id;
@@ -173,7 +174,19 @@ const NodeDetails = (input) => {
             input.render("create", props);
 
             dispatch(setStateProperty({key: 'id', value: resultNode.id}));
-        }    
+        }  
+        else if(root)
+        {
+            var resultNode = await createNode(node);
+            //var patchRootNode = await patchNode(tree.id , {nodeId: resultNode.id});
+            setNode(props);
+            props['id'] = resultNode.id;
+            input.nodeList.push(props);
+            nodeList.current = [];
+            input.render("new root", props);
+
+            dispatch(setStateProperty({key: 'id', value: resultNode.id}));
+        }  
     }
 
     //style = {{marginBottom: (hideButtons === 0) ? '0vh' : '3.275vh'}}
