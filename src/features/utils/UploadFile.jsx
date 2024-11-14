@@ -113,8 +113,11 @@ const UploadFile = (props) => {
 
   function FitThumbnailImage(fitToContainer)
   {
-    if(fitToContainer) document.getElementById("thumbnail-expander").className = "thumbnail-expanded";
-    if(!fitToContainer) document.getElementById("thumbnail-expander").className = "thumbnail-fit";
+    if(selectedImage || defaultFile)
+    {
+      if(fitToContainer) document.getElementById("thumbnail-expander").className = "thumbnail-expanded";
+      if(!fitToContainer) document.getElementById("thumbnail-expander").className = "thumbnail-fit";
+    }
   }
 
   // Return the JSX for rendering

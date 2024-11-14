@@ -16,7 +16,6 @@ const CreateNode = (props) => {
 
     const newNode = 
     {
-        id: "00000000-0000-0000-0000-000000000000",
         data: null,
         title: null,
         level: 0,
@@ -36,7 +35,7 @@ const CreateNode = (props) => {
             <i className='pi pi-upload' style = {{fontSize: iconSize, color: 'green'}} onClick = {() => { setCreateNode(true);}} />
             <Dialog className={"dialogContent"} showHeader = {false} headerStyle={{background: 'white', height: '0px'}} contentStyle={{background: 'white'}} visible = {createNode} onHide={() => {if (!createNode) return; setCreateNode(false);}} > 
                 <Provider store = {store}>
-                    <NodeDetails tree = {tree} create = {true} render = {ReRenderTree} input = {newNode} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
+                    <NodeDetails tree = {tree} files = {newNode.files} create = {true} render = {ReRenderTree} input = {newNode} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
                 </Provider>
             </Dialog>
         </>

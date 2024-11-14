@@ -55,11 +55,12 @@ function App() {
     return (cpi / (dpi * ppd));
   }
   
-  function ReRenderTree(callback = null, nodeId = null, newParentId = null, oldParentId = null)
+  async function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
   {
     nodeList = [];
     nodeDictionary = [];
     var inputTree = tree;
+    
     if(callback)
     {
       inputTree = structuredClone(tree);
@@ -69,14 +70,19 @@ function App() {
       {
         RemoveLine({id: nodeId, nodeId: oldParentId});
         AlterTreeStructureForParentNodeChange(inputTree, nodeId, newParentId, oldParentId);
-      }       
+      }
+      else if(callback === "create")
+      {
+        AlterTreeStructureForCreateNode(inputTree, newNode)
+      }
     }
+
     const treeContainer = createRoot(document.getElementById('tree-root'));
     maxLevels = new Object();
     childPositions = new Object();
     nodeDictionary = new Object();
     RemoveLines(inputTree);
-    treeContainer.render((RenderTree(inputTree)));
+    await treeContainer.render((RenderTree(inputTree)));
     CorrectTransforms(inputTree);
     ResetElementPositions(inputTree);
     AddLines(inputTree);
@@ -93,8 +99,6 @@ function App() {
         node = FindNodeInTree(id, tree.children[i]);
         if(node){ return node; };
     }
-      
-    
     return node;
   } 
 
@@ -119,13 +123,26 @@ function App() {
       delete node['line'];
       delete node['position'];
 
-      node.children.forEach(child => {
+      node.children?.forEach(child => {
         ResetElementPositions(child);
       })
     }
   }
 
-  //function AlterTreeStructureForCreateNode(node, tree)
+  function AddNodeToChildren(parentNode, childNode)
+  {
+    parentNode.children.push(childNode);
+  }
+
+  //function AlterTreeStructureForNodeChangedToRoot()
+
+  //function AlterTreeAtructureForCreateRoot()
+
+  function AlterTreeStructureForCreateNode(tree, newNode, parentNode = null)
+  {
+    if(!parentNode) parentNode = FindNodeInTree(newNode.nodeId, tree);
+    AddNodeToChildren(parentNode, newNode);
+  }
 
   function AlterTreeStructureForParentNodeChange(tree, nodeId, newParentNodeId, oldParentNodeId, node = null, oldParentNode = null, newParentNode = null)
   {
@@ -595,7 +612,7 @@ function App() {
     //DepthFirstMethod(RemoveLine, tree, null, false);
 
     RemoveLine(node);
-    node.children.forEach(child => {
+    node.children?.forEach(child => {
       RemoveLines(child);
     })
 
@@ -655,14 +672,23 @@ function App() {
       }
   };
 
+  /*
+  function WaitAndGetElement(elementid)
+  {
+    const nodeElement = document.getElementById(node.id);
+    if(!nodeElement){  }
+  }
+    */
+
   function CorrectTransforms(node)
   {
     if(node != null && ('children' in node))
     {
       const nodeElement = document.getElementById(node.id);
-      nodeElement.style.transform = 'none';
+      if(nodeElement){ nodeElement.style.transform = 'none'; }
+      
 
-      node.children.forEach(child => {
+      node.children?.forEach(child => {
         CorrectTransforms(child);
       })
     }

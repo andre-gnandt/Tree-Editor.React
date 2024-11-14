@@ -26,6 +26,9 @@ const NodeDetails = (input) => {
     const nodeDictionary = input.nodeDictionary;
     const renderTreeNode = input.renderTreeNode;
 
+    console.log("state:");
+    console.log(node);
+
 
     const SetStateFiles = (value) => {
         firstRender.current = false;
@@ -73,14 +76,16 @@ const NodeDetails = (input) => {
         prop.thumbnailId = node.thumbnailId;
     }
 
-    function createNode(node){
+    async function createNode(node){
         const postOptions =  {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: ""
         }
         postOptions.body = JSON.stringify(node);
-        fetch("http://localhost:11727/api/Nodes/", postOptions);
+        return await fetch("http://localhost:11727/api/Nodes/", postOptions)
+        .then((response)=>response.json())
+        .then((responseJson)=>{return responseJson});;
     };
 
     function RemoveDescendants(node)
@@ -135,7 +140,7 @@ const NodeDetails = (input) => {
         );
     }
 
-    function HandleSaveOrCreate()
+    async function HandleSaveOrCreate()
     {
         if(!node.title || node.title.length === 0)
         {
@@ -150,18 +155,24 @@ const NodeDetails = (input) => {
             {
                 const oldParentId = props.nodeId;
                 setNode(props);
-                input.render("update", node.id, node.nodeId, oldParentId);
+                input.render("update", null, node.id, node.nodeId, oldParentId);
             }
             else{
+                setStateProperty();
                 setNode(props);
                 renderTreeNode();
             }
         }
         else
         {
-            createNode(node);
+            
+            var resultNode = await createNode(node);
             setNode(props);
-            //input.render(tree, true);
+            props['id'] = resultNode.id;
+            input.nodeList.push(props);
+            input.render("create", props);
+
+            dispatch(setStateProperty({key: 'id', value: resultNode.id}));
         }    
     }
 
@@ -238,7 +249,7 @@ const NodeDetails = (input) => {
                 </div> 
                 <div hidden = {changeCount.current === 0 && titleRequired} style = {{height: (changeCount.current === 0 && titleRequired)? '0vh':'auto', display: 'flex'}}>
                     <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{display: 'flex', marginTop: '8vh'}}>
-                        <button hidden = {changeCount.current === 0} className='button' style = {{marginRight: '2px'}} onClick = {() => {HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                        <button hidden = {changeCount.current === 0} className='button' style = {{marginRight: '2px'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
                         <button hidden = {changeCount.current === 0} className='button' onClick = {() => {titlePresent.current = true; changeCount.current = 0; setResetFiles({reset: true}); handleChange(props, cloneNode); }} > Reset </button>
                     </div>
                     <div hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', marginTop: '8vh', textAlign: 'bottom'}}>Title is required. Highlighted in red above.</div>
