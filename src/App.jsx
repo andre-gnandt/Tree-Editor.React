@@ -10,6 +10,7 @@ import { Dialog } from 'primereact/dialog';
 import { createRoot } from 'react-dom/client';
 import NodeDetails from './features/nodes/NodeDetails';
 import CreateNode from './features/nodes/CreateNode';
+import CreateRoot from './features/nodes/CreateRoot';
 import 'primeicons/primeicons.css';
 
 function App() {
@@ -78,6 +79,8 @@ function App() {
       else if(callback === "new root")
       {
         AlterTreeAtructureForCreateRoot(inputTree, newNode);
+        inputTree = newNode;
+        tree = newNode;
       }
     }
 
@@ -109,7 +112,7 @@ function App() {
   function GetTrees(){
     fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
         result => { 
-          var nodes = result[2];
+          var nodes = result[0];
           setTree(nodes);
         }
     );   
@@ -225,7 +228,7 @@ function App() {
     }
   }
 
-  function AppendChildNode(child, left, row, nodeSize)
+  function AppendChildNode(child, left, row, nodeSize, tree)
   {
     return (
       <>
@@ -245,7 +248,7 @@ function App() {
           >
             
             <TreeNode 
-              tree = {tree} 
+              rootNode = {tree} 
               render = {ReRenderTree} 
               props = {child} 
               css = {{nodeSize: nodeSize}} 
@@ -723,7 +726,8 @@ function App() {
     <>
       <div id = 'button-container' style = {{top: '0px', width: '100vw', height: String(iconSize)+"px"}}>
         <div style = {{height: '100%', width: String(iconSize)+"px", float: 'right', marginRight: '35px'}}>
-          <CreateNode iconSize = {iconSize} render = {ReRenderTree} tree = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+          <CreateRoot iconSize = {iconSize} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+          <CreateNode iconSize = {iconSize} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
         </div>
       </div>
       <div id = 'line-container'>

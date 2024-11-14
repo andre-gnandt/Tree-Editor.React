@@ -24,12 +24,9 @@ const NodeDetails = (input) => {
     const dispatch = useDispatch();
     const firstRender = useRef(true);
     const props = input.input;
-    const tree = input.tree;
+    const rootNode = input.rootNode;
     //const nodeDictionary = input.nodeDictionary;
     const renderTreeNode = input.renderTreeNode;
-
-    console.log("state:");
-    console.log(node);
 
 
     const SetStateFiles = (value) => {
@@ -78,6 +75,13 @@ const NodeDetails = (input) => {
         prop.thumbnailId = node.thumbnailId;
     }
 
+    async function updateManyNodes(id, nodeList){
+        putOptions.body = JSON.stringify(nodeList);
+        await fetch("http://localhost:11727/api/Nodes/Many"+id, putOptions)
+        .then((response)=>response.json())
+        .then((responseJson)=>{return responseJson});
+    };
+
     async function createNode(node){
         const postOptions =  {
             method: 'POST',
@@ -86,6 +90,18 @@ const NodeDetails = (input) => {
         }
         postOptions.body = JSON.stringify(node);
         return await fetch("http://localhost:11727/api/Nodes/", postOptions)
+        .then((response)=>response.json())
+        .then((responseJson)=>{return responseJson});;
+    };
+
+    async function createRoot(node){
+        const postOptions =  {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: ""
+        }
+        postOptions.body = JSON.stringify(node);
+        return await fetch("http://localhost:11727/api/Nodes/Root", postOptions)
         .then((response)=>response.json())
         .then((responseJson)=>{return responseJson});;
     };
@@ -177,8 +193,7 @@ const NodeDetails = (input) => {
         }  
         else if(root)
         {
-            var resultNode = await createNode(node);
-            //var patchRootNode = await patchNode(tree.id , {nodeId: resultNode.id});
+            var resultNode = await createRoot(node);
             setNode(props);
             props['id'] = resultNode.id;
             input.nodeList.push(props);

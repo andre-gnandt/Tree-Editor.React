@@ -84,7 +84,7 @@ const TreeNode = (props) => {
                 }                                   
                 <Dialog className={"dialogContent"} showHeader = {false} headerStyle={{background: 'white', height: '0px'}} contentStyle={{background: 'white'}} visible = {dialog} onHide={() => {if (!dialog) return; props.props["dialog"] = false; setDialog(false);}} > 
                     <Provider store = {store}>
-                        <NodeDetails renderTreeNode = {RenderTreeNode} files = {files} tree = {props.tree} render = {props.render} input = {props.props} nodeList = {props.nodeList} nodeDictionary = {props.nodeDictionary}/>
+                        <NodeDetails renderTreeNode = {RenderTreeNode} files = {files} rootNode = {props.rootNode} render = {props.render} input = {props.props} nodeList = {props.nodeList} nodeDictionary = {props.nodeDictionary}/>
                     </Provider>
                 </Dialog>                 
             </> 
