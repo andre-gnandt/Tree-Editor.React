@@ -55,14 +55,21 @@ function App() {
     return (cpi / (dpi * ppd));
   }
   
-  function ReRenderTree(callback = false)
+  function ReRenderTree(callback = null, nodeId = null, newParentId = null, oldParentId = null)
   {
     nodeList = [];
     nodeDictionary = [];
     var inputTree = tree;
-    if(callback){
+    if(callback)
+    {
       inputTree = structuredClone(tree);
       tree = inputTree;
+
+      if(callback === "update")
+      {
+        RemoveLine({id: nodeId, nodeId: oldParentId});
+        AlterTreeStructureForParentNodeChange(inputTree, nodeId, newParentId, oldParentId);
+      }       
     }
     const treeContainer = createRoot(document.getElementById('tree-root'));
     maxLevels = new Object();
@@ -74,6 +81,22 @@ function App() {
     ResetElementPositions(inputTree);
     AddLines(inputTree);
   }
+
+  //try to refrain from using this function
+  function FindNodeInTree(id, tree)
+  {
+    if(tree.id === id) return tree; 
+    var node = null;
+
+    for(var i = 0; i < tree.children.length; i++)
+    {     
+        node = FindNodeInTree(id, tree.children[i]);
+        if(node){ return node; };
+    }
+      
+    
+    return node;
+  } 
 
   function GetTrees(){
     fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
@@ -93,7 +116,6 @@ function App() {
   {
     if(node)
     {
-
       delete node['line'];
       delete node['position'];
 
@@ -101,6 +123,21 @@ function App() {
         ResetElementPositions(child);
       })
     }
+  }
+
+  //function AlterTreeStructureForCreateNode(node, tree)
+
+  function AlterTreeStructureForParentNodeChange(tree, nodeId, newParentNodeId, oldParentNodeId, node = null, oldParentNode = null, newParentNode = null)
+  {
+      if(!node) node = FindNodeInTree(nodeId, tree);
+      if(!oldParentNode) oldParentNode = FindNodeInTree(oldParentNodeId, tree);
+      if(!newParentNode) newParentNode = FindNodeInTree(newParentNodeId, tree);
+      node.nodeId = newParentNodeId;
+
+      const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === node.id);
+      if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
+      newParentNode.children.push(node);
+      
   }
 
   function OnDropNode(mouse, node)
@@ -113,16 +150,11 @@ function App() {
     if(mouseOverNode && mouseOverNode !== node.id)
     {
       const oldParentNode = nodeDictionary[node.nodeId];
-      const newParentNode = nodeDictionary[mouseOverNode];
-      node.nodeId = mouseOverNode;
-
-      mouseOverNode = null;
-
-      const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === node.id);
-      if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
-      newParentNode.children.push(node);
+      const newParentNode = nodeDictionary[mouseOverNode];    
+      AlterTreeStructureForParentNodeChange(tree, node.id, mouseOverNode, node.nodeId, node, oldParentNode, newParentNode);
       
-      ReRenderTree();
+      mouseOverNode = null;
+      ReRenderTree(tree);
     }
     else
     {
@@ -267,11 +299,6 @@ function App() {
     }
   }
 
-  function CenterFullTree(node, offsetValue)
-  {
-
-  }
-
   function RenderChildren(node, row = 1, offset = 0)
   {
       const elements = [];
@@ -307,8 +334,12 @@ function App() {
     if(parent != null)
     { 
       children = parent.children;
-      nodeDictionary[parent.id] = parent;
-      nodeList.push(parent);
+      
+      if(testRender)
+      {
+        nodeDictionary[parent.id] = parent;     
+        nodeList.push(parent);
+      }
     }
     else if(tree != null && tree.children != null)
     {
@@ -383,13 +414,6 @@ function App() {
             childPositions[String(parent.id)] = parentNodePosition;
           }
         }
-      
-        /*
-        if(!preRender && !testRender)
-        {
-          childElements.push((AppendChildNode(child, left, row, nodeSize)));
-        }
-        */
       }
       else if(path === 'right')
       {
@@ -420,13 +444,6 @@ function App() {
           parentNodePosition["Right"] = left;
         }
         if(i >= children.length-1 && parent)  childPositions[String(parent.id)] = parentNodePosition;
-
-        /*
-        if(!preRender && !testRender)
-        {
-          childElements.push((AppendChildNode(child, left, row, nodeSize)));
-        }
-        */
       }
       else if(path === 'left')
         {
@@ -458,13 +475,6 @@ function App() {
             parentNodePosition["Left"] = left;
           }
           if(i >= children.length-1 && parent) childPositions[String(parent.id)] = parentNodePosition;
-
-          /*
-        if(!preRender && !testRender)
-        {
-          childElements.push((AppendChildNode(child, left, row, nodeSize)));
-        }
-        */
         }
 
         if(testRender)
@@ -479,24 +489,6 @@ function App() {
         
       i++;
     });
-
-    /*
-    if(!preRender)
-    {
-      return(
-        <>       
-            {childElements.map(child => {
-                
-                return (
-                <>
-                  {child}
-                </> );
-                }
-            )}        
-        </>
-      );
-    }
-    */
   }
 
   function GetElementPosition(element)
@@ -577,8 +569,6 @@ function App() {
 
     scrollDistanceX = window.scrollX-scrollXBefore;
     scrollDistanceY = window.scrollY-scrollYBefore;
-
-    console.log("ScrollDistance Y "+scrollDistanceY);
 
     const nodeElement = document.getElementById(node.id);
     const positionAfter = GetElementPosition(nodeElement);

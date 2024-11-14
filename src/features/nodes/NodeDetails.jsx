@@ -148,14 +148,9 @@ const NodeDetails = (input) => {
             
             if(node.nodeId != props.nodeId)
             {
-                const oldParentNode = nodeDictionary[props.nodeId];
-                const newParentNode = nodeDictionary[node.nodeId];
-                const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === node.id);
-                if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
-                newParentNode.children.push(node);
-
+                const oldParentId = props.nodeId;
                 setNode(props);
-                input.render(true);
+                input.render("update", node.id, node.nodeId, oldParentId);
             }
             else{
                 setNode(props);
