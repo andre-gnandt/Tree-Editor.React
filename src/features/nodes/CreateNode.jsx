@@ -29,7 +29,6 @@ const CreateNode = (props) => {
         isDeleted: false,
     };
 
-
     return (
         <>
             <i className='pi pi-upload' style = {{fontSize: iconSize, color: 'green'}} onClick = {() => { setCreateNode(true);}} />

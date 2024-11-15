@@ -33,6 +33,7 @@ function App() {
   var treeWidthMax = null;
   var childPositions = new Object();
   var nodeDictionary = new Object();
+  var changeTracker = {};
   var nodeList = [];
   var dragging = false;
   var mouseOverNode = null;
@@ -55,13 +56,21 @@ function App() {
     var ppd = window.devicePixelRatio; // pixels per dot
     return (cpi / (dpi * ppd));
   }
+
+  async function updateManyNodes(id, nodeList){
+    putOptions.body = JSON.stringify(nodeList);
+    await fetch("http://localhost:11727/api/Nodes/Many"+id, putOptions)
+    .then((response)=>response.json())
+    .then((responseJson)=>{return responseJson});
+  };
   
   async function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
   {
     nodeList = [];
     nodeDictionary = [];
     var inputTree = tree;
-    
+    RemoveLines(inputTree);
+
     if(callback)
     {
       inputTree = structuredClone(tree);
@@ -82,13 +91,21 @@ function App() {
         inputTree = newNode;
         tree = newNode;
       }
+      else if(callback === "delete single")
+      {
+        AlterTreeStructureForDeleteSingle(inputTree, nodeId, oldParentId);
+      }
+      else if(callback === "delete cascade")
+      {
+        AlterTreeStructureForDeleteCascade(inputTree, nodeId, oldParentId);
+      }
     }
 
     const treeContainer = createRoot(document.getElementById('tree-root'));
     maxLevels = new Object();
     childPositions = new Object();
     nodeDictionary = new Object();
-    RemoveLines(inputTree);
+    //RemoveLines(inputTree);
     await treeContainer.render((RenderTree(inputTree)));
     CorrectTransforms(inputTree);
     ResetElementPositions(inputTree);
@@ -145,6 +162,31 @@ function App() {
   {
       const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === childId);
       if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
+  }
+
+  function AlterTreeStructureForDeleteCascade(tree, nodeId, parentNodeId, node = null, parentNode = null)
+  {
+    if(!parentNode) parentNode = FindNodeInTree(parentNodeId, tree);
+    if(!node) node = FindNodeInTree(nodeId, tree);
+    
+    RemoveChildFromNode(parentNode, nodeId);
+    node.nodeId = null;
+  }
+
+  function AlterTreeStructureForDeleteSingle(tree, nodeId, parentNodeId, node = null, parentNode = null)
+  {
+    if(!parentNode) parentNode = FindNodeInTree(parentNodeId, tree);
+    if(!node) node = FindNodeInTree(nodeId, tree);
+    
+    RemoveChildFromNode(parentNode, nodeId);
+    node.nodeId = null;
+    
+    node.children.forEach(child => {
+      child.nodeId = parentNodeId;
+      AddNodeToChildren(parentNode, child);
+    });
+
+    node.children = [];    
   }
 
   /*
@@ -725,7 +767,7 @@ function App() {
   return (
     <>
       <div id = 'button-container' style = {{top: '0px', width: '100vw', height: String(iconSize)+"px"}}>
-        <div style = {{height: '100%', width: String(iconSize)+"px", float: 'right', marginRight: '35px'}}>
+        <div style = {{height: '100%', width: String(iconSize*2)+"px", float: 'right', marginRight: '35px'}}>
           <CreateRoot iconSize = {iconSize} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
           <CreateNode iconSize = {iconSize} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
         </div>

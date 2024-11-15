@@ -5,10 +5,12 @@ import { InputText} from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
+import { Dialog } from 'primereact/dialog';
 import './detailsList.css';
 import UploadFile from '../utils/UploadFile';
 import { Provider } from 'react-redux';
 import { store } from '/LocalTreeData.React/src/store';
+import { unmountComponentAtNode } from 'react-dom';
 
 const NodeDetails = (input) => {
     const[hideButtons, setHideButtons] = useState(0);
@@ -16,18 +18,20 @@ const NodeDetails = (input) => {
     const titlePresent = useRef(true);
     const[titleRequired, setTitleRequired] = useState(titlePresent.current);
     const[resetFiles, setResetFiles] = useState({reset: false});
+    const [deleteOptions, setDeleteOptions] = useState("");
+    const deleteType = useRef("cascade"); //single | cascade
     const nodeList = useRef([]);
 
-    const create = 'create' in input ? input['create'] : false;
-    const root = 'root' in input ? input['root'] : false;
+    const [create, setCreate] = useState('create' in input ? input['create'] : false);
+    const [root, setRoot] = useState('root' in input ? input['root'] : false);
     const node = useSelector(state => state.node);
     const dispatch = useDispatch();
     const firstRender = useRef(true);
+    const unMount = input.unMount;
     const props = input.input;
     const rootNode = input.rootNode;
     //const nodeDictionary = input.nodeDictionary;
     const renderTreeNode = input.renderTreeNode;
-
 
     const SetStateFiles = (value) => {
         firstRender.current = false;
@@ -75,9 +79,14 @@ const NodeDetails = (input) => {
         prop.thumbnailId = node.thumbnailId;
     }
 
-    async function updateManyNodes(id, nodeList){
-        putOptions.body = JSON.stringify(nodeList);
-        await fetch("http://localhost:11727/api/Nodes/Many"+id, putOptions)
+    async function DeleteSingle(id){
+        await fetch("http://localhost:11727/api/Nodes/Delete-One"+id, {method: 'DELETE'})
+        .then((response)=>response.json())
+        .then((responseJson)=>{return responseJson});
+    };
+
+    async function DeleteCascade(id){
+        await fetch("http://localhost:11727/api/Nodes/Delete-Cascade"+id, {method: 'DELETE'})
         .then((response)=>response.json())
         .then((responseJson)=>{return responseJson});
     };
@@ -144,6 +153,70 @@ const NodeDetails = (input) => {
         }
     }
 
+    const GetConfirmDelete = () => 
+    {
+        return (
+        <>
+                <Dialog  style = {{height: '30vh', width: '40vw'}} headerStyle={{backgroundColor: 'coral'}} contentStyle={{backgroundColor: 'coral'}}  visible = {(deleteOptions === "confirm")} onHide = {() => {setDeleteOptions("")}}>
+                    <>
+                        <div style = {{marginLeft: '2.5vw', width: '35vw', height: '25vh'}}>
+                            <div style = {{width: '35vw', height: '5vh', textAlign: 'center' }}>Please confirm that you would like to delete this node (including all of its files)</div>
+                            <div style = {{marginTop: '1vh', display: 'flex', width: '35vw', height: '18vh'}}>
+                                <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
+                                    <button 
+                                        onClick={() => { HandleDeleteNode();}} 
+                                        className='button' style = {{height: '8vh', width: '17vh'}}
+                                    >
+                                           Yes
+                                    </button>
+                                </div>
+                                <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
+                                    <button
+                                         onClick={() => {setDeleteOptions(""); }}
+                                         className='button' style = {{height: '8vh', width: '17vh'}}
+                                    >
+                                        No
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                </Dialog>
+            </>
+        );
+    }
+
+    const GetDeleteOptions = () =>
+    {
+        return (
+            <>
+                <Dialog  style = {{height: '30vh', width: '40vw'}} headerStyle={{backgroundColor: 'coral'}} contentStyle={{backgroundColor: 'coral'}}  visible = {(deleteOptions === "options")} onHide = {() => {setDeleteOptions("")}}>
+                    <>
+                        <div style = {{marginLeft: '2.5vw', width: '35vw', height: '25vh'}}>
+                            <div style = {{width: '35vw', height: '5vh', textAlign: 'center' }}>What type of Deletion would you like to make?</div>
+                            <div style = {{marginTop: '1vh', display: 'flex', width: '35vw', height: '18vh'}}>
+                                <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
+                                    <button onClick={() => {deleteType.current = "cascade"; setDeleteOptions("confirm");}} className='button' style = {{height: '8vh', width: '17vh'}}>Delete Cascade</button>
+                                    <div >
+                                        (Delete this node and all descendants )
+                                    </div>
+                                </div>
+                                <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
+                                    <button
+                                         onClick={() => {deleteType.current = "single"; setDeleteOptions("confirm"); }}
+                                         className='button' style = {{height: '8vh', width: '17vh'}}>Delete Single</button>
+                                    <div >
+                                        (Delete only this Node)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                </Dialog>
+            </>
+        );
+    }
+
     function RenderCreateOrSaveButton()
     {
         if(create || root)
@@ -156,6 +229,21 @@ const NodeDetails = (input) => {
         return (
             <>Save</>
         );
+    }
+
+    async function HandleDeleteNode()
+    {   
+        if(deleteType.current === "single")
+        {
+            await DeleteSingle(props.id);
+            input.render("delete single", null, node.id, null, node.nodeId);
+        }
+        else
+        {
+            await DeleteCascade(props.id);
+            input.render("delete cascade", null, node.id, null, node.nodeId);
+        }
+        unMount();
     }
 
     async function HandleSaveOrCreate()
@@ -204,9 +292,46 @@ const NodeDetails = (input) => {
         }  
     }
 
+    const GetHeader = () => {
+        if(create)return <>Create New Node</>;
+        if(root)return <>Create New Root</>;
+        
+        return <>Node Content</>;
+    }
+
     //style = {{marginBottom: (hideButtons === 0) ? '0vh' : '3.275vh'}}
         return(
+        <>    
             <div className='container'>
+                <div style = {{ height: '6.5vh',  fontSize: '4vw', display: 'flex'}}>
+                    <header style = {{width: '33vw', float: 'top'}}>{GetHeader()}</header>                   
+                    
+                    { (node.nodeId && !root && !create) && (
+                        <>
+                            <div style = {{height: '6.5vh', width: '7vw',  float: 'right' }}>
+                                <button className='button' 
+                                    style = {{backgroundColor: 'red', height: '4.5vh', maxHeight: '6.5vh', float: 'right', fontSize: '3vh', justifyContent: 'center'}} 
+                                    onClick={() => {setDeleteOptions("options")}}                       
+                                >Delete</button>                   
+                            </div>
+                            { (deleteOptions === "options") && 
+                                (
+                                  <>
+                                    {GetDeleteOptions()}
+                                  </>
+                                )
+                            }
+                            { (deleteOptions === "confirm") && 
+                                (
+                                  <>
+                                    {GetConfirmDelete()}
+                                  </>
+                                )
+                            }
+                        </>
+                        )
+                    }
+                </div>
                 <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
                     <div className="thumbnail-container">
                         <Provider store = {store}>
@@ -220,7 +345,7 @@ const NodeDetails = (input) => {
                             placeholder="Title" 
                             className= {(titleRequired) ? "title" : "title-required"}
                             spellCheck = {false}
-                            onChange = {(e) => {CheckValueChange(props.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title ? node.title : ""} />
+                            onChange = {(e) => {CheckValueChange(props.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title ? node.title.trim() : ""} />
                     </div>
                 </div>
                 <div className="entryContainer">
@@ -282,7 +407,9 @@ const NodeDetails = (input) => {
                     </div>
                     <div hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', marginTop: '8vh', textAlign: 'bottom'}}>Title is required. Highlighted in red above.</div>
                 </div>
-            </div> );
+            </div> 
+        </>    
+        );
 }
 
 export default NodeDetails 
