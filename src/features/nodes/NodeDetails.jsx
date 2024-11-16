@@ -29,8 +29,7 @@ const NodeDetails = (input) => {
     const firstRender = useRef(true);
     const unMount = input.unMount;
     const props = input.input;
-    const rootNode = input.rootNode;
-    //const nodeDictionary = input.nodeDictionary;
+    //const rootNode = input.rootNode;
     const renderTreeNode = input.renderTreeNode;
 
     const SetStateFiles = (value) => {
@@ -112,7 +111,7 @@ const NodeDetails = (input) => {
         postOptions.body = JSON.stringify(node);
         return await fetch("http://localhost:11727/api/Nodes/Root", postOptions)
         .then((response)=>response.json())
-        .then((responseJson)=>{return responseJson});;
+        .then((responseJson)=>{return responseJson});
     };
 
     function RemoveDescendants(node)

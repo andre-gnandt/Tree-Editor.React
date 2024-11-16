@@ -8,7 +8,6 @@ import { Provider } from 'react-redux';
 import { store } from '/LocalTreeData.React/src/store';
 import { Dialog } from 'primereact/dialog';
 import { createRoot } from 'react-dom/client';
-import NodeDetails from './features/nodes/NodeDetails';
 import CreateNode from './features/nodes/CreateNode';
 import CreateRoot from './features/nodes/CreateRoot';
 import 'primeicons/primeicons.css';
@@ -39,12 +38,12 @@ function App() {
   var mouseOverNode = null;
   const minimumNodeSize = 1.15/pixelsToCentimetres; //1.4 cm in pixels
   var nodeDimension = 80;
-  const iconSize =  '8vh';
+  const iconSize =  String(0.08*window.innerHeight)+'px';
   var iconSizeInPixels = 0.08*window.innerHeight;
   const horizontalBorder = 15; //in pixels
   var testRender = false;
 
-  window.addEventListener('resize', (event) => {ReRenderTree(tree)});
+  window.addEventListener('resize', (event) => {ReRenderTree()});
 
   useEffect(() => {
     AddLines(tree);
@@ -241,7 +240,7 @@ function App() {
       AlterTreeStructureForParentNodeChange(tree, node.id, mouseOverNode, node.nodeId, node, oldParentNode, newParentNode);
       
       mouseOverNode = null;
-      ReRenderTree(tree);
+      ReRenderTree();
     }
     else
     {
@@ -387,7 +386,7 @@ function App() {
   }
 
   function RenderChildren(node, row = 1, offset = 0)
-  {
+  {  
       const elements = [];
       elements.push((AppendChildNode(node, node["left"]+offset, row, nodeDimension)));
       
@@ -766,7 +765,7 @@ function App() {
 
   return (
     <>
-      <div id = 'button-container' style = {{top: '0px', width: '100vw', height: String(iconSize)+"px"}}>
+      <div id = 'button-container' style = {{top: '0px', width: '100vw', height: String(iconSize)}}>
         <div style = {{height: '100%', width: String(iconSize*2)+"px", float: 'right', marginRight: '35px'}}>
           <CreateRoot iconSize = {iconSize} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
           <CreateNode iconSize = {iconSize} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>

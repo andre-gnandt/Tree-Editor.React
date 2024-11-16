@@ -32,7 +32,7 @@ const CreateRoot = (props) => {
 
     return (
         <>
-            <i className='pi pi-warehouse' style = {{fontSize: iconSize, color: 'brown'}} onClick = {() => { setCreateNode(true);}} />
+            <i className='pi pi-warehouse' style = {{fontSize: iconSize, color: 'brown', marginRight: '1vw'}} onClick = {() => { setCreateNode(true);}} />
             <Dialog className={"dialogContent"} showHeader = {false} headerStyle={{background: 'white', height: '0px'}} contentStyle={{background: 'white'}} visible = {createNode} onHide={() => {if (!createNode) return; setCreateNode(false);}} > 
                 <Provider store = {store}>
                     <NodeDetails rootNode = {tree} files = {newRoot.files} root = {true} render = {ReRenderTree} input = {newRoot} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
