@@ -397,10 +397,10 @@ function App() {
           
           <div 
             id = {child.id} 
-            className={child.id} 
+            className={child.id+" treenode-container"} 
             onMouseLeave={() => {mouseOverNode = null;}} 
             onMouseEnter={() => {mouseOverNode = child.id;}} 
-            style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 4, position:'absolute',top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
+            style = {{backgroundColor: 'black', borderRadius: String(nodeSize*0.2)+'px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 4, position:'absolute',top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', display: 'table', border: '2px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
           >
             
             <TreeNode 

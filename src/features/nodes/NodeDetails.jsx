@@ -10,7 +10,6 @@ import './detailsList.css';
 import UploadFile from '../utils/UploadFile';
 import { Provider } from 'react-redux';
 import { store } from '/LocalTreeData.React/src/store';
-import { unmountComponentAtNode } from 'react-dom';
 
 const NodeDetails = (input) => {
     const[hideButtons, setHideButtons] = useState(0);

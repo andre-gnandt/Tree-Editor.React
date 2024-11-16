@@ -47,6 +47,12 @@
 
 }
 
+.treenode-container:hover 
+{
+    -webkit-box-shadow: 0 0 40px orange;
+    box-shadow: 0 0 40px orange;
+}
+
 .line 
 {
     z-index: -1;

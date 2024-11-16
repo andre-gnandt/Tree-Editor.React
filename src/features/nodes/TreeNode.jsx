@@ -80,10 +80,21 @@ const TreeNode = (props) => {
         return(
             <>  
                 { props.props.thumbnailId ? 
-                    <img className='image' onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {GetImageSource()}/>
+                    <div style = {{height: '100%', width: '100%', position: 'relative', textAlign: 'center', color: 'white', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap',}}>
+                        <img className='image' style = {{cursor: 'pointer'}} onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {GetImageSource()}/>
+                        <div
+                            onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}}
+                            style = {{position: 'absolute',
+                                        top: '50%',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -50%)', cursor: 'pointer'}}
+                        >
+                            {props.props.title}
+                        </div>
+                    </div>
                     :
                     <button onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} 
-                        style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(props.css.nodeSize)+'px', maxWidth: String(props.css.nodeSize)+'px',  height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
+                        style = {{backgroundColor: '#f0efe4', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(props.css.nodeSize)+'px', maxWidth: String(props.css.nodeSize)+'px',  height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
                         {props.props.title}
                     </button> 
                 }                                   
