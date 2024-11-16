@@ -22,6 +22,7 @@ const NodeDetails = (input) => {
     const deleteType = useRef("cascade"); //single | cascade
     const nodeList = useRef([]);
 
+    const SetChangeTracker = 'setChangeTracker' in input.setChangeTracker ? input.setChangeTracker : null;
     const [create, setCreate] = useState('create' in input ? input['create'] : false);
     const [root, setRoot] = useState('root' in input ? input['root'] : false);
     const node = useSelector(state => state.node);
@@ -266,6 +267,7 @@ const NodeDetails = (input) => {
                 //setStateProperty();
                 setNode(props);
                 renderTreeNode();
+                SetChangeTracker(props);
             }
         }
         else if(create)

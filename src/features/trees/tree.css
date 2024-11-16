@@ -1,0 +1,56 @@
+:root {
+    --form-color: rgba(204, 255, 255 1);
+    /*--form-border-color: rgba(204, 255, 255 0.9);*/
+    --form-border-color: #64ffffe6;
+    --form-focused-color: rgb(39, 77, 245);
+    
+    --button-blue: #3198aa;
+    --button-blue-focused: #274df5;
+}
+
+.button-header
+{
+    background-color: lightgrey;
+    color: var(--button-blue);
+    border: none;
+    outline: none;
+}
+
+.button-header:enabled:hover
+{
+    background-color: var(--button-blue-focused);
+    color: lightgrey;
+    border: none;
+    outline: none;
+}
+
+.button-header:disabled 
+{
+    background: repeating-linear-gradient(
+  45deg,
+  #606dbc,
+  #606dbc 10px,
+  #465298 10px,
+  #465298 20px
+);
+
+}
+
+.button-header:focus{
+    outline: none;
+}
+
+.save-icon
+{
+    /*color: var(--button-blue); */
+    float: left;
+
+}
+
+.save-icon:hover
+{
+    /*
+    background-color: var(--button-blue-focused);
+    color: lightgrey;
+    */
+}

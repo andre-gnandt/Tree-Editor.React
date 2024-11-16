@@ -11,13 +11,21 @@ import { createRoot } from 'react-dom/client';
 import CreateNode from './features/nodes/CreateNode';
 import CreateRoot from './features/nodes/CreateRoot';
 import 'primeicons/primeicons.css';
+import './features/trees/tree.css';
+
+/*extra node properties include:
+'position'
+'left'
+'top'
+'line'
+'dialog'
+*/
 
 function App() {
   const firstRender = useRef(true);
   const [treeState, setTree] = useState(null);
   var tree = {...treeState};
   const [createNode, setCreateNode] = useState(null);
-  
   const pixelsToCentimetres = PixelSizeInCentimetres();
   var maxLevels = new Object();
   var scrollXBefore = 0;
@@ -32,14 +40,16 @@ function App() {
   var treeWidthMax = null;
   var childPositions = new Object();
   var nodeDictionary = new Object();
-  var changeTracker = {};
+  var originalDictionary = {...nodeDictionary};
+  var changeTracker = new Object();
   var nodeList = [];
   var dragging = false;
   var mouseOverNode = null;
+  //var 
   const minimumNodeSize = 1.15/pixelsToCentimetres; //1.4 cm in pixels
   var nodeDimension = 80;
+  const iconDimension = 0.08*window.innerHeight
   const iconSize =  String(0.08*window.innerHeight)+'px';
-  var iconSizeInPixels = 0.08*window.innerHeight;
   const horizontalBorder = 15; //in pixels
   var testRender = false;
 
@@ -62,14 +72,24 @@ function App() {
     .then((response)=>response.json())
     .then((responseJson)=>{return responseJson});
   };
-  
-  async function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
+
+  //used for a non parent changed update of node content
+  function UpdateChangeTrackerCallback(node)
+  {
+    originalDictionary[node.id] = {...node};
+    delete changeTracker[node.id];
+  }
+
+  function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
   {
     nodeList = [];
     nodeDictionary = [];
     var inputTree = tree;
     RemoveLines(inputTree);
+    var node = null;
 
+    //change the trees frontend structure to match the changes that were made in the database (without any api calls)
+    //triggered from a saved change of parent node or creation of a new node from the node details dialog (from a POST node or PUT node request)
     if(callback)
     {
       inputTree = structuredClone(tree);
@@ -78,25 +98,25 @@ function App() {
       if(callback === "update")
       {
         RemoveLine({id: nodeId, nodeId: oldParentId});
-        AlterTreeStructureForParentNodeChange(inputTree, nodeId, newParentId, oldParentId);
+        node = AlterTreeStructureForParentNodeChange(inputTree, nodeId, newParentId, oldParentId);
       }
       else if(callback === "create")
       {
-        AlterTreeStructureForCreateNode(inputTree, newNode)
+        node = AlterTreeStructureForCreateNode(inputTree, newNode);
       }
       else if(callback === "new root")
       {
-        AlterTreeAtructureForCreateRoot(inputTree, newNode);
+        node = AlterTreeAtructureForCreateRoot(inputTree, newNode);
         inputTree = newNode;
         tree = newNode;
       }
       else if(callback === "delete single")
       {
-        AlterTreeStructureForDeleteSingle(inputTree, nodeId, oldParentId);
+        node = AlterTreeStructureForDeleteSingle(inputTree, nodeId, oldParentId);
       }
       else if(callback === "delete cascade")
       {
-        AlterTreeStructureForDeleteCascade(inputTree, nodeId, oldParentId);
+        node = AlterTreeStructureForDeleteCascade(inputTree, nodeId, oldParentId);
       }
     }
 
@@ -105,10 +125,44 @@ function App() {
     childPositions = new Object();
     nodeDictionary = new Object();
     //RemoveLines(inputTree);
-    await treeContainer.render((RenderTree(inputTree)));
+    treeContainer.render((RenderTree(inputTree)));
     CorrectTransforms(inputTree);
     ResetElementPositions(inputTree);
     AddLines(inputTree);
+
+    //update the change tracker (for drag and drop of subtrees) to remove any changes already saved in the database
+    if(callback === "update")
+    {
+      delete changeTracker[node.id];
+      originalDictionary[node.id] = {...nodeDictionary[node.id]};
+    }
+    else if(callback === "create")
+    {
+      originalDictionary[node.id] = {...nodeDictionary[node.id]};
+    }
+    else if(callback === "new root")
+    {
+      originalDictionary[node.id] = {...nodeDictionary[node.id]};
+    }
+    else if(callback === "delete single")
+    {
+      UpdateChangeTrackerForDeleteSingle(node);
+    }
+    else if(callback === "delete cascade")
+    {
+      UpdateChangeTrackerForDeleteCascade(node);
+    }
+
+    var treeUnsaved = false;
+
+    if(changeTracker && Object.keys(changeTracker).length > 0)
+    {
+      treeUnsaved = true;
+    }
+
+    console.log("change tracker");
+    console.log(changeTracker);
+    document.getElementById('save-tree-positions').disabled = !(treeUnsaved);
   }
 
   //try to refrain from using this function
@@ -124,6 +178,27 @@ function App() {
     }
     return node;
   } 
+
+  function UpdateChangeTrackerForDeleteCascade(node)
+  {
+    delete changeTracker[node.id];
+    delete originalDictionary[node.id];
+
+    node.children.forEach(child => {
+      UpdateChangeTrackerForDeleteCascade(child);
+    });
+  }
+
+  function  UpdateChangeTrackerForDeleteSingle(node)
+  {
+    delete changeTracker[node.id];
+    delete originalDictionary[node.id];
+
+    node.children.forEach(child => {
+      delete changeTracker[child.id];
+      originalDictionary[child.id] = {...nodeDictionary[child.id]};
+    })
+  }
 
   function GetTrees(){
     fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
@@ -170,6 +245,8 @@ function App() {
     
     RemoveChildFromNode(parentNode, nodeId);
     node.nodeId = null;
+
+    return node;
   }
 
   function AlterTreeStructureForDeleteSingle(tree, nodeId, parentNodeId, node = null, parentNode = null)
@@ -185,7 +262,8 @@ function App() {
       AddNodeToChildren(parentNode, child);
     });
 
-    node.children = [];    
+    //node.children = [];   
+    return node; 
   }
 
   /*
@@ -206,12 +284,16 @@ function App() {
     const oldRootNode = tree;
     AddNodeToChildren(newNode, oldRootNode);
     oldRootNode.nodeId = newNode.id;
+
+    return newNode;
   }
 
   function AlterTreeStructureForCreateNode(tree, newNode, parentNode = null)
   {
     if(!parentNode) parentNode = FindNodeInTree(newNode.nodeId, tree);
     AddNodeToChildren(parentNode, newNode);
+
+    return newNode;
   }
 
   function AlterTreeStructureForParentNodeChange(tree, nodeId, newParentNodeId, oldParentNodeId, node = null, oldParentNode = null, newParentNode = null)
@@ -224,6 +306,7 @@ function App() {
       RemoveChildFromNode(oldParentNode, node.id);
       newParentNode.children.push(node);
       
+      return node;
   }
 
   function OnDropNode(mouse, node)
@@ -239,6 +322,16 @@ function App() {
       const newParentNode = nodeDictionary[mouseOverNode];    
       AlterTreeStructureForParentNodeChange(tree, node.id, mouseOverNode, node.nodeId, node, oldParentNode, newParentNode);
       
+      const originalNode = originalDictionary[node.id];
+      if(originalNode.nodeId !== mouseOverNode)
+      {
+        changeTracker[node.id] = mouseOverNode;
+      }
+      else
+      {
+        delete changeTracker[node.id];
+      }
+
       mouseOverNode = null;
       ReRenderTree();
     }
@@ -269,8 +362,9 @@ function App() {
     }
   }
 
-  function AppendChildNode(child, left, row, nodeSize, tree)
+  function AppendChildNode(tree, child, left, row, nodeSize, verticalOffset)
   {
+    
     return (
       <>
         <Draggable 
@@ -285,10 +379,11 @@ function App() {
             className={child.id} 
             onMouseLeave={() => {mouseOverNode = null;}} 
             onMouseEnter={() => {mouseOverNode = child.id;}} 
-            style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 0, position:'absolute',top: String((row)*nodeSize*1.5)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
+            style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 0, position:'absolute',top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
           >
             
             <TreeNode 
+              setChangeTracker = {UpdateChangeTrackerCallback}
               rootNode = {tree} 
               render = {ReRenderTree} 
               props = {child} 
@@ -352,7 +447,7 @@ function App() {
         offSet = leftMost-treeWidthMin;
       }
 
-      return RenderChildren(tree, 0, offSet);
+      return RenderChildren(tree, tree, 0, offSet);
     }
 
     return <></>;
@@ -374,7 +469,8 @@ function App() {
 
   function SetTreeWidths(value)
   {
-    if(treeWidthMax == null){
+    if(treeWidthMax == null)
+    {
       treeWidthMax = value;
       treeWidthMin = value;
     }
@@ -385,16 +481,18 @@ function App() {
     }
   }
 
-  function RenderChildren(node, row = 1, offset = 0)
+  function RenderChildren(tree, node, row = 1, offset = 0)
   {  
+      const verticalOffset = 0.11*window.innerHeight;
       const elements = [];
-      elements.push((AppendChildNode(node, node["left"]+offset, row, nodeDimension)));
+      elements.push((AppendChildNode(tree, node, node["left"]+offset, row, nodeDimension, verticalOffset)));
       
       node["left"] = node['left'] + offset;
+      node["top"] = node["top"] + verticalOffset;
       node.children.forEach(child => {
         elements.push((
           <>
-            {RenderChildren(child, row+1, offset)}
+            {RenderChildren(tree, child, row+1, offset)}
           </>
         ));
       });
@@ -423,7 +521,8 @@ function App() {
       
       if(testRender)
       {
-        nodeDictionary[parent.id] = parent;     
+        nodeDictionary[parent.id] = parent;
+        if(!(String(parent.id) in originalDictionary)) originalDictionary[parent.id] = {...parent};     
         nodeList.push(parent);
       }
     }
@@ -765,8 +864,18 @@ function App() {
 
   return (
     <>
-      <div id = 'button-container' style = {{top: '0px', width: '100vw', height: String(iconSize)}}>
-        <div style = {{height: '100%', width: String(iconSize*2)+"px", float: 'right', marginRight: '35px'}}>
+      <div id = 'button-container' style = {{display:'flex', top: '0px', width: '100vw', height: String(iconSize), justifyContent: 'center', alignItems: 'center'}}>
+        <div style = {{height: '100%', width: String(iconDimension*4)+"px", marginLeft: 'auto', marginRight: 'auto'}}>
+          <button id = 'save-tree-positions' disabled className='button-header' style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
+           { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
+            }
+            <i className='pi pi-save save-icon' style = {{fontSize: iconSize}} />
+            <div style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
+              Save Position Changes
+            </div>
+          </button>
+        </div>
+        <div style = {{height: '100%', display:'flex', width: String(iconDimension*2)+"px",  marginRight: '35px'}}>
           <CreateRoot iconSize = {iconSize} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
           <CreateNode iconSize = {iconSize} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
         </div>
