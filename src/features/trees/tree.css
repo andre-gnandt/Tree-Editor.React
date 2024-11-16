@@ -47,6 +47,11 @@
 
 }
 
+.line 
+{
+    z-index: -1;
+}
+
 .save-icon:hover
 {
     /*

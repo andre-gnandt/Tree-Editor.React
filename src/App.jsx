@@ -19,6 +19,7 @@ import './features/trees/tree.css';
 'top'
 'line'
 'dialog'
+'path'
 */
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
 
   useEffect(() => {
     AddLines(tree);
+    document.getElementById('save-tree-positions').disabled = true;
   });
 
   function PixelSizeInCentimetres() {
@@ -66,9 +68,16 @@ function App() {
     return (cpi / (dpi * ppd));
   }
 
+  const putOptions = {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    type: 'PUT',
+    body: ""
+}
+
   async function updateManyNodes(id, nodeList){
     putOptions.body = JSON.stringify(nodeList);
-    await fetch("http://localhost:11727/api/Nodes/Many"+id, putOptions)
+    await fetch("http://localhost:11727/api/Nodes/Many/"+id, putOptions)
     .then((response)=>response.json())
     .then((responseJson)=>{return responseJson});
   };
@@ -78,6 +87,9 @@ function App() {
   {
     originalDictionary[node.id] = {...node};
     delete changeTracker[node.id];
+
+    if(Object(changeTracker).keys.length === 0)
+      document.getElementById('save-tree-positions').disabled = true;
   }
 
   function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
@@ -676,6 +688,38 @@ function App() {
     });
   }
 
+  async function SaveTreePositions()
+  {
+    const updateNodesList = [];
+    Object.keys(changeTracker).forEach(key => {
+      const parentId = changeTracker[key];
+      const updateNode = {...nodeDictionary[key]};
+      updateNode.nodeId = parentId;
+      updateNode['children'] = [];
+
+      delete updateNode['position'];
+      delete updateNode['line'];
+      delete updateNode['left'];
+      delete updateNode['top'];
+      delete updateNode['dialog'];
+      delete updateNode['path'];
+      
+      updateNodesList.push(updateNode);
+    });
+
+    console.log("update nodes list: ");
+    console.log(updateNodesList);
+    var result = [];
+    if(updateNodesList.length > 0)
+    {
+      result = await updateManyNodes(updateNodesList[0].id, updateNodesList);
+
+      changeTracker = new Object();
+      originalDictionary = {...nodeDictionary};
+      document.getElementById('save-tree-positions').disabled = true;
+    }
+  }
+
   function GetElementPosition(element)
   {
     var position = element.getBoundingClientRect();
@@ -804,7 +848,7 @@ function App() {
       {           
           lines.push(
             <>
-              <LineTo delay id={node.id+"_"+child.id} from={node.id} to={child.id} className={node.id+"_"+child.id} /> 
+              <LineTo style = {{zIndex: -20}} delay id={node.id+"_"+child.id} from={node.id} to={child.id} className={node.id+"_"+child.id} /> 
               {AddLines(child)}
             </>
           )        
@@ -866,7 +910,7 @@ function App() {
     <>
       <div id = 'button-container' style = {{display:'flex', top: '0px', width: '100vw', height: String(iconSize), justifyContent: 'center', alignItems: 'center'}}>
         <div style = {{height: '100%', width: String(iconDimension*4)+"px", marginLeft: 'auto', marginRight: 'auto'}}>
-          <button id = 'save-tree-positions' disabled className='button-header' style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
+          <button onClick={() => { SaveTreePositions();}} id = 'save-tree-positions' className='button-header' style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
            { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
             }
             <i className='pi pi-save save-icon' style = {{fontSize: iconSize}} />
