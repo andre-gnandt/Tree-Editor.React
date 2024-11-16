@@ -324,9 +324,7 @@ function App() {
   function OnDropNode(mouse, node)
   {
     dragging = false;
-    const nodeElement = document.getElementById(node.id);
-    nodeElement.style.zIndex = 0;
-    nodeElement.style.pointerEvents = 'auto';
+    SetZIndices(node, 4, 0, 'auto');
     
     if(mouseOverNode && mouseOverNode !== node.id)
     {
@@ -354,14 +352,25 @@ function App() {
     }
   }
 
+  function SetZIndices(node, nodeIndex, lineIndex, pointerEvents)
+  { 
+    const nodeElement = document.getElementById(node.id);
+    nodeElement.style.zIndex = nodeIndex;
+    nodeElement.style.pointerEvents = pointerEvents;
+
+    const line = document.getElementsByClassName(node.nodeId+"_"+node.id);
+      if(line && line.length > 0) line[0].style.zIndex = lineIndex;
+
+    node.children.forEach(child => {
+      SetZIndices(child, nodeIndex, lineIndex)
+    })
+  }
+
   function StartDrag(node)
   {
     dragging = true;
 
-    const nodeElement = document.getElementById(node.id);
-    nodeElement.style.zIndex = 1;
-    nodeElement.style.pointerEvents = 'none';
-    
+    SetZIndices(node, 12, 8, 'none');
     RemoveLine(node);
   }
 
@@ -391,7 +400,7 @@ function App() {
             className={child.id} 
             onMouseLeave={() => {mouseOverNode = null;}} 
             onMouseEnter={() => {mouseOverNode = child.id;}} 
-            style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 0, position:'absolute',top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
+            style = {{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 4, position:'absolute',top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', display: 'table', border: '1px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
           >
             
             <TreeNode 
@@ -834,7 +843,7 @@ function App() {
   {
     if(node.nodeId) createRoot(document.getElementById('line-container')).render
     (
-      <LineTo delay id = {node.nodeId+"_"+node.id} from={node.nodeId} to={node.id} className = {node.nodeId+"_"+node.id} />
+      <LineTo style ={{zIndex: 0}} delay id = {node.nodeId+"_"+node.id} from={node.nodeId} to={node.id} className = {node.nodeId+"_"+node.id} />
     );
   }
   
@@ -848,7 +857,7 @@ function App() {
       {           
           lines.push(
             <>
-              <LineTo style = {{zIndex: -20}} delay id={node.id+"_"+child.id} from={node.id} to={child.id} className={node.id+"_"+child.id} /> 
+              <LineTo style = {{zIndex: 0}} delay id={node.id+"_"+child.id} from={node.id} to={child.id} className={node.id+"_"+child.id} /> 
               {AddLines(child)}
             </>
           )        
