@@ -33,7 +33,7 @@ const CreateRoot = (props) => {
     return (
         <>
             <button className='button-header button-root tooltip' style = {{marginRight: '1vw'}}>
-                <i className='pi pi-warehouse' style = {{fontSize: String(iconSize*0.9)+'px'}} onClick = {() => { setCreateNode(true);}} />
+                <i id = 'create-root-button' className='pi pi-warehouse' style = {{fontSize: '7.2vh'}} onClick = {() => { setCreateNode(true);}} />
                 <span class="tooltip-left">New Root Node</span>
             </button> 
             <Dialog className={"dialogContent"} showHeader = {false} headerStyle={{background: 'white', height: '0px'}} contentStyle={{background: 'white'}} visible = {createNode} onHide={() => {if (!createNode) return; setCreateNode(false);}} > 

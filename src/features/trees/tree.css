@@ -93,6 +93,24 @@ button:disabled
     border: none;
 }
 
+.button-root-empty
+{
+    outline: none;
+    border: none;
+}
+
+.button-root-empty:hover
+{
+    outline: none;
+    border: none;
+}
+
+.button-root-empty:focus
+{
+    outline: none;
+    border: none;
+}
+
 .button-root:focus
 {
     outline: none;

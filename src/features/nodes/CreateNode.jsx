@@ -14,6 +14,7 @@ const CreateNode = (props) => {
     const iconSize = props.iconSize;
     const tree = props.rootNode;
     const ReRenderTree = props.render;
+    const rootId = tree ? tree.id : null;
 
     const newNode = 
     {
@@ -22,7 +23,7 @@ const CreateNode = (props) => {
         level: 0,
         description: null,
         number: null,
-        nodeId: tree ? tree.id : null,
+        nodeId: rootId,
         rankId: null,
         children: [],
         files: [],
@@ -32,8 +33,8 @@ const CreateNode = (props) => {
 
     return (
         <>  
-            <button className='button-header button-create tooltip'>
-                <i className='pi pi-upload' style = {{fontSize: String(iconSize*0.9)+'px'}} onClick = {() => { setCreateNode(true);}} />
+            <button className = {(rootId == null) ? 'button-header button-save tooltip' : 'button-header button-create tooltip'} disabled = {(rootId == null )}>
+                <i className='pi pi-upload' style = {{fontSize: '7.2vh'}} onClick = {() => { setCreateNode(true);}} />
                 <span class="tooltip-left">New Node</span>
             </button>
             <Dialog className={"dialogContent"} showHeader = {false} headerStyle={{background: 'white', height: '0px'}} contentStyle={{background: 'white'}} visible = {createNode} onHide={() => {if (!createNode) return; setCreateNode(false);}} > 

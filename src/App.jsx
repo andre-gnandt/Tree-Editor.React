@@ -46,6 +46,8 @@ function App() {
   var nodeList = [];
   var dragging = false;
   var mouseOverNode = null;
+  const maximumNodeSize = 0.5*window.innerHeight;
+  const windowWidth = window.innerWidth;
   //var 
   const minimumNodeSize = 1.15/pixelsToCentimetres; //1.4 cm in pixels
   var nodeDimension = 80;
@@ -300,9 +302,12 @@ function App() {
 
   function AlterTreeAtructureForCreateRoot(tree, newNode)
   {
-    const oldRootNode = tree;
-    AddNodeToChildren(newNode, oldRootNode);
-    oldRootNode.nodeId = newNode.id;
+    if(tree != null && ('id' in tree))
+    {
+      const oldRootNode = tree;
+      AddNodeToChildren(newNode, oldRootNode);
+      oldRootNode.nodeId = newNode.id;
+    }
 
     return newNode;
   }
@@ -476,7 +481,7 @@ function App() {
       return RenderChildren(tree, tree, 0, offSet);
     }
 
-    return <></>;
+    return EmptyTreeJSX();
   }
 
   function SetTreeDimensions(tree)
@@ -929,29 +934,50 @@ function App() {
     }
   }
 
+  const EmptyTreeJSX = () => 
+  {
+    const windowWidth = window.innerWidth;
+    const maximumNodeSize = window.innerHeight*0.5;
+
+    return (
+      <>
+            <div style = {{position: 'absolute', left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String(maximumNodeSize/4)+'px', height: String(maximumNodeSize)+'px', width: String(maximumNodeSize)+'px'}}>
+              <button onClick={(event) => {document.getElementById('create-root-button').click();}} className='button-root-empty' style = {{padding: '0 0 0 0', backgroundColor: 'lightGrey', color: '#d68a16'}}>
+                  <i className='pi pi-warehouse' style = {{fontSize: String(maximumNodeSize)+'px'}} onClick = {() => { setCreateNode(true);}} />
+              </button> 
+            </div >
+              <span style = {{fontSize: '5vh', color: '#d68a16', position: 'absolute', left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String((5*maximumNodeSize/4)+20)+'px', width: String(maximumNodeSize)+'px'}}>
+                This tree is empty, click the icon above to create the root node!
+              </span>
+          </>
+    );
+  }
+
   return (
     <>
       <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
-        <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: String(iconSize), justifyContent: 'center', alignItems: 'center'}}>
-          <div style = {{height: '100%', width: String(iconDimension*4)+"px", marginLeft: 'auto', marginRight: 'auto'}}>
+        <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '8vh', justifyContent: 'center', alignItems: 'center'}}>
+          <div style = {{height: '100%', width: '32vh', marginLeft: 'auto', marginRight: 'auto'}}>
             <button onClick={() => { SaveTreePositions();}} id = 'save-tree-positions' className='button-header button-save tooltip' style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
             { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
               }
-              <i className='pi pi-save save-icon' style = {{fontSize: iconSize}} />
-              <div style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
+              <i className='pi pi-save save-icon' style = {{fontSize: '8vh'}} />
+              <div style = {{fontSize: '3vh',height: '100%', width: '100%', padding: '0 0 0 0'}}>
                 Save Position Changes
               </div>
               <span class="tooltip-bottom">Save Tree Positions</span>
             </button>
           </div>
-          <div id = 'create-container' style = {{height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",  marginRight: '35px'}}>
+          <div id = 'create-container' style = {{height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",  marginRight: '2vw'}}>
           </div>
         </div>
       </div>
       <div id = 'line-container'>
       </div>
       <div id = 'tree-root'>
-        {RenderTree(tree)} 
+      
+            {RenderTree(tree)}            
+     
       </div>
     </>
   );
