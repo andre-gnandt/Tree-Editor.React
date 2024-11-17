@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Dialog } from 'primereact/dialog';
-import './detailsList.css'
+import './detailsList.css';
 import NodeDetails from './NodeDetails';
 import { Provider } from 'react-redux';
 import { store } from '/LocalTreeData.React/src/store';
+
 
 const TreeNode = (props) => {
     const[dialog, setDialog] = useState(false);
@@ -84,17 +85,20 @@ const TreeNode = (props) => {
                         <img className='image' style = {{cursor: 'pointer'}} onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {GetImageSource()}/>
                         <div
                             onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}}
-                            style = {{position: 'absolute',
+                            style = {{  fontSize: String(props.css.nodeSize*0.155)+'px',
+                                        position: 'absolute',
                                         top: '50%',
                                         left: '50%',
                                         transform: 'translate(-50%, -50%)', cursor: 'pointer'}}
                         >
                             {props.props.title}
-                        </div>
+                        </div>                      
                     </div>
                     :
-                    <button onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} 
-                        style = {{backgroundColor: '#f0efe4', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(props.css.nodeSize)+'px', maxWidth: String(props.css.nodeSize)+'px',  height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
+                    <button 
+                        className='tree-button'       
+                        onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} 
+                        style = {{ padding: '0 0 0 0 ', fontSize: String(props.css.nodeSize*0.155)+'px', backgroundColor: '#f0efe4', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(props.css.nodeSize)+'px', maxWidth: String(props.css.nodeSize)+'px',  height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
                         {props.props.title}
                     </button> 
                 }                                   

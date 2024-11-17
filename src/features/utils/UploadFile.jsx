@@ -41,8 +41,6 @@ const UploadFile = (props) => {
         return file;
     }
 
-  console.log("RE RENDER File Uploader");
-
   node.files = nodeFiles? [...nodeFiles] : [];
 
   const SetStateThumbnail = (value) => {

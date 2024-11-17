@@ -1,30 +1,69 @@
-:root {
-    --form-color: rgba(204, 255, 255 1);
-    /*--form-border-color: rgba(204, 255, 255 0.9);*/
-    --form-border-color: #64ffffe6;
-    --form-focused-color: rgb(39, 77, 245);
-    
+:root {   
     --button-blue: #3198aa;
     --button-blue-focused: #274df5;
+
+    --button-brown: #d68a16;
+    --button-brown-focused: brown;
+
+    --button-green: #0cdc16;
+    --button-green-focused: green;
+
+    --background-color: silver;
+}
+
+.dialogContent {
+    width: max(45vw, 5cm);
+    height: max(90vh, 7.5cm);
+}
+
+.button-save
+{
+    color: var(--button-blue);
+}
+
+.button-save:enabled:hover
+{
+    background-color: var(--button-blue-focused);
+}
+
+.button-create
+{
+    color: var(--button-green);
+}
+
+.button-create:enabled:hover
+{
+    background-color: var(--button-green-focused);
+}
+
+.button-root
+{
+    color: var(--button-brown);
+}
+
+.button-root:enabled:hover
+{
+    background-color: var(--button-brown-focused);
 }
 
 .button-header
 {
-    background-color: lightgrey;
-    color: var(--button-blue);
+    height: 100%;
+    width: 100%;
+    padding: 0 0 0 0;
+    background-color: var(--background-color);
     border: none;
     outline: none;
 }
 
 .button-header:enabled:hover
 {
-    background-color: var(--button-blue-focused);
-    color: lightgrey;
+    color: var(--background-color);
     border: none;
     outline: none;
 }
 
-.button-header:disabled 
+button:disabled 
 {
     background: repeating-linear-gradient(
   45deg,
@@ -36,8 +75,39 @@
 
 }
 
-.button-header:focus{
+.button-header:focus
+{
     outline: none;
+    border: none;
+}
+
+.button-create:focus
+{
+    outline: none;
+    border: none;
+}
+
+.button-save:focus
+{
+    outline: none;
+    border: none;
+}
+
+.button-root:focus
+{
+    outline: none;
+    border: none;
+}
+
+button:hover
+{
+    outline: none;
+    border: none;
+}
+
+button:focus{
+    outline: none;
+    border: none;
 }
 
 .save-icon
@@ -65,3 +135,155 @@
     color: lightgrey;
     */
 }
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border: none
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    font-size: 30px;
+    width: 200px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 300;
+  }
+
+  .tooltip .tooltip-bottom
+  {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    font-size: 30px;
+    width: 200px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 300;
+
+    top: 100%;
+    left: 50%;
+    margin-left: -60px;
+  }
+
+  .tooltip .tooltip-left
+  {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    font-size: 30px;
+    width: 200px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 300;
+
+    top: -5px;
+    right: 105%;
+  }
+
+  .tooltip .tooltip-right
+  {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    font-size: 30px;
+    width: 200px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 300;
+
+    top: -5px;
+  left: 105%;
+  }
+
+  .tooltip .tooltip-top
+  {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    font-size: 30px;
+    width: 200px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 300;
+
+    bottom: 100%;
+  left: 50%;
+  margin-left: -60px;
+  }
+  
+  .tooltip:enabled:hover .tooltiptext {
+    visibility: visible;
+  }
+
+  .tooltip:enabled:hover .tooltip-left {
+    visibility: visible;
+  }
+
+  .tooltip:enabled:hover .tooltip-right {
+    visibility: visible;
+  }
+
+  .tooltip:enabled:hover .tooltip-top {
+    visibility: visible;
+  }
+
+  .tooltip:enabled:hover .tooltip-bottom {
+    visibility: visible;
+  }
+
+  .tooltip-top-manual-show
+  {
+    visibility: visible;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    font-size: 30px;
+    width: 200px;
+    /* Position the tooltip */
+    position: abso;
+    z-index: 300;
+
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+  }
+
+  .tooltip-top-manual-hide 
+  {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    font-size: 30px;
+    width: 200px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 300;
+
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+  }

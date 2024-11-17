@@ -59,6 +59,7 @@ function App() {
   useEffect(() => {
     AddLines(tree);
     document.getElementById('save-tree-positions').disabled = true;
+    RenderCreationButtons();
   });
 
   function PixelSizeInCentimetres() {
@@ -82,14 +83,22 @@ function App() {
     .then((responseJson)=>{return responseJson});
   };
 
+  function RenderCreationButtons()
+  {
+    const createContainer = createRoot(document.getElementById('create-container'));
+    createContainer.render(CreationButtons());
+  }
+
   //used for a non parent changed update of node content
   function UpdateChangeTrackerCallback(node)
   {
     originalDictionary[node.id] = {...node};
     delete changeTracker[node.id];
 
-    if(Object(changeTracker).keys.length === 0)
+    if(Object(changeTracker).keys.length === 0) 
+    {
       document.getElementById('save-tree-positions').disabled = true;
+    }
   }
 
   function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
@@ -141,6 +150,7 @@ function App() {
     CorrectTransforms(inputTree);
     ResetElementPositions(inputTree);
     AddLines(inputTree);
+    RenderCreationButtons();
 
     //update the change tracker (for drag and drop of subtrees) to remove any changes already saved in the database
     if(callback === "update")
@@ -172,12 +182,9 @@ function App() {
       treeUnsaved = true;
     }
 
-    console.log("change tracker");
-    console.log(changeTracker);
     document.getElementById('save-tree-positions').disabled = !(treeUnsaved);
   }
 
-  //try to refrain from using this function
   function FindNodeInTree(id, tree)
   {
     if(tree.id === id) return tree; 
@@ -394,15 +401,13 @@ function App() {
             onStop = {(drag) => {if(dragging){OnDropNode(drag, child);} }} 
             onDrag = {(drag) =>{if(!dragging){StartDrag(child);} RepositionSubTree(drag, child);}}
         >
-          
           <div 
             id = {child.id} 
             className={child.id+" treenode-container"} 
             onMouseLeave={() => {mouseOverNode = null;}} 
             onMouseEnter={() => {mouseOverNode = child.id;}} 
             style = {{backgroundColor: 'black', borderRadius: String(nodeSize*0.2)+'px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 4, position:'absolute',top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', display: 'table', border: '2px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
-          >
-            
+          > 
             <TreeNode 
               setChangeTracker = {UpdateChangeTrackerCallback}
               rootNode = {tree} 
@@ -716,8 +721,6 @@ function App() {
       updateNodesList.push(updateNode);
     });
 
-    console.log("update nodes list: ");
-    console.log(updateNodesList);
     var result = [];
     if(updateNodesList.length > 0)
     {
@@ -881,6 +884,17 @@ function App() {
     lineContainer.render(lineJSX);
   }
 
+  const CreationButtons = () => 
+  {
+    return (
+      <>
+        <CreateRoot iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+        <CreateNode iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+      </>
+    );
+  }
+
+
   function SetPositions(node)
   {
     if(node != null && 'id' in node){  
@@ -917,20 +931,21 @@ function App() {
 
   return (
     <>
-      <div id = 'button-container' style = {{display:'flex', top: '0px', width: '100vw', height: String(iconSize), justifyContent: 'center', alignItems: 'center'}}>
-        <div style = {{height: '100%', width: String(iconDimension*4)+"px", marginLeft: 'auto', marginRight: 'auto'}}>
-          <button onClick={() => { SaveTreePositions();}} id = 'save-tree-positions' className='button-header' style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
-           { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
-            }
-            <i className='pi pi-save save-icon' style = {{fontSize: iconSize}} />
-            <div style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
-              Save Position Changes
-            </div>
-          </button>
-        </div>
-        <div style = {{height: '100%', display:'flex', width: String(iconDimension*2)+"px",  marginRight: '35px'}}>
-          <CreateRoot iconSize = {iconSize} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
-          <CreateNode iconSize = {iconSize} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+      <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
+        <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: String(iconSize), justifyContent: 'center', alignItems: 'center'}}>
+          <div style = {{height: '100%', width: String(iconDimension*4)+"px", marginLeft: 'auto', marginRight: 'auto'}}>
+            <button onClick={() => { SaveTreePositions();}} id = 'save-tree-positions' className='button-header button-save tooltip' style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
+            { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
+              }
+              <i className='pi pi-save save-icon' style = {{fontSize: iconSize}} />
+              <div style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
+                Save Position Changes
+              </div>
+              <span class="tooltip-bottom">Save Tree Positions</span>
+            </button>
+          </div>
+          <div id = 'create-container' style = {{height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",  marginRight: '35px'}}>
+          </div>
         </div>
       </div>
       <div id = 'line-container'>

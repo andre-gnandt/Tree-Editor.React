@@ -20,6 +20,12 @@
     text-align: center;
 }
 
+.tree-button:focus
+{
+    outline: none;
+    border: none;
+}
+
 .dialogContent {
     width: max(45vw, 5cm);
     height: max(90vh, 7.5cm);
