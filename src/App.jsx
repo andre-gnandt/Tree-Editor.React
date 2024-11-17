@@ -22,10 +22,11 @@ import './features/trees/tree.css';
 'path'
 */
 
-function App() {
+const App = () => {
   const firstRender = useRef(true);
   const [treeState, setTree] = useState(null);
   var tree = {...treeState};
+  const [requestComplete, setRequestComplete] = useState(false);
   const [createNode, setCreateNode] = useState(null);
   const pixelsToCentimetres = PixelSizeInCentimetres();
   var maxLevels = new Object();
@@ -221,17 +222,22 @@ function App() {
     })
   }
 
-  function GetTrees(){
+  async function GetTrees(){
     fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
         result => { 
           var nodes = result[0];
+          setRequestComplete(true);
           setTree(nodes);
         }
     );   
   };
 
-  if(firstRender.current){
+  function waitForTrees(){
     GetTrees();
+  }
+
+  if(firstRender.current){
+    waitForTrees();
     firstRender.current = false;
   }
 
@@ -480,8 +486,12 @@ function App() {
 
       return RenderChildren(tree, tree, 0, offSet);
     }
+    else if(requestComplete)
+    {
+      return EmptyTreeJSX();
+    }
 
-    return EmptyTreeJSX();
+    return <></>;
   }
 
   function SetTreeDimensions(tree)
