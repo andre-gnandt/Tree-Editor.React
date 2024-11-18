@@ -98,7 +98,7 @@ const App = () => {
     originalDictionary[node.id] = {...node};
     delete changeTracker[node.id];
 
-    if(Object(changeTracker).keys.length === 0) 
+    if(Object.keys(changeTracker).length === 0) 
     {
       document.getElementById('save-tree-positions').disabled = true;
     }

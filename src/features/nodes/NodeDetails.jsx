@@ -263,7 +263,6 @@ const NodeDetails = (input) => {
                 input.render("update", null, node.id, node.nodeId, oldParentId);
             }
             else{
-                //setStateProperty();
                 setNode(props);
                 renderTreeNode();
                 SetChangeTracker(props);
