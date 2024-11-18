@@ -93,6 +93,7 @@ const UploadFile = (props) => {
 
   function RemoveImage()
   {
+    document.getElementById('file-upload-button').value = null;
     node.thumbnailId = null;
     SetStateThumbnail(null);
     setDefaultFile(null); 
@@ -152,8 +153,7 @@ const UploadFile = (props) => {
                 <button className="button" style = {{width: '15vh', height: '5vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
               </>
             )}  
-
-                 
+              
             <input
                 type="file"
                 id = 'file-upload-button'
