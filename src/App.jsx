@@ -621,20 +621,12 @@ const App = () => {
 
         var leftSpace = 0;
     
-        if((i > 0 || children.length%2==0) && i <= middleIndex){ leftSpace = i > 1 ? -1*leftCount*i : -1*leftCount; }
-        if((i > 0 || children.length%2==0) && i > middleIndex){ leftSpace = (i - middleIndex) > 1 ? leftCount*(i - middleIndex) : leftCount; }
+        if((i > 0 && children.length%2==1) && i <= middleIndex){ leftSpace = i > 1 ? -1*leftCount*i : -1*leftCount; }
+        if((i > 0 && children.length%2==1) && i > middleIndex){ leftSpace = (i - middleIndex) > 1 ? leftCount*(i - middleIndex) : leftCount; }
+        if(children.length%2==0 && i <= middleIndex){ leftSpace = i > 1 ? -1*leftCount*(i-0.75) : -1*leftCount*0.25; }
+        if(children.length%2==0 && i > middleIndex){ leftSpace = (i - middleIndex) > 1 ? leftCount*(i - middleIndex - 0.75) : leftCount*0.25; }
 
         left = leftSpace+parentLeft;
-
-        if(child.nodeId == '0DFA6C8A-589E-416F-A9B0-714D3794679B'.toLowerCase())
-        {
-          console.log(parentLeft);
-          //console.log(leftSpace);
-          console.log(left);
-          //console.log(i);
-          console.log(j);
-          //console.log(i);
-        }
         var pathSplitter = 'middle'; 
 
         if(i == 0){ pathSplitter = 'middle';}
@@ -666,7 +658,6 @@ const App = () => {
           if(i >= children.length-1)
           {
             childPositions[String(parent.id)] = parentNodePosition;
-            if(child.nodeId == '738F320A-B256-41AF-9892-D7B5F49832F7'.toLowerCase()){console.log(childPositions[String(parent.id)]);}
           }
         }
       }
