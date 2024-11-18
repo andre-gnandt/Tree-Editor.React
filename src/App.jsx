@@ -592,7 +592,9 @@ const App = () => {
 
     var parentNodePosition = new Object();
     
-    children.forEach(child => {
+    while(i < children.length)
+    {
+      var child = children[i];
 
       var maxRight =  'Right' in maxLevel ? maxLevel['Right'] : null;
       var maxLeft = 'Left' in maxLevel ? maxLevel['Left'] : null; 
@@ -600,18 +602,44 @@ const App = () => {
 
       if(path === 'middle')
       {
+        var middleIndex = Math.floor(children.length/2);
+        if(children.length%2 == 0){ middleIndex--;}
+        //console.log(middleIndex);
+        var j = 0;
+        if(i <= middleIndex)
+        {
+          j = middleIndex-i;
+        }
+        else
+        {
+          j  = i;
+        }
+
+        //if(child.nodeId == '738F320A-B256-41AF-9892-D7B5F49832F7'.toLowerCase())//console.log(j);
+
+        child = children[j];
+
         var leftSpace = 0;
     
-        if((i > 0 || children.length%2==0) && i%2 == 0){ leftSpace = childCountEven > 1 ? -1*leftCount*childCountEven : -1*leftCount; childCountEven++; }
-        if((i > 0 || children.length%2==0) && i%2 == 1){ leftSpace = childCountOdd > 1 ? leftCount*childCountOdd : leftCount; childCountOdd++; }
+        if((i > 0 || children.length%2==0) && i <= middleIndex){ leftSpace = i > 1 ? -1*leftCount*i : -1*leftCount; }
+        if((i > 0 || children.length%2==0) && i > middleIndex){ leftSpace = (i - middleIndex) > 1 ? leftCount*(i - middleIndex) : leftCount; }
 
         left = leftSpace+parentLeft;
 
+        if(child.nodeId == '0DFA6C8A-589E-416F-A9B0-714D3794679B'.toLowerCase())
+        {
+          console.log(parentLeft);
+          //console.log(leftSpace);
+          console.log(left);
+          //console.log(i);
+          console.log(j);
+          //console.log(i);
+        }
         var pathSplitter = 'middle'; 
 
         if(i == 0){ pathSplitter = 'middle';}
-        else if(i%2 == 0){ pathSplitter = 'left';}
-        else if(i%2 == 1){ pathSplitter = 'right';}
+        else if(i<= middleIndex){ pathSplitter = 'left';}
+        else if(i> middleIndex){ pathSplitter = 'right';}
 
         if(pathSplitter === 'left' && maxLeft != null && left > maxLeft-elementWidth) left = maxLeft-elementWidth;
         if(pathSplitter === 'right' && maxRight != null && left < maxRight+elementWidth) left = maxRight+elementWidth;
@@ -632,12 +660,13 @@ const App = () => {
         if(maxRight == null || left > maxRight) maxLevel["Right"] = left;
 
         if(parent){
-          if(i >= children.length-2 && children.length > 1  && i%2 == 0){ parentNodePosition["Left"] = left; }
-          if(i >= children.length-2 && children.length > 1 && i%2 == 1){ parentNodePosition["Right"] = left; }
+          if(i == middleIndex && children.length > 1 ){ parentNodePosition["Left"] = left; }
+          if(i == children.length-1 && children.length > 1 ){ parentNodePosition["Right"] = left; }
           if(children.length == 1){ parentNodePosition["Left"] = left; parentNodePosition["Right"] = left; }
           if(i >= children.length-1)
           {
             childPositions[String(parent.id)] = parentNodePosition;
+            if(child.nodeId == '738F320A-B256-41AF-9892-D7B5F49832F7'.toLowerCase()){console.log(childPositions[String(parent.id)]);}
           }
         }
       }
@@ -714,7 +743,8 @@ const App = () => {
         
         
       i++;
-    });
+    
+    }
   }
 
   async function SaveTreePositions()
