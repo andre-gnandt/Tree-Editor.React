@@ -278,6 +278,7 @@ const NodeDetails = (input) => {
             input.render("create", props);
 
             dispatch(setStateProperty({key: 'id', value: resultNode.id}));
+            setCreate(false);
         }  
         else if(root)
         {
@@ -289,7 +290,11 @@ const NodeDetails = (input) => {
             input.render("new root", props);
 
             dispatch(setStateProperty({key: 'id', value: resultNode.id}));
+            setRoot(false);
         }  
+
+        changeCount.current = 0;
+        setHideButtons(changeCount.current);
     }
 
     const GetHeader = () => {
@@ -345,7 +350,7 @@ const NodeDetails = (input) => {
                             placeholder="Title" 
                             className= {(titleRequired) ? "title" : "title-required"}
                             spellCheck = {false}
-                            onChange = {(e) => {CheckValueChange(props.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title ? node.title.trim() : ""} />
+                            onChange = {(e) => {CheckValueChange(props.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title ? node.title : ""} />
                     </div>
                 </div>
                 <div className="entryContainer">
