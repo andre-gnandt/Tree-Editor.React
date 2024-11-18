@@ -621,7 +621,7 @@ const App = () => {
       {
         var middleIndex = Math.floor(children.length/2);
         if(children.length%2 == 0){ middleIndex--;}
-        //console.log(middleIndex);
+
         var j = 0;
         if(i <= middleIndex)
         {
@@ -631,8 +631,6 @@ const App = () => {
         {
           j  = i;
         }
-
-        //if(child.nodeId == '738F320A-B256-41AF-9892-D7B5F49832F7'.toLowerCase())//console.log(j);
 
         child = children[j];
 

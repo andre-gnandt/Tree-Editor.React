@@ -1,8 +1,8 @@
 :root {
-    --form-color: rgba(204, 255, 255 1);
+    --form-color: rgba(204, 255, 255, 1);
     /*--form-border-color: rgba(204, 255, 255 0.9);*/
     --form-border-color: #64ffffe6;
-    --form-focused-color: rgb(39, 77, 245);
+    --form-focused-color: #274df5;
 }
 
 .image {
@@ -29,6 +29,27 @@
 .dialogContent {
     width: max(45vw, 5cm);
     height: max(90vh, 7.5cm);
+}
+
+.thumbnail-placeholder 
+{
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  border: 3px dotted var(--form-focused-color);
+  background: white;
+  background-image: radial-gradient(var(--form-border-color), 2px, transparent 0);
+  background-size: 4vh 4vh;
+  background-position: 0vh 0vh;
+  color: var(--form-focused-color);
+  text-align: center;
+  justify-content: center;
+  font-size: 3vh;
+}
+
+.thumbnail-placeholder:hover
+{
+  background-image: radial-gradient(var(--form-focused-color), 2px, transparent 0);
 }
 
 .thumbnail-container {

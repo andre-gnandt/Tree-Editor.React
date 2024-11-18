@@ -1,18 +1,14 @@
 import React, { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
 import { setStateProperty } from "../nodes/nodeSlice";
-import { FileUpload } from 'primereact/fileupload';
 import '../nodes/detailsList.css';
+import 'primeicons/primeicons.css';
 
-// Define a functional component named UploadAndDisplayImage
 const UploadFile = (props) => {
-  if(props.files == null){ return <></>;}
   //const stateNode = useSelector(state => state.node);
   const dispatch = useDispatch();
   const thumbnailUpload =  true;
   const node = {...props.node};
-  const create = props.create;
   const fileChangeCallBack = props.fileChangeCallBack;
   const firstRender = useRef(true);
   const uploadName = useRef(null);
@@ -57,8 +53,6 @@ const UploadFile = (props) => {
   {
 
     newUpload.current = false;
-    console.log(selectedImage);
-    console.log(uploadName.current);
     reader.onload = GetFileData;
     reader.readAsArrayBuffer(selectedImage);
   }
@@ -119,12 +113,11 @@ const UploadFile = (props) => {
     }
   }
 
-  // Return the JSX for rendering
   return (
   <>
     <div id = 'thumbnail-uploader' style = {{height: '100%', width: '100%'}}>
         <div style = {{height: '33vh', width: '100%'}} className="title-container" onMouseOver={() => {FitThumbnailImage(false);}} onMouseOut = {() => {FitThumbnailImage(true);}}>
-            {(selectedImage || defaultFile )&& (
+          { (selectedImage || defaultFile ) ? (
                 <>
                   <div id = 'thumbnail-expander' className="thumbnail-expanded">
                     <img
@@ -134,7 +127,19 @@ const UploadFile = (props) => {
                     />
                   </div>
                 </>
-            )}
+            )
+            :
+            (
+              <>
+                <div className = 'thumbnail-placeholder' onClick = {() => {document.getElementById('file-upload-button').click();}}>
+                  <i className='pi pi-upload' style = {{position: 'relative', top: '8vh', fontSize: '11vh', height: '11vh', width: '11vh'}}/>
+                  <div style = {{position: 'relative', top: '10vh'}}>
+                    Upload Image!
+                  </div>
+                </div>
+              </>
+            )          
+          }
         </div>
         <div style = {{}}>
 
@@ -153,33 +158,32 @@ const UploadFile = (props) => {
                 <button className="button" style = {{width: '15vh', height: '5vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
               </>
             )}  
-              
+
             <input
                 type="file"
                 id = 'file-upload-button'
                 accept="image/png, image/gif, image/jpeg"
                 style = {{visibility: 'hidden'}}
-                //style = {{height: '7vh', width: '17vh'}}
-                //className="button"
-                onChange={(event) => {
-                var fileName = event.target.files[0].name;
-                var originalName = fileName;
-                var matchingIndex = -2
-                var i = 0
-            
-                while(matchingIndex !== -1)
+                onChange={(event) => 
                 {
-                    if(matchingIndex > -1)
+                    var fileName = event.target.files[0].name;
+                    var originalName = fileName;
+                    var matchingIndex = -2
+                    var i = 0
+                
+                    while(matchingIndex !== -1)
                     {
-                    fileName = originalName+"-"+String(i);
+                        if(matchingIndex > -1)
+                        {
+                        fileName = originalName+"-"+String(i);
+                        }
+                        matchingIndex = node.files.findIndex((object) => object.name == fileName);
+                        i++;
                     }
-                    matchingIndex = node.files.findIndex((object) => object.name == fileName);
-                    i++;
-                }
 
-                uploadName.current = fileName;
-                newUpload.current = true;
-                setSelectedImage(event.target.files[0]); 
+                    uploadName.current = fileName;
+                    newUpload.current = true;
+                    setSelectedImage(event.target.files[0]); 
                 }}
             />
             {///<label for="img" className="button">Upload</label>
