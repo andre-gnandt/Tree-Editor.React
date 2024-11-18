@@ -188,6 +188,17 @@ const App = () => {
     document.getElementById('save-tree-positions').disabled = !(treeUnsaved);
   }
 
+  function CompareNodes(a, b)
+    {
+        if ( a.id < b.id ){                                                                   
+            return -1;
+          }
+          if ( a.id > b.id ){
+            return 1;
+          }
+          return 0;
+    }
+
   function FindNodeInTree(id, tree)
   {
     if(tree.id === id) return tree; 
@@ -257,12 +268,18 @@ const App = () => {
   function AddNodeToChildren(parentNode, childNode)
   {
     parentNode.children.push(childNode);
+    parentNode.children.sort(CompareNodes);
+    console.log("sorted add children: ");
+    console.log(parentNode.children);
   }
 
   function RemoveChildFromNode(oldParentNode, childId)
   {
       const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === childId);
       if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
+      oldParentNode.children.sort(CompareNodes);
+      console.log("sorted remove child: ");
+      console.log(oldParentNode.children);
   }
 
   function AlterTreeStructureForDeleteCascade(tree, nodeId, parentNodeId, node = null, parentNode = null)
@@ -334,7 +351,7 @@ const App = () => {
       
       node.nodeId = newParentNodeId;
       RemoveChildFromNode(oldParentNode, node.id);
-      newParentNode.children.push(node);
+      AddNodeToChildren(newParentNode, node);
       
       return node;
   }
