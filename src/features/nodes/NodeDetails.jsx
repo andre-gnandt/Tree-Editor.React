@@ -308,14 +308,14 @@ const NodeDetails = (input) => {
         <>  
             <div style = {{width: '100%', height: '100%', backgroundColor: '#DCDCDC'}}>
                 <div className='fixed-header'>
-                    <div style = {{top: '1.5vw', position: 'relative', height: '6.5vh', fontSize: '4vh', display: 'flex', textAlign: 'top', justifyContent: 'top'}}>
-                        <i onClick={() => {unMount()}} className='pi pi-times' style = {{ marginRight: 'auto', cursor: 'pointer', fontSize: '2.5vw'}}/>
-                        <header style = {{width: '33vw', marginLeft: 'auto', marginRight: 'auto', float: 'middle', textAlign: 'top', justifyContent: 'top'}}>{GetHeader()}</header>                   
+                    <div style = {{top: '1.5vw', position: 'relative', height: '6.5vh', fontSize: '6vh', display: 'flex', textAlign: 'center', justifyContent: 'center'}}>
+                        <i onClick={() => {unMount()}} className='pi pi-times' style = {{ marginRight: 'auto', cursor: 'pointer', fontSize: '6.5vh'}}/>
+                        <div className='dialog-header' style = {{fontSize: '5vh', width: '33vw', textAlign: 'center', verticalAlign: 'middle'}}>{GetHeader()}</div>                   
                         { (node.nodeId && !root && !create) && (
                             <>
                                 <div style = {{marginLeft: 'auto', height: '6.5vh', width: '7vw',  float: 'right' }}>
-                                    <button className='button' 
-                                        style = {{backgroundColor: 'red', height: '6.5vh', maxHeight: '6.5vh', float: 'right', fontSize: '3vh', justifyContent: 'center'}} 
+                                    <button className='button text-overflow' 
+                                        style = {{width:'100%', backgroundColor: 'red', height: '6.5vh', maxHeight: '6.5vh', float: 'right', fontSize: '3vh', justifyContent: 'center'}} 
                                         onClick={() => {setDeleteOptions("options")}}                       
                                     >Delete</button>                   
                                 </div>

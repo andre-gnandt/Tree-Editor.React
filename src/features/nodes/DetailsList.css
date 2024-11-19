@@ -27,8 +27,8 @@
 }
 
 .dialogContent {
-    width: max(45vw, 5cm);
-    height: max(90vh, 7.5cm);
+    width: 45vw;
+    height: 90vw;
     border-radius: 5vw;
     background-color: #DCDCDC;
     overflow: hidden;
@@ -56,6 +56,14 @@
   background-image: radial-gradient(var(--form-focused-color), 2px, transparent 0);
 }
 
+.dialog-header
+{
+    color: var(--form-focused-color);
+    text-overflow: ellipsis; 
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .thumbnail-container {
     height: 44vh;
     width: 33vh;
@@ -79,8 +87,10 @@
     padding: 0 0 0 0;
     background-color: #F0F0F0;
     width: 40vw;
+    max-width: 40vw;
     max-height: calc(83.5vh - 5vw);
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     left: 1.5vw;
 }
 
