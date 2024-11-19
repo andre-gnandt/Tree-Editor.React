@@ -306,7 +306,7 @@ const NodeDetails = (input) => {
     //style = {{marginBottom: (hideButtons === 0) ? '0vh' : '3.275vh'}}
         return(
         <>  
-            <div style = {{width: '100%', height: '100%', backgroundColor: '#DCDCDC'}}>
+            <div className='dialog-root'>
                 <div className='fixed-header'>
                     <div style = {{top: '1.5vw', position: 'relative', height: '6.5vh', fontSize: '6vh', display: 'flex', textAlign: 'center', justifyContent: 'center'}}>
                         <i onClick={() => {unMount()}} className='pi pi-times' style = {{ marginRight: 'auto', cursor: 'pointer', fontSize: '6.5vh'}}/>
@@ -379,6 +379,7 @@ const NodeDetails = (input) => {
                             <InputText className = "input" type = 'number' keyfilter='int' onChange = {(e) => {CheckValueChange(props.number, node.number, e.target.value); handleChange(e.target.value, updateNodeNumber);}} value = {node.number ? node.number : ""} />
                         </div>
                     </div>
+                    {/*
                     <div className="entryContainer">
                         <div className = "fullWidthLeft">
                             Rank:  
@@ -387,6 +388,7 @@ const NodeDetails = (input) => {
                             <InputText className = "input" value = {""} />
                         </div>
                     </div>
+                    */}
                     <div className="entryContainer">
                         <div className = "fullWidthLeft">
                             Parent:  
@@ -394,7 +396,7 @@ const NodeDetails = (input) => {
                         <div className="fullWidthRight">
                             <Dropdown  
                                 className = "dropdown"
-                                panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: 'red'}}
+                                panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
                                 //style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
                                 onFocus={(event) => {}}
                                 //className='input'

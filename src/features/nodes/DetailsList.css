@@ -1,8 +1,20 @@
 :root {
     --form-color: rgba(204, 255, 255, 1);
-    /*--form-border-color: rgba(204, 255, 255 0.9);*/
-    --form-border-color: #64ffffe6;
+    /*old --form-border-color: rgba(204, 255, 255 0.9);*/
+    /*input:focus background-color: rgba(204, 255, 255, 0.9);*/
+    --input-focused-background-color: #ccffffe6;
+    /*old --form-border-color: #64ffffe6;*/
+    --form-border-color: #0388fc;
     --form-focused-color: #274df5;
+    --container-color: #F0F0F0;
+    --container-outline-color: #DCDCDC;
+}
+
+.dialog-root 
+{
+    background-color: #DCDCDC;
+    height: 100%;
+    width: 100%;
 }
 
 .image {
@@ -30,7 +42,7 @@
     width: 45vw;
     height: 90vw;
     border-radius: 5vw;
-    background-color: #DCDCDC;
+    background-color: var(--container-outline-color);
     overflow: hidden;
     overflow-y: hidden;
 }
@@ -69,13 +81,11 @@
     width: 33vh;
     margin-right: 4vh;
     display: flex;
-    /*align-items: center;*/
-    /*justify-content: center; */
 }
 
 .fixed-header
 {
-    background-color: #DCDCDC;
+    background-color: var(--container-outline-color);
     height: calc(6.5vh + 1.5vw);
     width: 40vw;
     left: 1.5vw;
@@ -85,7 +95,7 @@
 
 .container {
     padding: 0 0 0 0;
-    background-color: #F0F0F0;
+    background-color: var(--container-color);
     width: 40vw;
     max-width: 40vw;
     max-height: calc(83.5vh - 5vw);
@@ -131,6 +141,7 @@
     max-height: 44vh;
     border: none;
     color: rgb(49, 152, 170);
+    background-color: var(--container-color);
 }
 
 .title-required {
@@ -145,16 +156,16 @@
 }
 
 .title-required:focus {
-    background-color: rgba(204, 255, 255, 0.9);
+    background-color: var(--input-focused-background-color);
     color: var(--form-focused-color) !important;
 }
 
 .title:hover {
-    border: 5px solid rgba(204, 255, 255, 0.9);
+    border: 5px solid var(--input-focused-background-color);
 }
 
 .title:focus {
-    background-color: rgba(204, 255, 255, 0.9);
+    background-color: var(--input-focused-background-color);
     color: var(--form-focused-color) !important;
     border-color: var(--form-focused-color);
 }
@@ -162,18 +173,24 @@
 li {
     height: 6.5vh;
     border-radius: 2vh;
-
-    text-align: bottom;
+    background-color: var(--input-focused-background-color);
 }
 
 li:hover {
-    border: 1px;
+    border: 3px solid var(--form-focused-color);
 }
 
 li > span {
-    width: 100%;
+    color: var(--form-focused-color);
+    font-size: 4vh;
     height: 100%;
-    margin-left: 2vw
+    width: 100%;
+    margin-left: 2vw;
+}
+
+span 
+{
+    margin-left: 2px;
 }
 
 .input {
@@ -181,11 +198,11 @@ li > span {
     height: 100%;
     font-family: 'Courier, monospace';
     font-size: 3vh;
-    border-color: var(--form-border-color);
-    color: var(--form-color);
+    border: 3px solid var(--form-border-color);
+    color: var(--form-border-color);
     border-radius: 2vh;
     max-height: 17vh;
-    background-color: 	#E8E8E8;
+    background-color: var(--container-color);
 }
 
 /*.dropdown {
@@ -206,9 +223,17 @@ li > span {
     height: 100%;
     font-family: 'Courier, monospace';
     font-size: 3vh;
-    color: var(--form-color);
+    color: var(--form-border-color);
     border-radius: 2vh;
     max-height: 17vh;
+    background-color: var(--container-color);
+}
+
+.dropdown:focus
+{
+    color: var(--form-focused-color);
+    border: 3px solid var(--form-focused-color);
+    background-color: var(--input-focused-background-color);
 }
 
 .input-data {
@@ -216,16 +241,17 @@ li > span {
     height: 100%;
     font-family: 'Courier, monospace';
     font-size: 3vh;
-    border-color: var(--form-border-color);
-    color: var(--form-color);
+    border: 3px solid var(--form-border-color);
+    color: var(--form-border-color);
     border-radius: 2vh;
     max-height: 26vh;
+    background-color: var(--container-color);
 } 
 
 .input-data:focus {
     font-family: 'Courier, monospace';
     font-size: 3vh;
-    background-color: rgba(204, 255, 255, 0.9);
+    background-color: var(--input-focused-background-color);
     color: var(--form-focused-color) !important;
     border-color: var(--form-focused-color);
 }
@@ -239,7 +265,7 @@ li > span {
 .input:focus {
     font-family: 'Courier, monospace';
     font-size: 3vh;
-    background-color: rgba(204, 255, 255, 0.9);
+    background-color: var(--input-focused-background-color);
     color: var(--form-focused-color) !important;
     border-color: var(--form-focused-color);
 }
@@ -255,13 +281,21 @@ li > span {
     background-color: var(--form-focused-color);
 }
 
-input[type="text"]{
+.button:focus
+{
+    outline: none;
+    border: none;
+}
+
+input[type="text"]
+{
     height: 6.5vh;
     width: 100%;
     font-family: 'Courier, monospace';
     font-size: 3vh;
-    border-color: var(--form-border-color);
-    color: var(--form-color);
+    border: 3px solid var(--form-border-color);
+    color: var(--form-border-color);
+    background-color: var(--container-color);
     border-radius: 2vh;
     max-height: 17vh;
 }
@@ -269,7 +303,25 @@ input[type="text"]{
 input:focus {
     font-family: 'Courier, monospace';
     font-size: 3vh;
-    background-color: rgba(204, 255, 255, 0.9);
+    background-color: var(--input-focused-background-color);
     color: var(--form-focused-color) !important;
     border-color: var(--form-focused-color);
+    outline: none;
+}
+
+svg 
+{
+    color: var(--form-border-color);
+}
+
+textarea:focus
+{
+    outline: none;
+
+}
+
+button:focus
+{
+    outline: none;
+    border: none;
 }
