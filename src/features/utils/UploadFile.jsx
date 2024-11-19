@@ -147,15 +147,15 @@ const UploadFile = (props) => {
               <>
                 <div className="text-overflow dialog-header" style = {{fontSize: '3vh', height: '5vh', width: '100%'}}>{selectedImage ? selectedImage.name : defaultFile.name}</div>
                 <div style = {{height: '6vh', display: 'flex'}}>
-                  <button className="button text-overflow" style = {{fontSize: '3vh', width: '15vh', height: '6vh', marginRight: '2vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
-                  <button className="button text-overflow" style = {{fontSize: '3vh', width: '15vh', height: '6vh'}} onClick={() => {RemoveImage();}}>Remove</button>
+                  <button className="button text-overflow" style = {{fontSize: '3vh', width: '16vh', height: '6vh', marginRight: '1vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
+                  <button className="button text-overflow" style = {{fontSize: '3vh', width: '16vh', height: '6vh'}} onClick={() => {RemoveImage();}}>Remove</button>
                 </div>
               </>
             ) : 
             (
               <>
                 <div style = {{height: '4vh', width: '100%'}}></div>
-                <button className="button text-overflow" style = {{fontSize: '3vh', width: '15vh', height: '6vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
+                <button className="button text-overflow" style = {{fontSize: '3vh', width: '16vh', height: '6vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
               </>
             )}  
 

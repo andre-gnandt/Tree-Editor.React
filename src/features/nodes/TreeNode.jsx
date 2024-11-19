@@ -103,13 +103,13 @@ const TreeNode = (props) => {
                         {props.props.title}
                     </button> 
                 } 
-                <Draggable>                                 
+                <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>                              
                     <Dialog className={"dialogContent"} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}} visible = {dialog} onHide={() => {if (!dialog) return; props.props["dialog"] = false; setDialog(false);}} > 
                         <Provider store = {store}>
                             <NodeDetails setChangeTracker = {props.setChangeTracker} unMount = {CloseDialog} renderTreeNode = {RenderTreeNode} files = {files} rootNode = {props.rootNode} render = {props.render} input = {props.props} nodeList = {props.nodeList} nodeDictionary = {props.nodeDictionary}/>
                         </Provider>
                     </Dialog>
-                </Draggable>                 
+                </Draggable>      
             </> 
         );
 }

@@ -10,6 +10,7 @@ import './detailsList.css';
 import UploadFile from '../utils/UploadFile';
 import { Provider } from 'react-redux';
 import { store } from '/LocalTreeData.React/src/store';
+import Draggable from 'react-draggable';
 
 const NodeDetails = (input) => {
     const[hideButtons, setHideButtons] = useState(0);
@@ -292,8 +293,12 @@ const NodeDetails = (input) => {
             setRoot(false);
         }  
 
-        changeCount.current = 0;
-        setHideButtons(changeCount.current);
+
+        if(node.title && node.title.trim().length > 0)
+        {
+            changeCount.current = 0;
+            setHideButtons(changeCount.current);
+        }
     }
 
     const GetHeader = () => {
@@ -307,18 +312,19 @@ const NodeDetails = (input) => {
         return(
         <>  
             <div className='dialog-root'>
-                <div className='fixed-header'>
+                <div id = 'fixed-header' className='fixed-header'>
                     <div style = {{top: '1.5vw', position: 'relative', height: '6.5vh', fontSize: '6vh', display: 'flex', textAlign: 'center', justifyContent: 'center'}}>
                         <i onClick={() => {unMount()}} className='pi pi-times' style = {{ marginRight: 'auto', cursor: 'pointer', fontSize: '6.5vh'}}/>
                         <div className='dialog-header' style = {{fontSize: '5vh', width: '33vw', textAlign: 'center', verticalAlign: 'middle'}}>{GetHeader()}</div>                   
+                        <div style = {{marginLeft: 'auto', height: '6.5vh', width: '7vw',  float: 'right' }}>
                         { (node.nodeId && !root && !create) && (
                             <>
-                                <div style = {{marginLeft: 'auto', height: '6.5vh', width: '7vw',  float: 'right' }}>
-                                    <button className='button text-overflow' 
-                                        style = {{width:'100%', backgroundColor: 'red', height: '6.5vh', maxHeight: '6.5vh', float: 'right', fontSize: '3vh', justifyContent: 'center'}} 
-                                        onClick={() => {setDeleteOptions("options")}}                       
-                                    >Delete</button>                   
-                                </div>
+                                
+                                <button className='button text-overflow' 
+                                    style = {{width:'100%', backgroundColor: 'red', height: '6.5vh', maxHeight: '6.5vh', float: 'right', fontSize: '3vh', justifyContent: 'center'}} 
+                                    onClick={() => {setDeleteOptions("options")}}                       
+                                >
+                                Delete</button>                   
                                 { (deleteOptions === "options") && 
                                     (
                                     <>
@@ -336,6 +342,7 @@ const NodeDetails = (input) => {
                             </>
                             )
                         }
+                        </div>
                     </div> 
                 </div>
                 <div className={(changeCount.current === 0 && titleRequired) ? 'container': 'container-shrunk'} style = {{position: 'relative'}} > 
@@ -410,12 +417,12 @@ const NodeDetails = (input) => {
                         </div>
                     </div> 
                 </div> 
-                <div hidden = {changeCount.current === 0 && titleRequired} style = {{height: (changeCount.current === 0 && titleRequired)? '0vh':'6.5vh', display: 'flex'}}>
-                    <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{display: 'flex', height: '100%'}}>
-                        <button hidden = {changeCount.current === 0} className='button' style = {{marginRight: '2px'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
-                        <button hidden = {changeCount.current === 0} className='button' onClick = {() => {titlePresent.current = true; changeCount.current = 0; setResetFiles({reset: true}); handleChange(props, cloneNode); }} > Reset </button>
+                <div hidden = {changeCount.current === 0 && titleRequired} style = {{height: (changeCount.current === 0 && titleRequired)? '0vh':'6.5vh', width: '40vw', position: 'relative', left: '1.5vw', display: 'flex'}}>
+                    <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{ fontSize: '4vh', display: 'flex', height: '100%'}}>
+                        <button hidden = {changeCount.current === 0} className='button text-overflow' style = {{height: '100%', width: '16vh', marginRight: '1vh'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                        <button hidden = {changeCount.current === 0} className='button text-overflow' style = {{height: '100%', width: '16vh'}} onClick = {() => {titlePresent.current = true; changeCount.current = 0; setResetFiles({reset: true}); handleChange(props, cloneNode); }} > Reset </button>
                     </div>
-                    <div hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', marginTop: '8vh', textAlign: 'bottom'}}>Title is required. Highlighted in red above.</div>
+                    <div className='text-overflow title-required-container'  hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', textAlign: 'bottom'}}>Title is required!</div>
                 </div>
             </div>
         </>    

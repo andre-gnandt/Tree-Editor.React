@@ -91,6 +91,7 @@
     left: 1.5vw;
     position: relative;
     z-index: 2;
+    cursor: grab;
 }
 
 .container {
@@ -153,6 +154,13 @@
     border: none;
     color: rgb(49, 152, 170);
     background-color: var(--container-color);
+}
+
+/*33vh 2vw*/
+.title-required-container
+{
+    font-size: 3vh;
+    width: calc(38vw - 33vh);
 }
 
 .title-required {
@@ -287,6 +295,8 @@ span
     background-color: rgb(49, 152, 170);
     border: none;
     padding: 0px 0px 0px 0px;
+    text-align: center;
+    justify-content: center;
 }
 .button:hover {
     background-color: var(--form-focused-color);
