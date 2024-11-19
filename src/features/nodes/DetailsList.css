@@ -104,6 +104,17 @@
     left: 1.5vw;
 }
 
+.container-shrunk {
+    padding: 0 0 0 0;
+    background-color: var(--container-color);
+    width: 40vw;
+    max-width: 40vw;
+    max-height: calc(77vh - 5vw);
+    overflow-y: auto;
+    overflow-x: hidden;
+    left: 1.5vw;
+}
+
 .entryContainer {
     display: flex;
     margin-bottom: 3.275vh;
@@ -324,4 +335,9 @@ button:focus
 {
     outline: none;
     border: none;
+}
+
+.save-bar
+{
+    height: 6.5vh;
 }

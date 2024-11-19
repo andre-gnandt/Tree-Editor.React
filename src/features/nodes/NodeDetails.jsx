@@ -338,7 +338,7 @@ const NodeDetails = (input) => {
                         }
                     </div> 
                 </div>
-                <div className='container' style = {{position: 'relative'}} > 
+                <div className={(changeCount.current === 0 && titleRequired) ? 'container': 'container-shrunk'} style = {{position: 'relative'}} > 
                     <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
                         <div className="thumbnail-container">
                             <Provider store = {store}>
@@ -409,14 +409,14 @@ const NodeDetails = (input) => {
                                 />
                         </div>
                     </div> 
-                    <div hidden = {changeCount.current === 0 && titleRequired} style = {{height: (changeCount.current === 0 && titleRequired)? '0vh':'auto', display: 'flex'}}>
-                        <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{display: 'flex', marginTop: '8vh'}}>
-                            <button hidden = {changeCount.current === 0} className='button' style = {{marginRight: '2px'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
-                            <button hidden = {changeCount.current === 0} className='button' onClick = {() => {titlePresent.current = true; changeCount.current = 0; setResetFiles({reset: true}); handleChange(props, cloneNode); }} > Reset </button>
-                        </div>
-                        <div hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', marginTop: '8vh', textAlign: 'bottom'}}>Title is required. Highlighted in red above.</div>
-                    </div>
                 </div> 
+                <div hidden = {changeCount.current === 0 && titleRequired} style = {{height: (changeCount.current === 0 && titleRequired)? '0vh':'6.5vh', display: 'flex'}}>
+                    <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{display: 'flex', height: '100%'}}>
+                        <button hidden = {changeCount.current === 0} className='button' style = {{marginRight: '2px'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                        <button hidden = {changeCount.current === 0} className='button' onClick = {() => {titlePresent.current = true; changeCount.current = 0; setResetFiles({reset: true}); handleChange(props, cloneNode); }} > Reset </button>
+                    </div>
+                    <div hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', marginTop: '8vh', textAlign: 'bottom'}}>Title is required. Highlighted in red above.</div>
+                </div>
             </div>
         </>    
         );
