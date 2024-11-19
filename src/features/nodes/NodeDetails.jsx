@@ -396,26 +396,29 @@ const NodeDetails = (input) => {
                         </div>
                     </div>
                     */}
-                    <div className="entryContainer">
-                        <div className = "fullWidthLeft">
-                            Parent:  
+                    { (!root && props.nodeId) && (
+                        <div className="entryContainer">
+                            <div className = "fullWidthLeft">
+                                Parent:  
+                            </div> 
+                            <div className="fullWidthRight">
+                                <Dropdown  
+                                    className = "dropdown"
+                                    panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
+                                    //style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
+                                    onFocus={(event) => {}}
+                                    //className='input'
+                                    disabled = {node.nodeId ? false : true}
+                                    filter
+                                    onChange = {(e) => {CheckValueChange(props.nodeId, node.nodeId, e.target.value.id); handleChange(e.target.value.id, updateNodeParent);}} 
+                                    value = {nodeList.current.find((object) => object.id === node.nodeId)}
+                                    options = {nodeList.current}
+                                    optionLabel='title'
+                                    />
+                            </div>
                         </div> 
-                        <div className="fullWidthRight">
-                            <Dropdown  
-                                className = "dropdown"
-                                panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
-                                //style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
-                                onFocus={(event) => {}}
-                                //className='input'
-                                disabled = {node.nodeId ? false : true}
-                                filter
-                                onChange = {(e) => {CheckValueChange(props.nodeId, node.nodeId, e.target.value.id); handleChange(e.target.value.id, updateNodeParent);}} 
-                                value = {nodeList.current.find((object) => object.id === node.nodeId)}
-                                options = {nodeList.current}
-                                optionLabel='title'
-                                />
-                        </div>
-                    </div> 
+                    )
+                    }
                 </div> 
                 <div hidden = {changeCount.current === 0 && titleRequired} style = {{height: (changeCount.current === 0 && titleRequired)? '0vh':'6.5vh', width: '40vw', position: 'relative', left: '1.5vw', display: 'flex'}}>
                     <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{ fontSize: '4vh', display: 'flex', height: '100%'}}>

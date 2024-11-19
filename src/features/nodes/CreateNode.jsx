@@ -6,6 +6,7 @@ import NodeDetails from './NodeDetails';
 import { Provider } from 'react-redux';
 import { store } from '/LocalTreeData.React/src/store';
 import 'primeicons/primeicons.css';
+import Draggable from 'react-draggable';
 
 const CreateNode = (props) => {
     const [createNode, setCreateNode] = useState(null);
@@ -31,17 +32,24 @@ const CreateNode = (props) => {
         isDeleted: false,
     };
 
+    const unMount = () => 
+    {
+        setCreateNode(false);
+    }
+
     return (
         <>  
             <button className = {(rootId == null) ? 'button-header button-save tooltip' : 'button-header button-create tooltip'} disabled = {(rootId == null )}>
                 <i className='pi pi-upload' style = {{fontSize: '7.2vh'}} onClick = {() => { setCreateNode(true);}} />
                 <span class="tooltip-left">New Node</span>
             </button>
-            <Dialog className={"dialogContent"} showHeader = {false} headerStyle={{background: 'white', height: '0px'}} contentStyle={{background: 'white'}} visible = {createNode} onHide={() => {if (!createNode) return; setCreateNode(false);}} > 
-                <Provider store = {store}>
-                    <NodeDetails rootNode = {tree} files = {newNode.files} create = {true} render = {ReRenderTree} input = {newNode} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
-                </Provider>
-            </Dialog>
+            <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
+                <Dialog className={"dialogContent"} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}} visible = {createNode} onHide={() => {if (!createNode) return; setCreateNode(false);}} > 
+                    <Provider store = {store}>
+                        <NodeDetails unMount = {unMount} rootNode = {tree} files = {newNode.files} create = {true} render = {ReRenderTree} input = {newNode} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
+                    </Provider>
+                </Dialog>
+            </Draggable>
         </>
     );
 }
