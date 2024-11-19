@@ -302,116 +302,120 @@ const NodeDetails = (input) => {
         
         return <>Node Content</>;
     }
-
+     // container: , top: '2.5vw', left: '1.5vw'}}>}
     //style = {{marginBottom: (hideButtons === 0) ? '0vh' : '3.275vh'}}
         return(
-        <>    
-            <div className='container'>
-                <div style = {{ height: '6.5vh',  fontSize: '4vw', display: 'flex'}}>
-                    <header style = {{width: '33vw', float: 'top'}}>{GetHeader()}</header>                   
-                    
-                    { (node.nodeId && !root && !create) && (
-                        <>
-                            <div style = {{height: '6.5vh', width: '7vw',  float: 'right' }}>
-                                <button className='button' 
-                                    style = {{backgroundColor: 'red', height: '4.5vh', maxHeight: '6.5vh', float: 'right', fontSize: '3vh', justifyContent: 'center'}} 
-                                    onClick={() => {setDeleteOptions("options")}}                       
-                                >Delete</button>                   
-                            </div>
-                            { (deleteOptions === "options") && 
-                                (
-                                  <>
-                                    {GetDeleteOptions()}
-                                  </>
-                                )
-                            }
-                            { (deleteOptions === "confirm") && 
-                                (
-                                  <>
-                                    {GetConfirmDelete()}
-                                  </>
-                                )
-                            }
-                        </>
-                        )
-                    }
-                </div>
-                <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
-                    <div className="thumbnail-container">
-                        <Provider store = {store}>
-                            <UploadFile reset = {resetFiles} fileChangeCallBack = {FileChangeCallBack} files = {input.files} node = {input.input} thumbnailUpload = {(props.thumbnailId)} create = {create} />
-                        </Provider>  
-                    </div>
-                    <div className='title-container'>
-                        <InputTextarea 
-                            autoResize 
-                            rows = {1} 
-                            placeholder="Title" 
-                            className= {(titleRequired) ? "title" : "title-required"}
-                            spellCheck = {false}
-                            onChange = {(e) => {CheckValueChange(props.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title ? node.title : ""} />
-                    </div>
-                </div>
-                <div className="entryContainer">
-                    <div className = "fullWidthLeft">
-                        Description:  
+        <>  
+            <div style = {{width: '100%', height: '100%', backgroundColor: '#DCDCDC'}}>
+                <div className='fixed-header'>
+                    <div style = {{top: '1.5vw', position: 'relative', height: '6.5vh', fontSize: '4vh', display: 'flex', textAlign: 'top', justifyContent: 'top'}}>
+                        <i onClick={() => {unMount()}} className='pi pi-times' style = {{ marginRight: 'auto', cursor: 'pointer', fontSize: '2.5vw'}}/>
+                        <header style = {{width: '33vw', marginLeft: 'auto', marginRight: 'auto', float: 'middle', textAlign: 'top', justifyContent: 'top'}}>{GetHeader()}</header>                   
+                        { (node.nodeId && !root && !create) && (
+                            <>
+                                <div style = {{marginLeft: 'auto', height: '6.5vh', width: '7vw',  float: 'right' }}>
+                                    <button className='button' 
+                                        style = {{backgroundColor: 'red', height: '6.5vh', maxHeight: '6.5vh', float: 'right', fontSize: '3vh', justifyContent: 'center'}} 
+                                        onClick={() => {setDeleteOptions("options")}}                       
+                                    >Delete</button>                   
+                                </div>
+                                { (deleteOptions === "options") && 
+                                    (
+                                    <>
+                                        {GetDeleteOptions()}
+                                    </>
+                                    )
+                                }
+                                { (deleteOptions === "confirm") && 
+                                    (
+                                    <>
+                                        {GetConfirmDelete()}
+                                    </>
+                                    )
+                                }
+                            </>
+                            )
+                        }
                     </div> 
-                    <div className="fullWidthRight" style = {{height: '17vh'}}>
-                        <InputTextarea  autoResize style = {{height: '17vh'}} rows={5} className = "input" onChange = {(e) => {CheckValueChange(props.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
-                    </div>
                 </div>
-                <div className="entryContainer">
-                    <div className = "fullWidthLeft">
-                        Data: 
+                <div className='container' style = {{position: 'relative'}} > 
+                    <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
+                        <div className="thumbnail-container">
+                            <Provider store = {store}>
+                                <UploadFile reset = {resetFiles} fileChangeCallBack = {FileChangeCallBack} files = {input.files} node = {input.input} thumbnailUpload = {(props.thumbnailId)} create = {create} />
+                            </Provider>  
+                        </div>
+                        <div className='title-container'>
+                            <InputTextarea 
+                                autoResize 
+                                rows = {1} 
+                                placeholder="Title" 
+                                className= {(titleRequired) ? "title" : "title-required"}
+                                spellCheck = {false}
+                                onChange = {(e) => {CheckValueChange(props.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title ? node.title : ""} />
+                        </div>
                     </div>
-                    <div className="fullWidthRight" style = {{height: '26vh'}}>
-                        <InputTextarea autoResize rows={7} style = {{height: '26vh'}} className = "input-data" onChange = {(e) => {CheckValueChange(props.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
+                    <div className="entryContainer">
+                        <div className = "fullWidthLeft">
+                            Description:  
+                        </div> 
+                        <div className="fullWidthRight" style = {{height: '17vh'}}>
+                            <InputTextarea  autoResize style = {{height: '17vh'}} rows={5} className = "input" onChange = {(e) => {CheckValueChange(props.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
+                        </div>
                     </div>
-                </div>
-                <div className="entryContainer">
-                    <div className = "fullWidthLeft">
-                        Number:  
+                    <div className="entryContainer">
+                        <div className = "fullWidthLeft">
+                            Data: 
+                        </div>
+                        <div className="fullWidthRight" style = {{height: '26vh'}}>
+                            <InputTextarea autoResize rows={7} style = {{height: '26vh'}} className = "input-data" onChange = {(e) => {CheckValueChange(props.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
+                        </div>
+                    </div>
+                    <div className="entryContainer">
+                        <div className = "fullWidthLeft">
+                            Number:  
+                        </div> 
+                        <div className="fullWidthRight">
+                            <InputText className = "input" type = 'number' keyfilter='int' onChange = {(e) => {CheckValueChange(props.number, node.number, e.target.value); handleChange(e.target.value, updateNodeNumber);}} value = {node.number ? node.number : ""} />
+                        </div>
+                    </div>
+                    <div className="entryContainer">
+                        <div className = "fullWidthLeft">
+                            Rank:  
+                        </div> 
+                        <div className="fullWidthRight">
+                            <InputText className = "input" value = {""} />
+                        </div>
+                    </div>
+                    <div className="entryContainer">
+                        <div className = "fullWidthLeft">
+                            Parent:  
+                        </div> 
+                        <div className="fullWidthRight">
+                            <Dropdown  
+                                className = "dropdown"
+                                panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: 'red'}}
+                                //style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
+                                onFocus={(event) => {}}
+                                //className='input'
+                                disabled = {node.nodeId ? false : true}
+                                filter
+                                onChange = {(e) => {CheckValueChange(props.nodeId, node.nodeId, e.target.value.id); handleChange(e.target.value.id, updateNodeParent);}} 
+                                value = {nodeList.current.find((object) => object.id === node.nodeId)}
+                                options = {nodeList.current}
+                                optionLabel='title'
+                                />
+                        </div>
                     </div> 
-                    <div className="fullWidthRight">
-                        <InputText className = "input" type = 'number' keyfilter='int' onChange = {(e) => {CheckValueChange(props.number, node.number, e.target.value); handleChange(e.target.value, updateNodeNumber);}} value = {node.number ? node.number : ""} />
-                    </div>
-                </div>
-                <div className="entryContainer">
-                    <div className = "fullWidthLeft">
-                        Rank:  
-                    </div> 
-                    <div className="fullWidthRight">
-                        <InputText className = "input" value = {""} />
-                    </div>
-                </div>
-                <div className="entryContainer">
-                    <div className = "fullWidthLeft">
-                        Parent:  
-                    </div> 
-                    <div className="fullWidthRight">
-                        <Dropdown  
-                            className = "dropdown"
-                            panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: 'red'}}
-                            //style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
-                            onFocus={(event) => {}}
-                            //className='input'
-                            disabled = {node.nodeId ? false : true}
-                            filter
-                            onChange = {(e) => {CheckValueChange(props.nodeId, node.nodeId, e.target.value.id); handleChange(e.target.value.id, updateNodeParent);}} 
-                            value = {nodeList.current.find((object) => object.id === node.nodeId)}
-                            options = {nodeList.current}
-                            optionLabel='title'
-                            />
+                    <div hidden = {changeCount.current === 0 && titleRequired} style = {{height: (changeCount.current === 0 && titleRequired)? '0vh':'auto', display: 'flex'}}>
+                        <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{display: 'flex', marginTop: '8vh'}}>
+                            <button hidden = {changeCount.current === 0} className='button' style = {{marginRight: '2px'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                            <button hidden = {changeCount.current === 0} className='button' onClick = {() => {titlePresent.current = true; changeCount.current = 0; setResetFiles({reset: true}); handleChange(props, cloneNode); }} > Reset </button>
+                        </div>
+                        <div hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', marginTop: '8vh', textAlign: 'bottom'}}>Title is required. Highlighted in red above.</div>
                     </div>
                 </div> 
-                <div hidden = {changeCount.current === 0 && titleRequired} style = {{height: (changeCount.current === 0 && titleRequired)? '0vh':'auto', display: 'flex'}}>
-                    <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{display: 'flex', marginTop: '8vh'}}>
-                        <button hidden = {changeCount.current === 0} className='button' style = {{marginRight: '2px'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
-                        <button hidden = {changeCount.current === 0} className='button' onClick = {() => {titlePresent.current = true; changeCount.current = 0; setResetFiles({reset: true}); handleChange(props, cloneNode); }} > Reset </button>
-                    </div>
-                    <div hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', marginTop: '8vh', textAlign: 'bottom'}}>Title is required. Highlighted in red above.</div>
-                </div>
-            </div> 
+            </div>
         </>    
         );
 }

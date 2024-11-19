@@ -269,8 +269,6 @@ const App = () => {
   {
     parentNode.children.push(childNode);
     parentNode.children.sort(CompareNodes);
-    console.log("sorted add children: ");
-    console.log(parentNode.children);
   }
 
   function RemoveChildFromNode(oldParentNode, childId)
@@ -278,8 +276,6 @@ const App = () => {
       const removeOldChildIndex = oldParentNode.children.findIndex((object) => object.id === childId);
       if(removeOldChildIndex > -1)  oldParentNode.children.splice(removeOldChildIndex, 1);
       oldParentNode.children.sort(CompareNodes);
-      console.log("sorted remove child: ");
-      console.log(oldParentNode.children);
   }
 
   function AlterTreeStructureForDeleteCascade(tree, nodeId, parentNodeId, node = null, parentNode = null)
@@ -304,9 +300,7 @@ const App = () => {
     node.children.forEach(child => {
       child.nodeId = parentNodeId;
       AddNodeToChildren(parentNode, child);
-    });
-
-    //node.children = [];   
+    });   
     return node; 
   }
 

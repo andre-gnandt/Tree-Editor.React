@@ -29,6 +29,10 @@
 .dialogContent {
     width: max(45vw, 5cm);
     height: max(90vh, 7.5cm);
+    border-radius: 5vw;
+    background-color: #DCDCDC;
+    overflow: hidden;
+    overflow-y: hidden;
 }
 
 .thumbnail-placeholder 
@@ -61,8 +65,23 @@
     /*justify-content: center; */
 }
 
+.fixed-header
+{
+    background-color: #DCDCDC;
+    height: calc(6.5vh + 1.5vw);
+    width: 40vw;
+    left: 1.5vw;
+    position: relative;
+    z-index: 2;
+}
+
 .container {
-    padding: 2.5vw 2.5vw 2.5vw 2.5vw;
+    padding: 0 0 0 0;
+    background-color: #F0F0F0;
+    width: 40vw;
+    max-height: calc(83.5vh - 5vw);
+    overflow: auto;
+    left: 1.5vw;
 }
 
 .entryContainer {
@@ -156,6 +175,7 @@ li > span {
     color: var(--form-color);
     border-radius: 2vh;
     max-height: 17vh;
+    background-color: 	#E8E8E8;
 }
 
 /*.dropdown {
