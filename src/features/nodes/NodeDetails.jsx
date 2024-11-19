@@ -153,59 +153,54 @@ const NodeDetails = (input) => {
         }
     }
 
-    const GetConfirmDelete = () => 
-    {
-        return (
-        <>
-                <Dialog  style = {{height: '30vh', width: '40vw'}} headerStyle={{backgroundColor: 'coral'}} contentStyle={{backgroundColor: 'coral'}}  visible = {(deleteOptions === "confirm")} onHide = {() => {setDeleteOptions("")}}>
-                    <>
-                        <div style = {{marginLeft: '2.5vw', width: '35vw', height: '25vh'}}>
-                            <div style = {{width: '35vw', height: '5vh', textAlign: 'center' }}>Please confirm that you would like to delete this node (including all of its files)</div>
-                            <div style = {{marginTop: '1vh', display: 'flex', width: '35vw', height: '18vh'}}>
-                                <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
-                                    <button 
-                                        onClick={() => { HandleDeleteNode();}} 
-                                        className='button' style = {{height: '8vh', width: '17vh'}}
-                                    >
-                                           Yes
-                                    </button>
-                                </div>
-                                <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
-                                    <button
-                                         onClick={() => {setDeleteOptions(""); }}
-                                         className='button' style = {{height: '8vh', width: '17vh'}}
-                                    >
-                                        No
-                                    </button>
+    const GetConfirmDelete = () =>
+        {
+            return (
+            <>  <Draggable>
+                    <Dialog className='alert' showHeader = {false}  style = {{height: '45vh', width: '40vw'}} headerStyle={{backgroundColor: 'coral'}} contentStyle={{backgroundColor: 'coral', overflow: 'hidden'}}  visible = {(deleteOptions === "confirm")} onHide = {() => {setDeleteOptions("")}}>
+                        <>  
+                        <i onClick={() => {setDeleteOptions("")}} className='pi pi-times' style = {{ marginRight: 'auto', cursor: 'pointer', fontSize: '4.8vh'}}/>                   
+                            <div className='alert' style = {{marginLeft: '2.5vw', width: '40vw', height: '45vh'}}>
+                                <div className='' style = {{position: 'relative', top: '0vh',  width: '35vw', height: '8vh', textAlign: 'center', fontSize: '3vh' }}>Please confirm that you would like to delete the node(s).</div>
+                                <div style = {{position: 'relative', top: '10vh', marginTop: '1vh', display: 'flex', width: '35vw', height: '24vh'}}>
+                                    <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
+                                        <button className='text-overflow button' onClick={() => {HandleDeleteNode();}} style = {{height: '12vh', width: '15.5vw', fontSize: '4vh'}}>Yes</button>
+                                    </div>
+                                    <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
+                                        <button 
+                                             onClick={() => {setDeleteOptions(""); }}
+                                             className='button text-overflow' style = {{height: '12vh',  width: '15.5vw', fontSize: '4vh'}}>No</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </>
-                </Dialog>
+                        </>
+                    </Dialog>
+                </Draggable>
             </>
-        );
-    }
+            );
+        }
 
     const GetDeleteOptions = () =>
     {
         return (
-            <>
-                <Dialog  style = {{height: '30vh', width: '40vw'}} headerStyle={{backgroundColor: 'coral'}} contentStyle={{backgroundColor: 'coral'}}  visible = {(deleteOptions === "options")} onHide = {() => {setDeleteOptions("")}}>
-                    <>
-                        <div style = {{marginLeft: '2.5vw', width: '35vw', height: '25vh'}}>
-                            <div style = {{width: '35vw', height: '5vh', textAlign: 'center' }}>What type of Deletion would you like to make?</div>
-                            <div style = {{marginTop: '1vh', display: 'flex', width: '35vw', height: '18vh'}}>
+        <>  <Draggable>
+                <Dialog className='alert' showHeader = {false}  style = {{height: '45vh', width: '40vw'}} headerStyle={{backgroundColor: 'coral'}} contentStyle={{backgroundColor: 'coral', overflow: 'hidden'}}  visible = {(deleteOptions === "options")} onHide = {() => {setDeleteOptions("")}}>
+                    <>  
+                    <i onClick={() => {setDeleteOptions("")}} className='pi pi-times' style = {{ marginRight: 'auto', cursor: 'pointer', fontSize: '4.8vh'}}/>                   
+                        <div className='alert' style = {{marginLeft: '2.5vw', width: '40vw', height: '45vh'}}>
+                            <div className='' style = {{position: 'relative', top: '0vh',  width: '35vw', height: '8vh', textAlign: 'center', fontSize: '3vh' }}>What type of Deletion would you like to make?</div>
+                            <div style = {{position: 'relative', top: '3vh', marginTop: '1vh', display: 'flex', width: '35vw', height: '24vh'}}>
                                 <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
-                                    <button onClick={() => {deleteType.current = "cascade"; setDeleteOptions("confirm");}} className='button' style = {{height: '8vh', width: '17vh'}}>Delete Cascade</button>
-                                    <div >
+                                    <button className='text-overflow button' onClick={() => {deleteType.current = "cascade"; setDeleteOptions("confirm");}} style = {{height: '12vh', width: '15.5vw', fontSize: '4vh'}}>Delete Cascade</button>
+                                    <div style = {{fontSize: '3vh'}}>
                                         (Delete this node and all descendants )
                                     </div>
                                 </div>
-                                <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
-                                    <button
+                                <div style = {{borderLeft: '3px dotted black', backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
+                                    <button 
                                          onClick={() => {deleteType.current = "single"; setDeleteOptions("confirm"); }}
-                                         className='button' style = {{height: '8vh', width: '17vh'}}>Delete Single</button>
-                                    <div >
+                                         className='button text-overflow' style = {{height: '12vh',  width: '15.5vw', fontSize: '4vh'}}>Delete Single</button>
+                                    <div style = {{fontSize: '3vh'}}>
                                         (Delete only this Node)
                                     </div>
                                 </div>
@@ -213,7 +208,8 @@ const NodeDetails = (input) => {
                         </div>
                     </>
                 </Dialog>
-            </>
+            </Draggable>
+        </>
         );
     }
 
