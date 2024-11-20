@@ -77,6 +77,7 @@ const NodeDetails = (input) => {
         prop.isDeleted = node.isDeleted;
         prop.files = node.files;
         prop.thumbnailId = node.thumbnailId;
+        prop.treeId = node.treeId;
     }
 
     async function DeleteSingle(id){

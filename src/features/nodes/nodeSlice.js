@@ -8,6 +8,7 @@ const initialState = {
   description: null,
   number: null,
   nodeId: null,
+  treeId: null,
   rankId: null,
   children: [],
   files: [],
@@ -31,6 +32,7 @@ export const nodeSlice = createSlice({
         state.isDeleted = action.payload.isDeleted;
         state.files = action.payload.files;
         state.thumbnailId = action.payload.thumbnailId;
+        state.treeId = action.payload.treeId;
     },
     setStateProperty: (state, action) =>
     {
