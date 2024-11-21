@@ -138,7 +138,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
 
             const newTree = await createTree({name: name, description: description});
             SetInputTree(newTree);
-            //reRenderList("create", newTree);
+            reRenderList("create", newTree);
             setCreate(false);
         }
         else
@@ -146,7 +146,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
             inputTree.name = name;
             inputTree.description = description; 
             await updateTree(id, inputTree);
-            //reRenderList("update");
+            reRenderList("update");
         }   
 
         if(name && name.trim().length > 0)

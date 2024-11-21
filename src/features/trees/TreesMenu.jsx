@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import Draggable from 'react-draggable';
 import { Dialog } from 'primereact/dialog';
+import { Outlet, Link } from "react-router-dom";
 import { createRoot } from 'react-dom/client';
 import TreeDetails from './TreeDetails';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
-import { classNames } from 'primereact/utils';
 import '/node_modules/primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
@@ -14,11 +14,21 @@ const TreesMenu = () => {
   const firstRender = useRef(true);
   const [requestComplete, setRequestComplete] = useState(false);
   const [createTree, setCreateTree] = useState(null);
-  const [treeList, setTreeList] = useState([]);
-  const [nodeSize, setNodeSize] = useState(200);
-  const [list, setList] = useState([...treeList]);
+  const [search, setSearch] = useState(null);
+  const treeList = useRef([]);
+  //const [nodeSize, setNodeSize] = useState(200);
+  const [list, setList] = useState([...treeList.current]);
   const iconDimension = 0.12*window.innerHeight;
-  console.log(list);
+  
+  const lines = document.getElementsByClassName('tree-line');
+  var i = 0;
+
+  while(i < lines.length)
+{
+    var line = lines[i];
+    line.remove();
+    i++;
+  }
 /*
   function GetNodeSize()
   {
@@ -34,7 +44,7 @@ const TreesMenu = () => {
         result => { 
           var trees = result;
           setRequestComplete(true);
-          setTreeList(trees);
+          treeList.current = trees;
           setList(trees);
         }
     );   
@@ -49,6 +59,26 @@ const TreesMenu = () => {
   {
     firstRender.current = false;
     waitForTreeList();
+  }
+
+  function CompareTrees(a, b)
+  {
+    if(a.name > b.name) return 1;
+    if(a.name < b.name) return -1;
+
+    return 0;
+  }
+
+  function reRenderList(callback = null, newTree = null)
+  {
+    if(callback === "create")
+    {
+        treeList.current.push(newTree);
+    }
+
+    treeList.current.sort(CompareTrees);
+    setSearch(null);
+    setList([...treeList.current]); //sort as well
   }
 
   const EmptyListJSX = () => 
@@ -74,12 +104,15 @@ const TreesMenu = () => {
     {   
         return (
             <div className='col-3' key = {tree.id} >
+                <Link to="/tree"> 
                 <button 
-                         
+                       
                     //onClick={(event) => {ValidateButtonClick(event.target);}} 
                 >
+                     
                     {tree.name}
                 </button> 
+                </Link> 
             </div>
         );
     }
@@ -121,6 +154,7 @@ const TreesMenu = () => {
                   inputTree={{name: null, description: null}}
                   creation = {true}
                   unMount={closeDialog}
+                  reRenderList={reRenderList}
               />
         </Dialog>
       </Draggable>
