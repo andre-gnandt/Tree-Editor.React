@@ -11,7 +11,7 @@ const App = () => {
       <Routes>
         <Route path="/">
           <Route index element={<TreesMenu />} />
-          <Route path="tree" element={<Tree />} />
+          <Route path="tree/:id" element={<Tree />} />
         </Route>
       </Routes>
     </BrowserRouter>

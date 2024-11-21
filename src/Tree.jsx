@@ -13,6 +13,7 @@ import CreateRoot from './features/nodes/CreateRoot';
 import TreeDetails from './features/trees/TreeDetails';
 import 'primeicons/primeicons.css';
 import './features/trees/tree.css';
+import { useParams } from 'react-router-dom';
 
 /*extra node properties include:
 'position'
@@ -23,9 +24,11 @@ import './features/trees/tree.css';
 'path'
 */
 
-const Tree = ({id}) => {
+const Tree = () => {
+  const id = useParams().id;
   const firstRender = useRef(true);
   const [treeState, setTree] = useState(null);
+  const [treeDetailsState, setTreeDetails] = useState(null);
   var tree = {...treeState};
   const [requestComplete, setRequestComplete] = useState(false);
   const [createNode, setCreateNode] = useState(null);
@@ -235,22 +238,22 @@ const Tree = ({id}) => {
     })
   }
 
-  async function GetTrees(){
-    await fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
+  async function GetTree(){
+    await fetch("http://localhost:11727/api/Trees/FullTree/"+id).then(res => res.json()).then(
         result => { 
-          var nodes = result[0];
           setRequestComplete(true);
-          setTree(nodes);
+          setTree(result.root);
+          setTreeDetails(result.tree);
         }
     );   
   };
 
-  async function waitForTrees(){
-    await GetTrees();
+  async function waitForTree(){
+    await GetTree();
   }
 
   if(firstRender.current){
-    waitForTrees();
+    waitForTree();
     firstRender.current = false;
   }
 
@@ -935,8 +938,8 @@ const Tree = ({id}) => {
   {
     return (
       <>
-        <CreateRoot iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
-        <CreateNode iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+        <CreateRoot treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+        <CreateNode treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
       </>
     );
   }

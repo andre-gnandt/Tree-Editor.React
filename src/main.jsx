@@ -4,11 +4,6 @@ import './index.css'
 import { PrimeReactProvider } from 'primereact/api';
 
 createRoot(document.getElementById('root')).render(
-        /*
-        <PrimeReactProvider>
-            <TreesMenu/>
-        </PrimeReactProvider>
-        */
         <PrimeReactProvider>
             <App/>
         </PrimeReactProvider>

@@ -104,7 +104,7 @@ const TreesMenu = () => {
     {   
         return (
             <div className='col-3' key = {tree.id} >
-                <Link to="/tree"> 
+                <Link to={"/tree/"+tree.id}> 
                 <button 
                        
                     //onClick={(event) => {ValidateButtonClick(event.target);}} 

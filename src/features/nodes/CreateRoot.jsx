@@ -27,6 +27,7 @@ const CreateRoot = (props) => {
         children: [],
         files: [],
         thumbnailId: null,
+        treeId: props.treeId,
         isDeleted: false,
     };
 
