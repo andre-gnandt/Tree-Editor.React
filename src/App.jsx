@@ -10,6 +10,7 @@ import { Dialog } from 'primereact/dialog';
 import { createRoot } from 'react-dom/client';
 import CreateNode from './features/nodes/CreateNode';
 import CreateRoot from './features/nodes/CreateRoot';
+import TreeDetails from './features/trees/TreeDetails';
 import 'primeicons/primeicons.css';
 import './features/trees/tree.css';
 
@@ -234,7 +235,7 @@ const App = () => {
   }
 
   async function GetTrees(){
-    fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
+    await fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
         result => { 
           var nodes = result[0];
           setRequestComplete(true);
@@ -243,8 +244,8 @@ const App = () => {
     );   
   };
 
-  function waitForTrees(){
-    GetTrees();
+  async function waitForTrees(){
+    await GetTrees();
   }
 
   if(firstRender.current){
@@ -1019,6 +1020,15 @@ const App = () => {
             {RenderTree(tree)}            
      
       </div>
+      <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
+        <Dialog className={"dialogContent"} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}}>
+              <TreeDetails 
+                  id = '48FB4FDC-E70B-4B06-18D2-08DD0933BE3B' 
+                  creation = {true}
+                  inputTree = {{id: '48FB4FDC-E70B-4B06-18D2-08DD0933BE3B', name: 'Tree 2 edit UI!', description: 'updated! edit UI!', rootId: null, isDeleted: false}}
+              />
+        </Dialog>
+      </Draggable>
     </>
   );
 }

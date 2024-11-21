@@ -128,6 +128,16 @@ button:focus{
     border: none;
 }
 
+.data-view-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* justify-content: center; */
+  padding: 0; /* ADDED */
+}
+
 .save-icon
 {
     /*color: var(--button-blue); */

@@ -110,6 +110,18 @@
     left: 1.5vw;
 }
 
+.container-2{
+    padding: 0 0 0 0;
+    background-color: var(--container-color);
+    width: 40vw;
+    max-width: 40vw;
+    height: calc(83.5vh - 5vw);
+    max-height: calc(83.5vh - 5vw);
+    overflow-y: hidden;
+    overflow-x: hidden;
+    left: 1.5vw;
+}
+
 .container-shrunk {
     padding: 0 0 0 0;
     background-color: var(--container-color);
