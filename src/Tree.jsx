@@ -3,6 +3,7 @@ import TreeNode from './features/nodes/TreeNode';
 import LineTo from 'react-lineto';
 import './App.css'
 import Draggable from 'react-draggable';
+import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { Provider } from 'react-redux';
 import { store } from '/LocalTreeData.React/src/store';
@@ -1039,12 +1040,14 @@ const Tree = () => {
       <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
         <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '8vh', justifyContent: 'center', alignItems: 'center'}}>
           <div style = {{marginRight: 'auto', height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",}}>
-            <button onClick={() => { RevertTreePositions();}} className='button-header button-save tooltip' style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
-              { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
-              }
-              <i className='pi pi-replay save-icon' style = {{fontSize: '8vh'}} />
-              <span class="tooltip-right">Home</span>
-            </button>
+            <Link to={"/"}> 
+              <button className='button-header button-save tooltip' style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
+                { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
+                }
+                <i className='pi pi-home save-icon' style = {{fontSize: '8vh'}} />
+                <span class="tooltip-right">Home</span>
+              </button>
+            </Link>
             <button onClick={() => { SaveTreePositions();}} className='button-header button-save tooltip' style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
             { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
               }
@@ -1085,15 +1088,6 @@ const Tree = () => {
             {RenderTree(tree)}            
      
       </div>
-      <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
-        <Dialog className={"dialogContent"} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}}>
-              <TreeDetails 
-                  id = '48FB4FDC-E70B-4B06-18D2-08DD0933BE3B' 
-                  creation = {true}
-                  inputTree = {{id: '48FB4FDC-E70B-4B06-18D2-08DD0933BE3B', name: 'Tree 2 edit UI!', description: 'updated! edit UI!', rootId: null, isDeleted: false}}
-              />
-        </Dialog>
-      </Draggable>
     </>
   );
 }
