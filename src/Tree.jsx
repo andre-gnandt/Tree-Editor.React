@@ -1027,6 +1027,8 @@ const Tree = () => {
     RemoveLines(tree);
     tree = structuredClone(originalTree);
     ReRenderTree();
+    changeTracker = new Object();
+    originalDictionary = {...nodeDictionary};
     document.getElementById('save-tree-positions').disabled = true;
     document.getElementById('revert-tree-positions').disabled = true;
   }
