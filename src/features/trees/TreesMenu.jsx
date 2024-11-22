@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client';
 import TreeDetails from './TreeDetails';
 import { InputText } from 'primereact/inputtext';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
+import history from '../../history';
 import '/node_modules/primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
@@ -18,9 +19,16 @@ const TreesMenu = () => {
   const [search, setSearch] = useState(null);
   const [deleteOptions, setDeleteOptions] = useState(null);
   const treeList = useRef([]); 
+  const creationId = useRef(null);
   const [list, setList] = useState([...treeList.current]);
   const iconDimension = 0.16*window.innerHeight;
   
+  if(creationId.current)
+  {
+    history.push(window.location);
+    window.location.replace("http://localhost:5173/tree/"+creationId.current);
+    creationId.current = null;
+  }
   /*
   function GetNodeSize()
   {
@@ -118,33 +126,60 @@ const TreesMenu = () => {
     if(callback === "create")
     {
         treeList.current.push(newTree);
+        creationId.current = newTree.id;
     }
 
     treeList.current.sort(CompareTrees);
-    setSearch(null);
-    setList([...treeList.current]); //sort as well
-
-    if(callback === "create") window.location.href = "http://localhost:5173/tree/"+newTree.id;
+    setList([...treeList.current]);
   }
 
   const EmptyListJSX = () => 
+    {
+      const maximumNodeSize = 50; //50vh
+  
+      return (
+        <>
+          <div>
+              <div style = {{marginLeft: 'auto', marginRight: 'auto', height: String(maximumNodeSize)+'vh', width: String(maximumNodeSize)+'vh'}}>
+                <button onClick={(event) => {document.getElementById('create-tree-button').click();}} className='button-root-empty' style = {{padding: '0 0 0 0', backgroundColor: 'lightGrey', color: '#0cdc16'}}>
+                    <i className='pi pi-upload' style = {{fontSize: String(maximumNodeSize)+'vh'}} onClick = {() => { setCreateNode(true);}} />
+                </button> 
+              </div >
+
+                <div style = {{marginLeft: 'auto', marginRight: 'auto', fontSize: '5vh', color: '#0cdc16',  width: String(maximumNodeSize)+'vh'}}>
+                  There are no trees, click above to create one!
+                </div>
+            
+          </div>
+      </>
+      );
+    }
+
+  /*
+  const EmptyListJSX = () => 
   {
-    const windowWidth = window.innerWidth;
-    const maximumNodeSize = window.innerHeight*0.5;
+    const windowWidth = 100; //100vw
+    const windowHeight = 100; //100vh
+    const maximumNodeSize = 50; //50vh
+    const leftBuffer = 9; //9vw
 
     return (
       <>
-            <div style = {{position: 'absolute', left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String(maximumNodeSize/4)+'px', height: String(maximumNodeSize)+'px', width: String(maximumNodeSize)+'px'}}>
-              <button onClick={(event) => {document.getElementById('create-root-button').click();}} className='button-root-empty' style = {{padding: '0 0 0 0', backgroundColor: 'lightGrey', color: '#d68a16'}}>
-                  <i className='pi pi-warehouse' style = {{fontSize: String(maximumNodeSize)+'px'}} onClick = {() => { setCreateNode(true);}} />
+        <div>
+            <div style = {{position: 'absolute', left: String((windowWidth/2-leftBuffer-maximumNodeSize/2)/)+'px', top: '0vh', height: String(maximumNodeSize)+'px', width: String(maximumNodeSize)+'px'}}>
+              <button onClick={(event) => {document.getElementById('create-tree-button').click();}} className='button-root-empty' style = {{padding: '0 0 0 0', backgroundColor: 'lightGrey', color: '#0cdc16'}}>
+                  <i className='pi pi-upload' style = {{fontSize: String(maximumNodeSize)+'px'}} onClick = {() => { setCreateNode(true);}} />
               </button> 
             </div >
-              <span style = {{fontSize: '5vh', color: '#d68a16', position: 'absolute', left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String((5*maximumNodeSize/4)+20)+'px', width: String(maximumNodeSize)+'px'}}>
+              <span style = {{fontSize: '5vh', color: '#0cdc16', position: 'absolute', left: String(windowWidth/2-leftBuffer-maximumNodeSize/2)+'px', top: String(maximumNodeSize)+'px', width: String(maximumNodeSize)+'px'}}>
                 There are no trees, click above to create one!
               </span>
-          </>
+          
+        </div>
+    </>
     );
   }
+    */
 
   const gridItem = (tree) => 
     {   
@@ -178,41 +213,57 @@ const TreesMenu = () => {
 
   return (
     <>
-      <div id = 'button-container' style ={{height: '16vh', position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
-        <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '16vh'}}>
-          <div id = 'create-container' style = {{height: '100%', display:'flex', width: String((iconDimension))+"px"}}>
-            <button className = 'button-header button-create tooltip'>
-                <i className='pi pi-upload' style = {{fontSize: '14vh'}} onClick = {() => { setCreateTree(true);}} />
-                <span class="tooltip-right">New Tree</span>
-            </button>
-          </div>
-          <div className='text-overflow' style = {{left: '30vw', fontSize: '10vh', height: '16vh', position: 'relative', width: '16vw'}}>
-                Trees
-         </div>
-        </div>
-      </div>
-      <div id = 'content-container' style = {{position: 'relative', top: '22vh', height: '70vh', width: '82vw', left: '9vw'}}>
-      {  
-        (requestComplete) && 
+    { (requestComplete) ? 
         (
-          <>
-            <InputText placeholder='Search...' style = {{marginBottom: '5vh', height: '8vh', width: '40vw', borderRadius: '4vh', fontSize: '5vh'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
-            <DataView className='data-table' style = {{scrollbarColor: 'blue',height: '59vh', maxHeight: '59vh'}} rows={4} value = {FilterTree(list)} listTemplate={listTemplate} layout = {"grid"} />
-          </>
+        <>
+        <div id = 'button-container' style ={{height: '16vh', position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
+            <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '16vh'}}>
+            <div id = 'create-container' style = {{height: '100%', display:'flex', width: String((iconDimension))+"px"}}>
+                <button className = 'button-header button-create tooltip'>
+                    <i id = 'create-tree-button' className='pi pi-upload' style = {{fontSize: '14vh'}} onClick = {() => { setCreateTree(true);}} />
+                    <span class="tooltip-right">New Tree</span>
+                </button>
+            </div>
+            <div className='text-overflow' style = {{left: '30vw', fontSize: '10vh', height: '16vh', position: 'relative', width: '16vw'}}>
+                    Trees
+            </div>
+            </div>
+        </div>
+        <div id = 'content-container' style = {{position: 'relative', top: '22vh', height: '70vh', width: '82vw', left: '9vw'}}>
+        {  
+            (list != null && list.length > 0) ? 
+            (
+            <>
+                <InputText placeholder='Search...' style = {{marginBottom: '5vh', height: '8vh', width: '40vw', borderRadius: '4vh', fontSize: '5vh'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
+                <DataView className='data-table' style = {{scrollbarColor: 'blue',height: '59vh', maxHeight: '59vh'}} rows={4} value = {FilterTree(list)} listTemplate={listTemplate} layout = {"grid"} />
+            </>
+            )
+            :
+            (
+                <>
+                    {EmptyListJSX()}
+                </>
+            )
+        }
+        </div>
+        <Draggable  onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
+            <Dialog className={"dialogContent"} onHide = {() => {setCreateTree(false);}} visible = {createTree} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}}>
+                <TreeDetails 
+                    inputTree={{name: null, description: null}}
+                    creation = {true}
+                    unMount={closeDialog}
+                    reRenderList={reRenderList}
+                />
+            </Dialog>
+        </Draggable>
+        {GetConfirmDelete()}
+        </>
         )
-      }
-      </div>
-      <Draggable  onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
-        <Dialog className={"dialogContent"} onHide = {() => {setCreateTree(false);}} visible = {createTree} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}}>
-              <TreeDetails 
-                  inputTree={{name: null, description: null}}
-                  creation = {true}
-                  unMount={closeDialog}
-                  reRenderList={reRenderList}
-              />
-        </Dialog>
-      </Draggable>
-      {GetConfirmDelete()}
+        :
+        (
+            <></>
+        )
+    }
     </>
   );
 }

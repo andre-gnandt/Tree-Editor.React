@@ -1,14 +1,15 @@
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Router, Routes, Route } from "react-router-dom";
 import TreesMenu from "./features/trees/TreesMenu";
 import Tree from "./Tree";
+import history from './history';
 
 
 const App = () => {
   
   return (
     <BrowserRouter>
-      <Routes>
+      <Routes history={history}>
         <Route path="/">
           <Route index element={<TreesMenu />} />
           <Route path="tree/:id" element={<Tree />} />
