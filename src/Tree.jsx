@@ -24,6 +24,8 @@ import { useParams } from 'react-router-dom';
 'path'
 */
 
+//Due to strange issues and positioning with the CSS transform property of tree nodes on re renders, this component will NEVER Re render
+//Re renders of the tree diagram must be done manually
 const Tree = () => {
   const id = useParams().id;
   const firstRender = useRef(true);
@@ -1028,7 +1030,6 @@ const Tree = () => {
     tree = structuredClone(originalTree);
     ReRenderTree();
     changeTracker = new Object();
-    originalDictionary = {...nodeDictionary};
     document.getElementById('save-tree-positions').disabled = true;
     document.getElementById('revert-tree-positions').disabled = true;
   }
@@ -1038,7 +1039,21 @@ const Tree = () => {
       <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
         <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '8vh', justifyContent: 'center', alignItems: 'center'}}>
           <div style = {{marginRight: 'auto', height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",}}>
-
+            <button onClick={() => { RevertTreePositions();}} className='button-header button-save tooltip' style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
+              { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
+              }
+              <i className='pi pi-replay save-icon' style = {{fontSize: '8vh'}} />
+              <span class="tooltip-right">Home</span>
+            </button>
+            <button onClick={() => { SaveTreePositions();}} className='button-header button-save tooltip' style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
+            { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
+              }
+              <i className='pi pi-save save-icon' style = {{fontSize: '8vh'}} />
+              <div style = {{fontSize: '3vh',height: '100%', width: '100%', padding: '0 0 0 0'}}>
+                Save Position Changes
+              </div>
+              <span class="tooltip-right">Tree Details</span>
+            </button>
           </div>          
           <div style = {{height: '100%', width: '41vh', display: 'flex',  marginRight: 'auto'}}>
             <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
