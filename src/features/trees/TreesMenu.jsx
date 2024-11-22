@@ -12,23 +12,14 @@ import 'primeicons/primeicons.css';
 import '../trees/tree.css';
 import '../nodes/detailsList.css';
 
-const TreesMenu = () => {
-  const firstRender = useRef(true);
-  const [requestComplete, setRequestComplete] = useState(false);
+const TreesMenu = ({trees}) => {
   const [createTree, setCreateTree] = useState(null);
   const [search, setSearch] = useState(null);
   const [deleteOptions, setDeleteOptions] = useState(null);
-  const treeList = useRef([]); 
-  const creationId = useRef(null);
+  const treeList = useRef([...trees]); 
   const [list, setList] = useState([...treeList.current]);
   const iconDimension = 0.16*window.innerHeight;
-  
-  if(creationId.current)
-  {
-    history.push(window.location);
-    window.location.replace("http://localhost:5173/tree/"+creationId.current);
-    creationId.current = null;
-  }
+
   /*
   function GetNodeSize()
   {
@@ -38,28 +29,6 @@ const TreesMenu = () => {
 
     if(maximumHeight < )
   }*/
-
-  async function GetTreeList(){
-    await fetch("http://localhost:11727/api/Trees").then(res => res.json()).then(
-        result => { 
-          var trees = result;
-          setRequestComplete(true);
-          treeList.current = trees;
-          setList(trees);
-        }
-    );   
-  };
-
-  async function waitForTreeList()
-  {
-    await GetTreeList();
-  }
-
-  if(firstRender.current)
-  {
-    firstRender.current = false;
-    waitForTreeList();
-  }
 
   function CompareTrees(a, b)
   {
@@ -126,7 +95,6 @@ const TreesMenu = () => {
     if(callback === "create")
     {
         treeList.current.push(newTree);
-        creationId.current = newTree.id;
     }
 
     treeList.current.sort(CompareTrees);
@@ -142,7 +110,7 @@ const TreesMenu = () => {
           <div>
               <div style = {{marginLeft: 'auto', marginRight: 'auto', height: String(maximumNodeSize)+'vh', width: String(maximumNodeSize)+'vh'}}>
                 <button onClick={(event) => {document.getElementById('create-tree-button').click();}} className='button-root-empty' style = {{padding: '0 0 0 0', backgroundColor: 'lightGrey', color: '#0cdc16'}}>
-                    <i className='pi pi-upload' style = {{fontSize: String(maximumNodeSize)+'vh'}} onClick = {() => { setCreateNode(true);}} />
+                    <i className='pi pi-upload' style = {{fontSize: String(maximumNodeSize)+'vh'}} onClick = {() => { setCreateTree(true);}} />
                 </button> 
               </div >
 
@@ -154,32 +122,6 @@ const TreesMenu = () => {
       </>
       );
     }
-
-  /*
-  const EmptyListJSX = () => 
-  {
-    const windowWidth = 100; //100vw
-    const windowHeight = 100; //100vh
-    const maximumNodeSize = 50; //50vh
-    const leftBuffer = 9; //9vw
-
-    return (
-      <>
-        <div>
-            <div style = {{position: 'absolute', left: String((windowWidth/2-leftBuffer-maximumNodeSize/2)/)+'px', top: '0vh', height: String(maximumNodeSize)+'px', width: String(maximumNodeSize)+'px'}}>
-              <button onClick={(event) => {document.getElementById('create-tree-button').click();}} className='button-root-empty' style = {{padding: '0 0 0 0', backgroundColor: 'lightGrey', color: '#0cdc16'}}>
-                  <i className='pi pi-upload' style = {{fontSize: String(maximumNodeSize)+'px'}} onClick = {() => { setCreateNode(true);}} />
-              </button> 
-            </div >
-              <span style = {{fontSize: '5vh', color: '#0cdc16', position: 'absolute', left: String(windowWidth/2-leftBuffer-maximumNodeSize/2)+'px', top: String(maximumNodeSize)+'px', width: String(maximumNodeSize)+'px'}}>
-                There are no trees, click above to create one!
-              </span>
-          
-        </div>
-    </>
-    );
-  }
-    */
 
   const gridItem = (tree) => 
     {   
@@ -213,8 +155,6 @@ const TreesMenu = () => {
 
   return (
     <>
-    { (requestComplete) ? 
-        (
         <>
         <div id = 'button-container' style ={{height: '16vh', position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
             <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '16vh'}}>
@@ -258,12 +198,9 @@ const TreesMenu = () => {
         </Draggable>
         {GetConfirmDelete()}
         </>
-        )
-        :
-        (
-            <></>
-        )
-    }
+        
+        
+        
     </>
   );
 }

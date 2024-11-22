@@ -3,8 +3,11 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Dialog } from 'primereact/dialog';
 import '../nodes/detailsList.css';
 import Draggable from 'react-draggable';
+import { useNavigate } from 'react-router-dom';
+import history from '../../history';
 
 const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree, creation  = false}) => {
+    const navigate = useNavigate();
     const[hideButtons, setHideButtons] = useState(0);
     const changeCount = useRef(0);
     const titlePresent = useRef(true);
@@ -137,6 +140,8 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
             SetInputTree(newTree);
             reRenderList("create", newTree);
             setCreate(false);
+            history.push(window.location);
+            navigate("tree/"+newTree.id);
         }
         else
         {   
