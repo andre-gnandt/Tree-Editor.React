@@ -29,7 +29,8 @@ const Tree = () => {
   const firstRender = useRef(true);
   const [treeState, setTree] = useState(null);
   const [treeDetailsState, setTreeDetails] = useState(null);
-  var tree = {...treeState};
+  var originalTree = {...treeState}
+  var tree = structuredClone(originalTree);
   const [requestComplete, setRequestComplete] = useState(false);
   const [createNode, setCreateNode] = useState(null);
   const pixelsToCentimetres = PixelSizeInCentimetres();
@@ -62,11 +63,11 @@ const Tree = () => {
   var testRender = false;
 
   window.addEventListener('resize', (event) => {ReRenderTree();});
-  window.addEventListener('hashchange', (event) => {console.log("hashchange"); RemoveLines(tree);});
 
   useEffect(() => {
     AddLines(tree);
     document.getElementById('save-tree-positions').disabled = true;
+    document.getElementById('revert-tree-positions').disabled = true;
     RenderCreationButtons();
   });
 
@@ -116,6 +117,7 @@ const Tree = () => {
     if(Object.keys(changeTracker).length === 0) 
     {
       document.getElementById('save-tree-positions').disabled = true;
+      document.getElementById('revert-tree-positions').disabled = true;
     }
   }
 
@@ -138,24 +140,32 @@ const Tree = () => {
       {
         RemoveLine({id: nodeId, nodeId: oldParentId});
         node = AlterTreeStructureForParentNodeChange(inputTree, nodeId, newParentId, oldParentId);
+        AlterTreeStructureForParentNodeChange(originalTree, nodeId, newParentId, oldParentId);
       }
       else if(callback === "create")
       {
         node = AlterTreeStructureForCreateNode(inputTree, newNode);
+        AlterTreeStructureForCreateNode(originalTree, {...newNode});
       }
       else if(callback === "new root")
       {
         node = AlterTreeAtructureForCreateRoot(inputTree, newNode);
         inputTree = newNode;
         tree = newNode;
+
+        originalTreeRoot = AlterTreeAtructureForCreateRoot(originalTree, {...newNode});
+        originalTree = originalTreeRoot;
+
       }
       else if(callback === "delete single")
       {
         node = AlterTreeStructureForDeleteSingle(inputTree, nodeId, oldParentId);
+        AlterTreeStructureForDeleteSingle(originalTree, nodeId, oldParentId);
       }
       else if(callback === "delete cascade")
       {
         node = AlterTreeStructureForDeleteCascade(inputTree, nodeId, oldParentId);
+        AlterTreeStructureForDeleteCascade(originalTree, nodeId, oldParentId);
       }
     }
 
@@ -201,6 +211,7 @@ const Tree = () => {
     }
 
     document.getElementById('save-tree-positions').disabled = !(treeUnsaved);
+    document.getElementById('revert-tree-positions').disabled = !(treeUnsaved);
   }
 
   function CompareNodes(a, b)
@@ -791,6 +802,7 @@ const Tree = () => {
       changeTracker = new Object();
       originalDictionary = {...nodeDictionary};
       document.getElementById('save-tree-positions').disabled = true;
+      document.getElementById('revert-tree-positions').disabled = true;
     }
   }
 
@@ -1010,11 +1022,29 @@ const Tree = () => {
     );
   }
 
+  function RevertTreePositions()
+  {
+    RemoveLines(tree);
+    tree = structuredClone(originalTree);
+    ReRenderTree();
+    document.getElementById('save-tree-positions').disabled = true;
+    document.getElementById('revert-tree-positions').disabled = true;
+  }
+
   return (
     <>
       <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
         <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '8vh', justifyContent: 'center', alignItems: 'center'}}>
-          <div style = {{height: '100%', width: '32vh', marginLeft: 'auto', marginRight: 'auto'}}>
+          <div style = {{marginRight: 'auto', height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",}}>
+
+          </div>          
+          <div style = {{height: '100%', width: '41vh', display: 'flex',  marginRight: 'auto'}}>
+            <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
+            { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
+              }
+              <i className='pi pi-replay save-icon' style = {{fontSize: '8vh'}} />
+              <span class="tooltip-bottom">Revert Tree Positions</span>
+            </button>
             <button onClick={() => { SaveTreePositions();}} id = 'save-tree-positions' className='button-header button-save tooltip' style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
             { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
               }
