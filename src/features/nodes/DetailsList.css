@@ -47,6 +47,16 @@
     overflow-y: hidden;
 }
 
+.dialogContent2 {
+    width: 45vw;
+    height: 90vh;
+    max-height: 90vh;
+    border-radius: 5vw;
+    background-color: var(--container-outline-color);
+    overflow: hidden;
+    overflow-y: hidden;
+}
+
 .thumbnail-placeholder 
 {
   width: 100%;
@@ -133,8 +143,8 @@
     background-color: var(--container-color);
     width: 40vw;
     max-width: 40vw;
-    height: calc(83.5vh - 5vw);
-    max-height: calc(83.5vh - 5vw);
+    height: calc(77.5vh - 5vw);
+    max-height: calc(77.5vh - 5vw);
     overflow-y: hidden;
     overflow-x: hidden;
     left: 1.5vw;

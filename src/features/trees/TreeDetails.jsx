@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dialog } from 'primereact/dialog';
 import '../nodes/detailsList.css';
+import '../trees/tree.css';
 import Draggable from 'react-draggable';
 import { useNavigate } from 'react-router-dom';
 import history from '../../history';
@@ -195,32 +196,36 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
                         </div>
                     </div> 
                 </div>
-                <div className={(changeCount.current === 0 && titleRequired) ? 'container-2': 'container-shrunk'} style = {{position: 'relative', overflowY: 'hidden'}} > 
-                    <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
-                        <div className='title-container'>
+                <div className={'container-2'} style = {{position: 'relative', overflowY: 'hidden'}} > 
+                    <div style = {{top: '1vh' , width: '36vw', left:'2vw', position: 'relative', display: 'flex', height: '33vh', marginBottom: '5.275vh'}}>
+                        <div className='tree-title-container'>
                             <InputTextarea 
                                 autoResize 
                                 rows = {1} 
                                 placeholder="Title..." 
-                                className= {(titleRequired) ? "title" : "title-required"}
+                                className= {(titleRequired) ? "tree-title" : "tree-title-required"}
                                 spellCheck = {false}
                                 onChange = {(e) => {CheckValueChange(inputTree.name, name, e.target.value); setName(e.target.value);}} value = {name ? name : ""} />
                         </div>
                     </div>
-                    <div className="entryContainer">
-                        <div className = "fullWidthLeft">
-                            Description:  
-                        </div> 
-                        <div className="fullWidthRight" style = {{height: '17vh'}}>
-                            <InputTextarea placeholder='Description...' autoResize style = {{height: '17vh'}} rows={5} className = "input" onChange = {(e) => {CheckValueChange(inputTree.description, description, e.target.value); setDescription(e.target.value);}} value = {description ? description : ""} />
+                    
+                        {/*
+                         container:   height: calc(83.5vh - 5vw);
+                                        max-height: calc(83.5vh - 5vw); 
+                         Title = 39.275vh
+                            
+                         result: calc(44.225 - 5vw)
+                        */}
+                        <div className = 'tree-description-container' style = {{ width: '36vw', position: 'relative', left: '2vw'}}>
+                            <InputTextarea placeholder='Description...' autoResize  rows={6} className = 'tree-description' onChange = {(e) => {CheckValueChange(inputTree.description, description, e.target.value); setDescription(e.target.value);}} value = {description ? description : ""} />
                         </div>
-                    </div>
+                  
                 </div> 
-                <div hidden = {changeCount.current === 0 && titleRequired} style = {{height: (changeCount.current === 0 && titleRequired)? '0vh':'6.5vh', width: '40vw', position: 'relative', left: '1.5vw', display: 'flex'}}>
-                    <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{ fontSize: '4vh', display: 'flex', height: '100%'}}>
+                <div  style = {{backgroundColor: (changeCount.current === 0 && titleRequired) ? '#F0F0F0' : '#DCDCDC', maxHeight: '6.5vh', height: '6.5vh', width: '40vw', position: 'relative', left: '1.5vw', display: 'flex'}}>
+                    <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{ fontSize: '4vh', display: 'flex',  maxHeight: '6.5vh', height: '6.5vh',}}>
  
-                        <button hidden = {changeCount.current === 0} className='button text-overflow' style = {{height: '100%', width: '16vh', marginRight: '1vh'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
-                        <button hidden = {changeCount.current === 0} className='button text-overflow' style = {{height: '100%', width: '16vh'}} onClick = {() => {titlePresent.current = true; changeCount.current = 0; setName(inputTree.name); setDescription(inputTree.description); }} > Reset </button>
+                        <button hidden = {changeCount.current === 0} className='button text-overflow' style = {{ maxHeight: '6.5vh', height: '6.5vh', width: '16vh', marginRight: '1vh'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                        <button hidden = {changeCount.current === 0} className='button text-overflow' style = {{ maxHeight: '6.5vh', height: '6.5vh', width: '16vh'}} onClick = {() => {titlePresent.current = true; changeCount.current = 0; setName(inputTree.name); setDescription(inputTree.description); }} > Reset </button>
                     </div>
                     <div className='text-overflow title-required-container'  hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', textAlign: 'bottom'}}>Title is required!</div>
                 </div>

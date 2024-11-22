@@ -9,11 +9,139 @@
     --button-green-focused: green;
 
     --background-color: silver;
+
+    --form-color: rgba(204, 255, 255, 1);
+    /*old --form-border-color: rgba(204, 255, 255 0.9);*/
+    /*input:focus background-color: rgba(204, 255, 255, 0.9);*/
+    --input-focused-background-color: #ccffffe6;
+    /*old --form-border-color: #64ffffe6;*/
+    --form-border-color: #0388fc;
+    --form-focused-color: #274df5;
+    --container-color: #F0F0F0;
+    --container-outline-color: #DCDCDC;
+}
+
+/*
+.title {
+  text-align: center;
+  width: 100%;
+  font-size: 10vh;
+  font-family: 'Courier, monospace';
+  height: 10vh;
+  max-height: 44vh;
+  border: none;
+  color: rgb(49, 152, 170);
+  background-color: var(--container-color);
+}
+
+.title:hover {
+  border: 5px solid var(--input-focused-background-color);
+}
+
+.title:focus {
+  background-color: var(--input-focused-background-color);
+  color: var(--form-focused-color) !important;
+  border-color: var(--form-focused-color);
+}
+
+.title-container {
+  width: calc(40vw - 37vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+*/
+
+.tree-title-container
+{
+  position: relative;
+  width: 36vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tree-title
+{
+  text-align: center;
+  width: 100%;
+  font-size: 10vh;
+  font-family: 'Courier, monospace';
+  height: 11vh;
+  max-height: 33vh;
+  border: none;
+  color: rgb(49, 152, 170);
+  background-color: var(--container-color);
+}
+
+.tree-title:hover {
+  border: 5px solid var(--input-focused-background-color);
+}
+
+.tree-title:focus {
+  background-color: var(--input-focused-background-color);
+  color: var(--form-focused-color) !important;
+  border-color: var(--form-focused-color);
+}
+
+.tree-title-required-container
+{
+    font-size: 3vh;
+    width: calc(38vw - 33vh);
+}
+
+.tree-title-required {
+    text-align: center;
+    width: 100%;
+    font-size: 10vh;
+    font-family: 'Courier, monospace';
+    height: 11vh;
+    max-height: 33vh;
+    color: rgb(49, 152, 170);
+    background-color: var(--container-color);
+    border: 4px solid red;
+    
+}
+
+.tree-title-required:focus {
+    background-color: var(--input-focused-background-color);
+    color: var(--form-focused-color) !important;
+}
+
+.tree-description-container
+{
+  height: 25.225vh;
+  max-height: 25.225vh;
+}
+
+.tree-description {
+
+  width: 100%;
+  height: 25.225vh;
+  max-height: 25.225vh;
+  font-family: 'Courier, monospace';
+  font-size: 4vh;
+  border: none;
+  color: var(--form-border-color);
+  border-radius: 2vh;
+  background-color: var(--container-color);
+}
+
+.tree-description:hover
+{
+  border: 5px solid var(--input-focused-background-color);
+}
+
+.tree-description:focus
+{
+  background-color: var(--input-focused-background-color);
+  color: var(--form-focused-color) !important;
+  border-color: var(--form-focused-color);
 }
 
 .dialogContent {
-    width: max(45vw, 5cm);
-    height: max(90vh, 7.5cm);
+    width: 45vw;
+    height: 90vh;
 }
 
 .button-save

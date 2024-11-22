@@ -21,7 +21,7 @@ const EditTree = ({id, tree}) => {
                 <span class="tooltip-right">Edit Tree Details</span>
             </button>
             <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
-                <Dialog className={"dialogContent"} draggable 
+                <Dialog className={"dialogContent2"} draggable 
                     showHeader = {false}  
                     contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}}
                     visible = {editTree} 
