@@ -1,20 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
+import { useParams } from 'react-router-dom';
 import TreeNode from './features/nodes/TreeNode';
 import LineTo from 'react-lineto';
 import './App.css'
 import Draggable from 'react-draggable';
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from 'react-redux';
-import { Provider } from 'react-redux';
-import { store } from '/LocalTreeData.React/src/store';
-import { Dialog } from 'primereact/dialog';
 import { createRoot } from 'react-dom/client';
 import CreateNode from './features/nodes/CreateNode';
 import CreateRoot from './features/nodes/CreateRoot';
-import TreeDetails from './features/trees/TreeDetails';
+import EditTree from './features/trees/EditTree';
 import 'primeicons/primeicons.css';
 import './features/trees/tree.css';
-import { useParams } from 'react-router-dom';
 
 /*extra node properties include:
 'position'
@@ -1048,15 +1044,7 @@ const Tree = () => {
                 <span class="tooltip-right">Home</span>
               </button>
             </Link>
-            <button onClick={() => { SaveTreePositions();}} className='button-header button-save tooltip' style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
-            { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
-              }
-              <i className='pi pi-save save-icon' style = {{fontSize: '8vh'}} />
-              <div style = {{fontSize: '3vh',height: '100%', width: '100%', padding: '0 0 0 0'}}>
-                Save Position Changes
-              </div>
-              <span class="tooltip-right">Tree Details</span>
-            </button>
+            <EditTree id = {id} tree = {treeDetailsState}/>
           </div>          
           <div style = {{height: '100%', width: '41vh', display: 'flex',  marginRight: 'auto'}}>
             <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
@@ -1087,6 +1075,8 @@ const Tree = () => {
       
             {RenderTree(tree)}            
      
+      </div>
+      <div id = 'dialog-container'>
       </div>
     </>
   );

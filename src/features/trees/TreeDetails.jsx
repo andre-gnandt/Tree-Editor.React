@@ -124,6 +124,8 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
     {   
         await deleteTree(id);
         unMount();
+        history.push(window.location);
+        navigate("/");
     }
 
     async function HandleSaveOrCreate()
@@ -148,7 +150,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
             inputTree.name = name;
             inputTree.description = description; 
             await updateTree(id, inputTree);
-            reRenderList("update");
+            //reRenderList("update");
         }   
 
         if(name && name.trim().length > 0)
