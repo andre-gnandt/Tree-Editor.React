@@ -46,12 +46,9 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
 
     function CheckValueChange(originalValue, previousValue, newValue)
     {
-        console.log("original value: "+originalValue);
-        console.log("previous value: "+previousValue);
-        console.log("new value: "+newValue);
-        if(originalValue != null && String(originalValue).trim().length === 0) originalValue = null;
-        if(previousValue != null && String(previousValue).trim().length === 0) previousValue = null;
-        if(newValue != null && String(newValue).trim().length === 0) newValue = null;
+        if(originalValue != null && String(originalValue).length === 0) originalValue = null;
+        if(previousValue != null && String(previousValue).length === 0) previousValue = null;
+        if(newValue != null && String(newValue).length === 0) newValue = null;
 
         const previousChangeCount = changeCount.current;
         if(previousValue == originalValue && newValue != originalValue)
@@ -214,6 +211,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
                 </div> 
                 <div hidden = {changeCount.current === 0 && titleRequired} style = {{height: (changeCount.current === 0 && titleRequired)? '0vh':'6.5vh', width: '40vw', position: 'relative', left: '1.5vw', display: 'flex'}}>
                     <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{ fontSize: '4vh', display: 'flex', height: '100%'}}>
+ 
                         <button hidden = {changeCount.current === 0} className='button text-overflow' style = {{height: '100%', width: '16vh', marginRight: '1vh'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
                         <button hidden = {changeCount.current === 0} className='button text-overflow' style = {{height: '100%', width: '16vh'}} onClick = {() => {titlePresent.current = true; changeCount.current = 0; setName(inputTree.name); setDescription(inputTree.description); }} > Reset </button>
                     </div>

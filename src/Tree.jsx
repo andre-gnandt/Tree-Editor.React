@@ -84,6 +84,16 @@ const Tree = () => {
     body: ""
 }
 
+  function ShowLoading()
+  {
+    document.getElementById('loading').hidden = false;
+  }
+
+  function doneLoading()
+  {
+    document.getElementById('loading').hidden = true;
+  }
+
   async function updateManyNodes(id, nodeList){
     putOptions.body = JSON.stringify(nodeList);
     await fetch("http://localhost:11727/api/Nodes/Many/"+id, putOptions)
@@ -244,11 +254,13 @@ const Tree = () => {
           setRequestComplete(true);
           setTree(result.root);
           setTreeDetails(result.tree);
+          doneLoading();
         }
     );   
   };
 
   async function waitForTree(){
+    ShowLoading();
     await GetTree();
   }
 

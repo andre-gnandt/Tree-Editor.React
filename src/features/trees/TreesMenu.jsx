@@ -4,6 +4,7 @@ import { Dialog } from 'primereact/dialog';
 import { Outlet, Link } from "react-router-dom";
 import { createRoot } from 'react-dom/client';
 import TreeDetails from './TreeDetails';
+import { InputText } from 'primereact/inputtext';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import '/node_modules/primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
@@ -15,21 +16,12 @@ const TreesMenu = () => {
   const [requestComplete, setRequestComplete] = useState(false);
   const [createTree, setCreateTree] = useState(null);
   const [search, setSearch] = useState(null);
-  const treeList = useRef([]);
-  //const [nodeSize, setNodeSize] = useState(200);
+  const [deleteOptions, setDeleteOptions] = useState(null);
+  const treeList = useRef([]); 
   const [list, setList] = useState([...treeList.current]);
-  const iconDimension = 0.12*window.innerHeight;
+  const iconDimension = 0.16*window.innerHeight;
   
-  const lines = document.getElementsByClassName('tree-line');
-  var i = 0;
-
-  while(i < lines.length)
-{
-    var line = lines[i];
-    line.remove();
-    i++;
-  }
-/*
+  /*
   function GetNodeSize()
   {
     const widthToHeight = 0.7;
@@ -69,6 +61,58 @@ const TreesMenu = () => {
     return 0;
   }
 
+  async function DeleteTree(id)
+  {
+    await fetch("http://localhost:11727/api/Trees/"+id, {method: 'DELETE'})
+    .then((response)=>response.json())
+    .then((responseJson)=>{return responseJson});
+  
+   };
+
+
+  async function HandleDeleteTree()
+  {
+    await DeleteTree(deleteOptions);
+    var index = treeList.current.findIndex((object) => object.id === deleteOptions);
+    treeList.current.splice(index, 1);
+    setList([...treeList.current]);
+    setDeleteOptions(null);
+  }
+
+  const GetConfirmDelete = () =>
+    {
+        return (
+        <>  <Draggable>
+                <Dialog className='alert' showHeader = {false}  style = {{height: '45vh', width: '40vw'}} headerStyle={{backgroundColor: 'coral'}} contentStyle={{backgroundColor: 'coral', overflow: 'hidden'}}  visible = {deleteOptions} onHide = {() => {setDeleteOptions("")}}>
+                    <>  
+                    <i onClick={() => {setDeleteOptions(null)}} className='pi pi-times' style = {{ marginRight: 'auto', cursor: 'pointer', fontSize: '4.8vh'}}/>                   
+                        <div className='alert' style = {{marginLeft: '2.5vw', width: '40vw', height: '45vh'}}>
+                            <div className='' style = {{position: 'relative', top: '0vh',  width: '35vw', height: '8vh', textAlign: 'center', fontSize: '3vh' }}>Please confirm that you would like to delete this Tree.</div>
+                            <div style = {{position: 'relative', top: '10vh', marginTop: '1vh', display: 'flex', width: '35vw', height: '24vh'}}>
+                                <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
+                                    <button className='text-overflow button' onClick={() => {HandleDeleteTree();}} style = {{height: '12vh', width: '15.5vw', fontSize: '4vh'}}>Yes</button>
+                                </div>
+                                <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
+                                    <button 
+                                         onClick={() => {setDeleteOptions(null); }}
+                                         className='button text-overflow' style = {{height: '12vh',  width: '15.5vw', fontSize: '4vh'}}>No</button>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                </Dialog>
+            </Draggable>
+        </>
+        );
+    }
+
+  function FilterTree()
+  {
+    if(!search || !list || list.length == 0 || search.length == 0) return list;
+
+    return list.filter((tree) => { return (tree.name.toLowerCase().includes(search.toLowerCase()))});
+  }
+
   function reRenderList(callback = null, newTree = null)
   {
     if(callback === "create")
@@ -79,6 +123,8 @@ const TreesMenu = () => {
     treeList.current.sort(CompareTrees);
     setSearch(null);
     setList([...treeList.current]); //sort as well
+
+    if(callback === "create") window.location.href = "http://localhost:5173/tree/"+newTree.id;
   }
 
   const EmptyListJSX = () => 
@@ -102,16 +148,20 @@ const TreesMenu = () => {
 
   const gridItem = (tree) => 
     {   
+        //container: 82vw 57vh
+        //columns: 3, rows: 2
         return (
             <div className='col-3' key = {tree.id} >
+                <i className='pi pi-times' onClick={() => {setDeleteOptions(tree.id)}} style = {{cursor: 'pointer', zIndex: 20, top: '2vh', position: 'relative', height: '14px', width: '14px', fontSize: '14px'}}/>
                 <Link to={"/tree/"+tree.id}> 
+                
                 <button 
-                       
+                    className='menu-button'
+                    style = {{fontSize: '3.25vw', marginTop:'2vh', padding: '0 0 0 0', backgroundColor: '#DCDCDC', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', height: '27vh', width: '19.5vw'}}
                     //onClick={(event) => {ValidateButtonClick(event.target);}} 
                 >
-                     
                     {tree.name}
-                </button> 
+                </button>
                 </Link> 
             </div>
         );
@@ -129,21 +179,25 @@ const TreesMenu = () => {
   return (
     <>
       <div id = 'button-container' style ={{height: '16vh', position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
-        <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '12vh'}}>
+        <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '16vh'}}>
           <div id = 'create-container' style = {{height: '100%', display:'flex', width: String((iconDimension))+"px"}}>
             <button className = 'button-header button-create tooltip'>
-                <i className='pi pi-upload' style = {{fontSize: '11vh'}} onClick = {() => { setCreateTree(true);}} />
+                <i className='pi pi-upload' style = {{fontSize: '14vh'}} onClick = {() => { setCreateTree(true);}} />
                 <span class="tooltip-right">New Tree</span>
             </button>
           </div>
+          <div className='text-overflow' style = {{left: '30vw', fontSize: '10vh', height: '16vh', position: 'relative', width: '16vw'}}>
+                Trees
+         </div>
         </div>
       </div>
-      <div id = 'content-container' className='card' style = {{position: 'relative', top: '16vh', height: '84vh', width: '100vw'}}>
+      <div id = 'content-container' style = {{position: 'relative', top: '22vh', height: '70vh', width: '82vw', left: '9vw'}}>
       {  
         (requestComplete) && 
         (
           <>
-            <DataView rows={4} value = {list} listTemplate={listTemplate} layout = {"grid"} />
+            <InputText placeholder='Search...' style = {{marginBottom: '5vh', height: '8vh', width: '40vw', borderRadius: '4vh', fontSize: '5vh'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
+            <DataView className='data-table' style = {{scrollbarColor: 'blue',height: '59vh', maxHeight: '59vh'}} rows={4} value = {FilterTree(list)} listTemplate={listTemplate} layout = {"grid"} />
           </>
         )
       }
@@ -158,6 +212,7 @@ const TreesMenu = () => {
               />
         </Dialog>
       </Draggable>
+      {GetConfirmDelete()}
     </>
   );
 }

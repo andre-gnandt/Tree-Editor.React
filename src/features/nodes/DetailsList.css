@@ -110,6 +110,24 @@
     left: 1.5vw;
 }
 
+.menu-button:hover
+{
+    border: 3px solid var(--form-focused-color);
+}
+
+.menu-button:focus
+{
+    outline: none;
+    border: none;
+}
+
+.data-table
+{
+  overflow-y: scroll;
+  scrollbar-gutter: none;
+  scrollbar-color: var(--form-focused-color) lightGrey ;
+}
+
 .container-2{
     padding: 0 0 0 0;
     background-color: var(--container-color);
