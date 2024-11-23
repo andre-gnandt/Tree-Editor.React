@@ -78,7 +78,8 @@ const Tree = () => {
     {
       document.getElementById('save-tree-positions').disabled = true;
       document.getElementById('revert-tree-positions').disabled = true;
-      RenderCreationButtons();
+      
+      //RenderCreationButtons();
     }
   });
 
@@ -148,7 +149,7 @@ const Tree = () => {
 
   function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
   {
-    if(!document.getElementById('tree-root') || !window.location.href.includes(id))
+    if(!document.getElementById('tree-root') || !window.location.href.includes('tree/'+id))
     {
       window.removeEventListener('resize', ReRenderTree);
       return;
@@ -1121,6 +1122,7 @@ const Tree = () => {
               </button>
             </div>
             <div id = 'create-container' style = {{height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",  marginRight: '2vw'}}>
+                {CreationButtons()}
             </div>
           </div>
         </div>
