@@ -32,6 +32,11 @@
     text-align: center;
 }
 
+.tree-button
+{
+    background-color: var(--container-color);
+}
+
 .tree-button:focus
 {
     outline: none;

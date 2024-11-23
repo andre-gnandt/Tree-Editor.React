@@ -100,7 +100,7 @@ const TreeNode = (props) => {
                     <button 
                         className='tree-button'       
                         onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} 
-                        style = {{ padding: '0 0 0 0 ', fontSize: String(props.css.nodeSize*0.155)+'px', backgroundColor: '#DCDCDC', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(props.css.nodeSize)+'px', maxWidth: String(props.css.nodeSize)+'px',  height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
+                        style = {{ padding: '0 0 0 0 ', fontSize: String(props.css.nodeSize*0.155)+'px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(props.css.nodeSize)+'px', maxWidth: String(props.css.nodeSize)+'px',  height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
                         {props.props.title}
                     </button> 
                 } 
