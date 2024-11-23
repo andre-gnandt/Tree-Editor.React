@@ -198,12 +198,13 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
                 </div>
                 <div className={'container-2'} style = {{position: 'relative', overflowY: 'hidden'}} > 
                     <div style = {{top: '1vh' , width: '36vw', left:'2vw', position: 'relative', display: 'flex', height: '33vh', marginBottom: '5.275vh'}}>
-                        <div className='tree-title-container'>
+                        <div className='tree-title-container' style = {{justifyContent: 'center', textAlign: 'center', display: 'flex'}}>
                             <InputTextarea 
                                 autoResize 
                                 rows = {1} 
                                 placeholder="Title..." 
                                 className= {(titleRequired) ? "tree-title" : "tree-title-required"}
+                                style = {{justifyContent: 'center', textAlign: 'center', display: 'flex'}}
                                 spellCheck = {false}
                                 onChange = {(e) => {CheckValueChange(inputTree.name, name, e.target.value); setName(e.target.value);}} value = {name ? name : ""} />
                         </div>
@@ -216,8 +217,14 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
                             
                          result: calc(44.225 - 5vw)
                         */}
-                        <div className = 'tree-description-container' style = {{ width: '36vw', position: 'relative', left: '2vw'}}>
-                            <InputTextarea placeholder='Description...' autoResize  rows={6} className = 'tree-description' onChange = {(e) => {CheckValueChange(inputTree.description, description, e.target.value); setDescription(e.target.value);}} value = {description ? description : ""} />
+                        <div className = 'tree-description-container' style = {{justifyContent: 'center', textAlign: 'center', display: 'flex', width: '36vw', position: 'relative', left: '2vw'}}>
+                            <InputTextarea 
+                                placeholder='Description...'   
+                                autoResize  
+                                rows={6} 
+                                className = 'tree-description' 
+                                style = {{justifyContent: 'center', textAlign: 'center', display: 'flex'}}
+                                onChange = {(e) => {CheckValueChange(inputTree.description, description, e.target.value); setDescription(e.target.value);}} value = {description ? description : ""} />
                         </div>
                   
                 </div> 

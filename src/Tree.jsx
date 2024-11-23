@@ -26,10 +26,12 @@ import './features/trees/tree.css';
 const Tree = () => {
   const id = useParams().id;
   const firstRender = useRef(true);
-  const [treeState, setTree] = useState(null);
-  const [treeDetailsState, setTreeDetails] = useState(null);
-  var originalTree = {...treeState}
-  var tree = structuredClone(originalTree);
+  const [treeFetch, setTreeFetch] = useState(null);
+  const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
+  //const [treeState, setTree] = useState(null);
+  //const [treeDetailsState, setTreeDetails] = useState(null);
+  var originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
+  var tree = originalTree != null ? structuredClone(originalTree) : null;
   const [requestComplete, setRequestComplete] = useState(false);
   const [createNode, setCreateNode] = useState(null);
   const pixelsToCentimetres = PixelSizeInCentimetres();
@@ -61,13 +63,22 @@ const Tree = () => {
   const horizontalBorder = 15; //in pixels
   var testRender = false;
 
+  if(!treeFetch)
+  {
+    waitForTree();
+  }
+
   window.addEventListener('resize', (event) => {ReRenderTree();});
 
   useEffect(() => {
-    AddLines(tree);
-    document.getElementById('save-tree-positions').disabled = true;
-    document.getElementById('revert-tree-positions').disabled = true;
-    RenderCreationButtons();
+    
+    if(tree) AddLines(tree);
+    if(treeDetails)
+    {
+      document.getElementById('save-tree-positions').disabled = true;
+      document.getElementById('revert-tree-positions').disabled = true;
+      RenderCreationButtons();
+    }
   });
 
   function PixelSizeInCentimetres() {
@@ -136,10 +147,22 @@ const Tree = () => {
 
   function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
   {
+
+    const treeContainer = createRoot(document.getElementById('tree-root'));
+    if(!tree && !newNode)
+    {
+       treeContainer.render((RenderTree(tree)));
+       return;
+    }
+    else if(tree)
+    {
+      
+      RemoveLines(tree);
+    }
+
     nodeList = [];
     nodeDictionary = [];
     var inputTree = tree;
-    RemoveLines(inputTree);
     var node = null;
 
     //change the trees frontend structure to match the changes that were made in the database (without any api calls)
@@ -187,7 +210,6 @@ const Tree = () => {
       }
     }
 
-    const treeContainer = createRoot(document.getElementById('tree-root'));
     maxLevels = new Object();
     childPositions = new Object();
     nodeDictionary = new Object();
@@ -230,6 +252,8 @@ const Tree = () => {
 
     document.getElementById('save-tree-positions').disabled = !(treeUnsaved);
     document.getElementById('revert-tree-positions').disabled = !(treeUnsaved);
+    
+    if(callback === "new root" && nodeList.length === 1) window.location.reload();
   }
 
   function CompareNodes(a, b)
@@ -281,8 +305,7 @@ const Tree = () => {
     await fetch("http://localhost:11727/api/Trees/FullTree/"+id).then(res => res.json()).then(
         result => { 
           setRequestComplete(true);
-          setTree(result.root);
-          setTreeDetails(result.tree);
+          setTreeFetch(result);
           doneLoading();
         }
     );   
@@ -293,10 +316,12 @@ const Tree = () => {
     await GetTree();
   }
 
+  /*
   if(firstRender.current){
     waitForTree();
     firstRender.current = false;
   }
+  */
 
   function ResetElementPositions(node)
   {
@@ -410,8 +435,6 @@ const Tree = () => {
       AlterTreeStructureForParentNodeChange(tree, node.id, mouseOverNode, node.nodeId, node, oldParentNode, newParentNode);
       
       const originalNode = originalDictionary[node.id];
-      console.log("originalNodeId: "+originalNode.nodeId);
-      console.log("mouse over node: "+mouseOverNode);
       if(originalNode.nodeId !== mouseOverNode)
       {
         changeTracker[node.id] = mouseOverNode;
@@ -514,7 +537,7 @@ const Tree = () => {
 
   function RenderTree(tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
   {
-    if(tree && tree.children)
+    if(tree)
     {
       testRender = false;
       maxLevels = new Object();
@@ -547,7 +570,7 @@ const Tree = () => {
 
       return RenderChildren(tree, tree, 0, offSet);
     }
-    else if(requestComplete)
+    else if(treeDetails)
     {
       return EmptyTreeJSX();
     }
@@ -931,7 +954,6 @@ const Tree = () => {
   function RemoveLines(node)
   {
     //DepthFirstMethod(RemoveLine, tree, null, false);
-
     RemoveLine(node);
     node.children?.forEach(child => {
       RemoveLines(child);
@@ -1057,51 +1079,56 @@ const Tree = () => {
 
   return (
     <>
-      <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
-        <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '8vh', justifyContent: 'center', alignItems: 'center'}}>
-          <div style = {{marginRight: 'auto', height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",}}>
-            <Link to={"/"}> 
-              <button className='button-header button-save tooltip' style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
-                { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
+      { (treeFetch && treeDetails) && (
+        <>
+          <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
+          <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '8vh', justifyContent: 'center', alignItems: 'center'}}>
+            <div style = {{marginRight: 'auto', height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",}}>
+              <Link to={"/"}> 
+                <button className='button-header button-save tooltip' style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
+                  { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
+                  }
+                  <i className='pi pi-home save-icon' style = {{fontSize: '8vh'}} />
+                  <span class="tooltip-right">Home</span>
+                </button>
+              </Link>
+              <EditTree id = {id} tree = {treeDetails}/>
+            </div>          
+            <div style = {{height: '100%', width: '41vh', display: 'flex',  marginRight: 'auto'}}>
+              <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
+              { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
                 }
-                <i className='pi pi-home save-icon' style = {{fontSize: '8vh'}} />
-                <span class="tooltip-right">Home</span>
+                <i className='pi pi-replay save-icon' style = {{fontSize: '8vh'}} />
+                <span class="tooltip-bottom">Revert Tree Positions</span>
               </button>
-            </Link>
-            <EditTree id = {id} tree = {treeDetailsState}/>
-          </div>          
-          <div style = {{height: '100%', width: '41vh', display: 'flex',  marginRight: 'auto'}}>
-            <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
-            { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
-              }
-              <i className='pi pi-replay save-icon' style = {{fontSize: '8vh'}} />
-              <span class="tooltip-bottom">Revert Tree Positions</span>
-            </button>
-            <button onClick={() => { SaveTreePositions();}} id = 'save-tree-positions' className='button-header button-save tooltip' style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
-            { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
-              }
-              <i className='pi pi-save save-icon' style = {{fontSize: '8vh'}} />
-              <div style = {{fontSize: '3vh',height: '100%', width: '100%', padding: '0 0 0 0'}}>
-                Save Position Changes
-              </div>
-              <span class="tooltip-bottom">Save Tree Positions</span>
-            </button>
-          </div>
-          <div id = 'create-container' style = {{height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",  marginRight: '2vw'}}>
+              <button onClick={() => { SaveTreePositions();}} id = 'save-tree-positions' className='button-header button-save tooltip' style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
+              { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
+                }
+                <i className='pi pi-save save-icon' style = {{fontSize: '8vh'}} />
+                <div style = {{fontSize: '3vh',height: '100%', width: '100%', padding: '0 0 0 0'}}>
+                  Save Position Changes
+                </div>
+                <span class="tooltip-bottom">Save Tree Positions</span>
+              </button>
+            </div>
+            <div id = 'create-container' style = {{height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",  marginRight: '2vw'}}>
+            </div>
           </div>
         </div>
-      </div>
-      <div id = 'line-container' className='line-container'>
-        <div id = 'line-container-insert' className='line-container-insert'>
+        <div id = 'line-container' className='line-container'>
+          <div id = 'line-container-insert' className='line-container-insert'>
+          </div>
         </div>
-      </div>
-      <div id = 'tree-root'>
+        <div id = 'tree-root'>
+        
+              {RenderTree(tree)}            
       
-            {RenderTree(tree)}            
-     
-      </div>
-      <div id = 'dialog-container'>
-      </div>
+        </div>
+        <div id = 'dialog-container'>
+        </div>
+      </>
+      )
+      }
     </>
   );
 }

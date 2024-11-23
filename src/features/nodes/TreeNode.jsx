@@ -10,7 +10,6 @@ import Draggable from 'react-draggable';
 const TreeNode = (props) => {
     const[dialog, setDialog] = useState(false);
     const[manualReRender, setManualReRender] = useState(1); //used for callback re renders
-    const [inputNode, SetInputNode] = useState(props.props);
     const[files, setFiles] = useState(null);
     if(props == null || props.props == null || !('id' in props.props)) return (<></>);   
     var buttonMouseDown = new Object();
@@ -19,11 +18,6 @@ const TreeNode = (props) => {
     //used for callback re renders
     function RenderTreeNode(node)
     {
-        if(node)
-        {
-            SetInputNode({...node})
-        }
-
         setManualReRender(-1*manualReRender);
     }
 
@@ -40,7 +34,7 @@ const TreeNode = (props) => {
         result => {
           value = result;
           setFiles(value);
-          inputNode.files = value;
+          props.props.files = value;
 
           //if(files != null){
             setDialog(true);
@@ -76,19 +70,19 @@ const TreeNode = (props) => {
 
     function GetImageSource()
     {
-        var index = inputNode.files.findIndex((object) => object.id.toLowerCase() === inputNode.thumbnailId.toLowerCase());
+        var index = props.props.files.findIndex((object) => object.id.toLowerCase() === props.props.thumbnailId.toLowerCase());
         if(index != -1)
         {
-            return inputNode.files[index].base64;
+            return props.props.files[index].base64;
         }
 
-        var file = inputNode.files.find((object) => object.name === inputNode.thumbnailId);
+        var file = props.props.files.find((object) => object.name === props.props.thumbnailId);
         return file.base64;
     }
 
         return(
             <>  
-                { inputNode.thumbnailId ? 
+                { props.props.thumbnailId ? 
                     <div style = {{height: '100%', width: '100%', position: 'relative', textAlign: 'center', color: 'white', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap',}}>
                         <img className='image' style = {{cursor: 'pointer'}} onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {GetImageSource()}/>
                         <div
@@ -99,7 +93,7 @@ const TreeNode = (props) => {
                                         left: '50%',
                                         transform: 'translate(-50%, -50%)', cursor: 'pointer'}}
                         >
-                            {inputNode.title}
+                            {props.props.title}
                         </div>                      
                     </div>
                     :
@@ -107,13 +101,13 @@ const TreeNode = (props) => {
                         className='tree-button'       
                         onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} 
                         style = {{ padding: '0 0 0 0 ', fontSize: String(props.css.nodeSize*0.155)+'px', backgroundColor: '#DCDCDC', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(props.css.nodeSize)+'px', maxWidth: String(props.css.nodeSize)+'px',  height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
-                        {inputNode.title}
+                        {props.props.title}
                     </button> 
                 } 
                 <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>                              
                     <Dialog className={"dialogContent"} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}} visible = {dialog} onHide={() => {if (!dialog) return; props.props["dialog"] = false; setDialog(false);}} > 
                         <Provider store = {store}>
-                            <NodeDetails setChangeTracker = {props.setChangeTracker} unMount = {CloseDialog} renderTreeNode = {RenderTreeNode} files = {files} rootNode = {props.rootNode} render = {props.render} input = {inputNode} nodeList = {props.nodeList} nodeDictionary = {props.nodeDictionary}/>
+                            <NodeDetails setChangeTracker = {props.setChangeTracker} unMount = {CloseDialog} renderTreeNode = {RenderTreeNode} files = {files} rootNode = {props.rootNode} render = {props.render} input = {props.props} nodeList = {props.nodeList} nodeDictionary = {props.nodeDictionary}/>
                         </Provider>
                     </Dialog>
                 </Draggable>      
