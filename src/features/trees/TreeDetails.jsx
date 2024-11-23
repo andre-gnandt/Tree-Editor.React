@@ -200,6 +200,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
                     <div style = {{top: '1vh' , width: '36vw', left:'2vw', position: 'relative', display: 'flex', height: '33vh', marginBottom: '5.275vh'}}>
                         <div className='tree-title-container' style = {{justifyContent: 'center', textAlign: 'center', display: 'flex'}}>
                             <InputTextarea 
+                                maxLength={50}
                                 autoResize 
                                 rows = {1} 
                                 placeholder="Title..." 
@@ -219,6 +220,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
                         */}
                         <div className = 'tree-description-container' style = {{justifyContent: 'center', textAlign: 'center', display: 'flex', width: '36vw', position: 'relative', left: '2vw'}}>
                             <InputTextarea 
+                                maxLength={1000}
                                 placeholder='Description...'   
                                 autoResize  
                                 rows={6} 

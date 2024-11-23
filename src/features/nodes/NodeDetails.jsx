@@ -367,6 +367,7 @@ const NodeDetails = (input) => {
                         </div>
                         <div className='title-container'>
                             <InputTextarea 
+                                maxLength={50}
                                 autoResize 
                                 rows = {1} 
                                 placeholder="Title" 
@@ -380,7 +381,7 @@ const NodeDetails = (input) => {
                             Description:  
                         </div> 
                         <div className="fullWidthRight" style = {{height: '17vh'}}>
-                            <InputTextarea placeholder='Description...' autoResize style = {{height: '17vh'}} rows={5} className = "input" onChange = {(e) => {CheckValueChange(props.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
+                            <InputTextarea maxLength={1000} placeholder='Description...' autoResize style = {{height: '17vh'}} rows={5} className = "input" onChange = {(e) => {CheckValueChange(props.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
                         </div>
                     </div>
                     <div className="entryContainer">
@@ -388,7 +389,7 @@ const NodeDetails = (input) => {
                             Data: 
                         </div>
                         <div className="fullWidthRight" style = {{height: '26vh'}}>
-                            <InputTextarea placeholder='Data...' autoResize rows={7} style = {{height: '26vh'}} className = "input-data" onChange = {(e) => {CheckValueChange(props.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
+                            <InputTextarea maxLength={1000} placeholder='Data...' autoResize rows={7} style = {{height: '26vh'}} className = "input-data" onChange = {(e) => {CheckValueChange(props.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
                         </div>
                     </div>
                     <div className="entryContainer">
@@ -396,7 +397,7 @@ const NodeDetails = (input) => {
                             Number:  
                         </div> 
                         <div className="fullWidthRight">
-                            <InputText placeholder='Number...' className = "input" type = 'number' keyfilter='int' onChange = {(e) => {CheckValueChange(props.number, node.number, e.target.value); handleChange(e.target.value, updateNodeNumber);}} value = {node.number ? node.number : ""} />
+                            <InputText maxLength={1000} placeholder='Number...' className = "input" type = 'number' keyfilter='int' onChange = {(e) => {CheckValueChange(props.number, node.number, e.target.value); handleChange(e.target.value, updateNodeNumber);}} value = {node.number ? node.number : ""} />
                         </div>
                     </div>
                     {/*
@@ -416,6 +417,7 @@ const NodeDetails = (input) => {
                             </div> 
                             <div className="fullWidthRight">
                                 <Dropdown  
+                                    maxLength={1000}
                                     className = "dropdown"
                                     placeholder='Select Parent...'
                                     panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
