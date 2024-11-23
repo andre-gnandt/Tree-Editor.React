@@ -92,6 +92,13 @@ const NodeDetails = (input) => {
         .then((responseJson)=>{return responseJson});
     };
 
+    async function updateNode(id, node){
+        putOptions.body = JSON.stringify(node);
+        await fetch("http://localhost:11727/api/Nodes/"+id, putOptions)
+        .then((response)=>response.json())
+        .then((responseJson)=>{return responseJson});
+    };
+
     async function createNode(node){
         const postOptions =  {
             method: 'POST',
@@ -138,6 +145,11 @@ const NodeDetails = (input) => {
 
     function CheckValueChange(originalValue, previousValue, newValue)
     {
+
+        if(originalValue != null && String(originalValue).length === 0) originalValue = null;
+        if(previousValue != null && String(previousValue).length === 0) previousValue = null;
+        if(newValue != null && String(newValue).length === 0) newValue = null;
+
         const previousChangeCount = changeCount.current;
         if(previousValue ==  originalValue && newValue != originalValue)
         {
@@ -243,6 +255,12 @@ const NodeDetails = (input) => {
         unMount();
     }
 
+    const putOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: ""
+    }
+
     async function HandleSaveOrCreate()
     {
         if(!node.title || node.title.trim().length === 0)
@@ -252,18 +270,16 @@ const NodeDetails = (input) => {
         }
         else if(!create && !root)
         {
-            await updateNode(node.id, node); 
-            
+            var updatedNode = await updateNode(node.id, node); 
             if(node.nodeId != props.nodeId)
             {
                 const oldParentId = props.nodeId;
                 setNode(props);
-                input.render("update", null, node.id, node.nodeId, oldParentId);
+                input.render("update", props, node.id, node.nodeId, oldParentId);
             }
             else{
                 setNode(props);
-                renderTreeNode();
-                SetChangeTracker(props);
+                input.render("update", props, node.id);
             }
         }
         else if(create)

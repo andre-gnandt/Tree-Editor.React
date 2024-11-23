@@ -120,6 +120,20 @@ const Tree = () => {
     }
   }
 
+  function SetNodePropertiesForUpdate(src, dest)
+  {
+    dest.id = src.id;
+    dest.title = src.title;
+    dest.files = src.files;
+    dest.number = src.number;
+    dest.data = src.data;
+    dest.rankId = src.rankId;
+    dest.thumbnailId = src.thumbnailId;
+    dest.level = src.level;
+    dest.treeId = src.treeId;
+    dest.isDeleted = src.isDeleted;
+  }
+
   function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
   {
     nodeList = [];
@@ -139,7 +153,10 @@ const Tree = () => {
       {
         RemoveLine({id: nodeId, nodeId: oldParentId});
         node = AlterTreeStructureForParentNodeChange(inputTree, nodeId, newParentId, oldParentId);
-        AlterTreeStructureForParentNodeChange(originalTree, nodeId, newParentId, oldParentId);
+        const originalNode = AlterTreeStructureForParentNodeChange(originalTree, nodeId, newParentId, oldParentId);
+
+        SetNodePropertiesForUpdate(newNode, node);
+        SetNodePropertiesForUpdate(newNode, originalNode);
       }
       else if(callback === "create")
       {
@@ -152,7 +169,9 @@ const Tree = () => {
         inputTree = newNode;
         tree = newNode;
 
-        originalTreeRoot = AlterTreeAtructureForCreateRoot(originalTree, {...newNode});
+        const copyNewNode = structuredClone(newNode);
+        copyNewNode.children = [];
+        const originalTreeRoot = AlterTreeAtructureForCreateRoot(originalTree, copyNewNode);
         originalTree = originalTreeRoot;
 
       }
@@ -367,6 +386,8 @@ const Tree = () => {
   function AlterTreeStructureForParentNodeChange(tree, nodeId, newParentNodeId, oldParentNodeId, node = null, oldParentNode = null, newParentNode = null)
   {
       if(!node) node = FindNodeInTree(nodeId, tree);
+
+      if(!oldParentNodeId || !newParentNodeId){ return node;}
       if(!oldParentNode) oldParentNode = FindNodeInTree(oldParentNodeId, tree);
       if(!newParentNode) newParentNode = FindNodeInTree(newParentNodeId, tree);
       
@@ -389,6 +410,8 @@ const Tree = () => {
       AlterTreeStructureForParentNodeChange(tree, node.id, mouseOverNode, node.nodeId, node, oldParentNode, newParentNode);
       
       const originalNode = originalDictionary[node.id];
+      console.log("originalNodeId: "+originalNode.nodeId);
+      console.log("mouse over node: "+mouseOverNode);
       if(originalNode.nodeId !== mouseOverNode)
       {
         changeTracker[node.id] = mouseOverNode;
@@ -797,9 +820,10 @@ const Tree = () => {
     if(updateNodesList.length > 0)
     {
       result = await updateManyNodes(updateNodesList[0].id, updateNodesList);
-
+      
       changeTracker = new Object();
-      originalDictionary = {...nodeDictionary};
+      originalDictionary = structuredClone(nodeDictionary);
+      originalTree = structuredClone(tree);
       document.getElementById('save-tree-positions').disabled = true;
       document.getElementById('revert-tree-positions').disabled = true;
     }
