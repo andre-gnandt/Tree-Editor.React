@@ -125,7 +125,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
     {   
         await deleteTree(id);
         unMount();
-        history.push(window.location);
+        //history.push(window.location);
         navigate("/");
     }
 

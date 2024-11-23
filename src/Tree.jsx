@@ -9,6 +9,7 @@ import { createRoot } from 'react-dom/client';
 import CreateNode from './features/nodes/CreateNode';
 import CreateRoot from './features/nodes/CreateRoot';
 import EditTree from './features/trees/EditTree';
+import { useNavigate } from 'react-router-dom';
 import 'primeicons/primeicons.css';
 import './features/trees/tree.css';
 
@@ -25,6 +26,7 @@ import './features/trees/tree.css';
 //Re renders of the tree diagram must be done manually
 const Tree = () => {
   const id = useParams().id;
+  const navigate = useNavigate();
   const firstRender = useRef(true);
   const [treeFetch, setTreeFetch] = useState(null);
   const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
@@ -68,7 +70,7 @@ const Tree = () => {
     waitForTree();
   }
 
-  window.addEventListener('resize', (event) => {ReRenderTree();});
+  window.addEventListener('resize', ReRenderTree);
 
   useEffect(() => {
     
@@ -147,6 +149,11 @@ const Tree = () => {
 
   function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
   {
+    if(!document.getElementById('tree-root'))
+    {
+      window.removeEventListener('resize', ReRenderTree);
+      return;
+    }
 
     const treeContainer = createRoot(document.getElementById('tree-root'));
     if(!tree && !newNode)
@@ -1084,14 +1091,17 @@ const Tree = () => {
           <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
           <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '8vh', justifyContent: 'center', alignItems: 'center'}}>
             <div style = {{marginRight: 'auto', height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",}}>
-              <Link to={"/"}> 
-                <button className='button-header button-save tooltip' style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
-                  { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
-                  }
-                  <i className='pi pi-home save-icon' style = {{fontSize: '8vh'}} />
-                  <span class="tooltip-right">Home</span>
-                </button>
-              </Link>
+                <Link to ="/">
+                  <button 
+                    //onClick={(event) => {navigate("/");}}
+                    className='button-header button-save tooltip' 
+                    style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
+                    { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
+                    }
+                    <i className='pi pi-home save-icon' style = {{fontSize: '8vh'}} />
+                    <span class="tooltip-right">Home</span>
+                  </button>
+                </Link>
               <EditTree id = {id} tree = {treeDetails}/>
             </div>          
             <div style = {{height: '100%', width: '41vh', display: 'flex',  marginRight: 'auto'}}>
