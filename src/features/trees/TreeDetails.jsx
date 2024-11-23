@@ -225,7 +225,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
                                 autoResize  
                                 rows={6} 
                                 className = 'tree-description' 
-                                style = {{justifyContent: 'center', textAlign: 'center', display: 'flex'}}
+                                style = {{justifyContent: 'center', verticalAlign: 'middle', textAlign: 'center', display: 'flex'}}
                                 onChange = {(e) => {CheckValueChange(inputTree.description, description, e.target.value); setDescription(e.target.value);}} value = {description ? description : ""} />
                         </div>
                   

@@ -69,7 +69,6 @@ const Tree = () => {
   {
     waitForTree();
   }
-
   window.addEventListener('resize', ReRenderTree);
 
   useEffect(() => {
@@ -149,7 +148,7 @@ const Tree = () => {
 
   function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
   {
-    if(!document.getElementById('tree-root'))
+    if(!document.getElementById('tree-root') || !window.location.href.includes(id))
     {
       window.removeEventListener('resize', ReRenderTree);
       return;
