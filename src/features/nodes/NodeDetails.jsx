@@ -33,6 +33,50 @@ const NodeDetails = (input) => {
     //const rootNode = input.rootNode;
     const renderTreeNode = input.renderTreeNode;
 
+    const Saving = () => 
+    {
+        document.getElementById('saving').hidden = false;
+    }
+
+    const DoneSaving = () => 
+    {
+        document.getElementById('saving').hidden = true;
+    }
+
+    const Loading = () => 
+    {
+        document.getElementById('loading').hidden = false;
+    }
+    
+    const DoneLoading = () => 
+    {
+        document.getElementById('loading').hidden = true;
+    }
+
+    function Success() 
+    {
+        const ClearSuccess = () =>
+            {
+                document.getElementById('success').hidden = true;
+                clearTimeout(myTimeout);
+            }
+
+        document.getElementById('success').hidden = false;
+        const myTimeout = setTimeout(ClearSuccess, 1600);
+    }
+    
+    function Error() 
+    {
+        function ClearError()
+        {
+            document.getElementById('error').hidden = true;
+            clearTimeout(myTimeout);
+        }
+
+        document.getElementById('error').hidden = false;
+        const myTimeout = setTimeout(ClearError, 2000);
+    }
+
     const SetStateFiles = (value) => {
         firstRender.current = false;
         dispatch(setStateProperty({key: 'files', value: value}));
@@ -93,10 +137,23 @@ const NodeDetails = (input) => {
     };
 
     async function updateNode(id, node){
-        putOptions.body = JSON.stringify(node);
-        await fetch("http://localhost:11727/api/Nodes/"+id, putOptions)
-        .then((response)=>response.json())
-        .then((responseJson)=>{return responseJson});
+            Saving();
+            putOptions.body = JSON.stringify(node);
+            try{
+                return await fetch("http://localhost:11727/api/Nodes/"+id, putOptions)
+                .then((response)=>response.json())
+                .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
+            }
+            catch(error)
+            {
+
+            }
+
+            DoneSaving();
+
+            Error();
+            return null;
+            
     };
 
     async function createNode(node){
@@ -106,9 +163,26 @@ const NodeDetails = (input) => {
             body: ""
         }
         postOptions.body = JSON.stringify(node);
-        return await fetch("http://localhost:11727/api/Nodes/", postOptions)
-        .then((response)=>response.json())
-        .then((responseJson)=>{return responseJson});;
+
+        Saving();
+        var response = await fetch("http://localhost:11727/api/Nodes/", postOptions);
+        
+        DoneSaving();
+            
+            if(response?.ok)
+            {
+                Success();
+                response.then((response)=>response.json())
+                .then((responseJson)=>
+                    {
+        
+                        return responseJson;
+                    });
+            }else 
+            {
+                Error();
+            }       
+        return null;
     };
 
     async function createRoot(node){
@@ -118,9 +192,25 @@ const NodeDetails = (input) => {
             body: ""
         }
         postOptions.body = JSON.stringify(node);
-        return await fetch("http://localhost:11727/api/Nodes/Root", postOptions)
-        .then((response)=>response.json())
-        .then((responseJson)=>{return responseJson});
+        Saving();
+        var response =  await fetch("http://localhost:11727/api/Nodes/Root", postOptions)
+        
+        DoneSaving();
+            
+            if(response?.ok)
+            {
+                Success();
+                response.then((response)=>response.json())
+                .then((responseJson)=>
+                    {
+                  
+                        return responseJson;
+                    });
+            }else 
+            {
+                Error();
+            }       
+        return null;
     };
 
     function RemoveDescendants(node)
@@ -270,7 +360,10 @@ const NodeDetails = (input) => {
         }
         else if(!create && !root)
         {
+            
             var updatedNode = await updateNode(node.id, node); 
+            if(!updatedNode) return;
+            
             if(node.nodeId != props.nodeId)
             {
                 const oldParentId = props.nodeId;
@@ -285,6 +378,7 @@ const NodeDetails = (input) => {
         else if(create)
         {            
             var resultNode = await createNode(node);
+            if(!resultNode) return;
             setNode(props);
             props['id'] = resultNode.id;
             input.nodeList.push(props);
@@ -296,6 +390,7 @@ const NodeDetails = (input) => {
         else if(root)
         {
             var resultNode = await createRoot(node);
+            if(!resultNode) return;
             setNode(props);
             props['id'] = resultNode.id;
             input.nodeList.push(props);

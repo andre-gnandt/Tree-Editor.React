@@ -8,8 +8,21 @@
   </head>
   <body >
     <div id="root" style="padding: 0 0 0 0; position: absolute; top: 0px;"></div>
-    <div hidden id = 'loading' style = "z-index: 80; position: absolute; left: 46vw; top: 46vh; width: 8vw; height: 12vh; background-color: white; border: black; color: 'black';">
+    <div hidden id = 'loading' style = " font-size: 2.4vw; vertical-align: middle; justify-content: center; text-align: center; z-index: 2000; position: absolute; left: 38vw; top: 46vh; width: 25vw; height: 23vh; background-color: white; border: 3px solid black; color: 'black';">
+      <br/>
       Loading...
+    </div>
+    <div hidden id = 'saving' style = " font-size: 2.4vw; vertical-align: middle; justify-content: center; text-align: center; z-index: 2000; position: absolute; left: 38vw; top: 46vh; width: 25vw; height: 23vh; background-color: white; border: 3px solid black; color: 'black';">
+      <br/>
+      Saving...
+    </div>
+    <div hidden id = 'success' style = " font-size: 2.4vw; vertical-align: middle; justify-content: center; text-align: center; z-index: 2000; position: absolute; left: 38vw; top: 46vh; width: 25vw; height: 23vh; background-color: lightgreen; border: 3px solid black; color: 'black';">
+      <br/>
+      Save Successful!
+    </div>
+    <div hidden id = 'error' style = " font-size: 2.4vw; vertical-align: middle; justify-content: center; text-align: center; z-index: 2000; position: absolute; left: 38vw; top: 46vh; width: 25vw; height: 23vh; background-color: red; border: 3px solid black; color: 'black';">
+      <br/>
+      Error!
     </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

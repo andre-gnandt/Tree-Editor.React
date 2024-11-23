@@ -65,6 +65,50 @@ const Tree = () => {
   const horizontalBorder = 15; //in pixels
   var testRender = false;
 
+  const Saving = () => 
+    {
+        document.getElementById('saving').hidden = false;
+    }
+
+    const DoneSaving = () => 
+    {
+        document.getElementById('saving').hidden = true;
+    }
+
+    const Loading = () => 
+    {
+        document.getElementById('loading').hidden = false;
+    }
+    
+    const DoneLoading = () => 
+    {
+        document.getElementById('loading').hidden = true;
+    }
+
+    function Success() 
+    {
+      const ClearSuccess = () =>
+        {
+            document.getElementById('success').hidden = true;
+            clearTimeout(myTimeout);
+        }
+
+        document.getElementById('success').hidden = false;
+        const myTimeout = setTimeout(ClearSuccess, 1600);
+    }
+    
+    function Error() 
+    {
+        function ClearError()
+        {
+            document.getElementById('error').hidden = true;
+            clearTimeout(myTimeout);
+        }
+
+        document.getElementById('error').hidden = false;
+        const myTimeout = setTimeout(ClearError, 2000);
+    }
+
   if(!treeFetch)
   {
     waitForTree();
@@ -109,9 +153,23 @@ const Tree = () => {
 
   async function updateManyNodes(id, nodeList){
     putOptions.body = JSON.stringify(nodeList);
-    await fetch("http://localhost:11727/api/Nodes/Many/"+id, putOptions)
-    .then((response)=>response.json())
-    .then((responseJson)=>{return responseJson});
+    Saving();
+    const response = await fetch("http://localhost:11727/api/Nodes/Many/"+id, putOptions); 
+    DoneSaving();
+            
+    if(response?.ok)
+    {
+        Success();
+        response.then((response)=>response.json())
+        .then((responseJson)=>
+            {  
+                return responseJson;
+            });
+    }else 
+    {
+        Error();
+    } 
+    return null;
   };
 
   function RenderCreationButtons()
@@ -849,7 +907,8 @@ const Tree = () => {
     var result = [];
     if(updateNodesList.length > 0)
     {
-      result = await updateManyNodes(updateNodesList[0].id, updateNodesList);
+      var result = await updateManyNodes(updateNodesList[0].id, updateNodesList);
+      if(!result) return;
       
       changeTracker = new Object();
       originalDictionary = structuredClone(nodeDictionary);
