@@ -4,7 +4,7 @@ import { Dialog } from 'primereact/dialog';
 import '../trees/tree.css';
 import NodeDetails from './NodeDetails';
 import { Provider } from 'react-redux';
-import { store } from '/LocalTreeData.React/src/store';
+import { store } from '../../store';
 import 'primeicons/primeicons.css';
 import Draggable from 'react-draggable';
 

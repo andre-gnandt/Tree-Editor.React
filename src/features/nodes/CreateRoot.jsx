@@ -3,7 +3,7 @@ import { Dialog } from 'primereact/dialog';
 import './detailsList.css'
 import NodeDetails from './NodeDetails';
 import { Provider } from 'react-redux';
-import { store } from '/LocalTreeData.React/src/store';
+import { store } from '../../store';
 import 'primeicons/primeicons.css';
 import Draggable from 'react-draggable';
 

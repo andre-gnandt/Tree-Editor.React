@@ -4,12 +4,12 @@ import { cloneNode, setStateProperty, updateNodeData, updateNodeNumber, updateNo
 import { InputText} from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
-import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
+import { updateNode } from '../../api/nodes/nodesApi';
 import { Dialog } from 'primereact/dialog';
 import './detailsList.css';
 import UploadFile from '../utils/UploadFile';
 import { Provider } from 'react-redux';
-import { store } from '/LocalTreeData.React/src/store';
+import { store } from '../../store';
 import Draggable from 'react-draggable';
 
 const NodeDetails = (input) => {

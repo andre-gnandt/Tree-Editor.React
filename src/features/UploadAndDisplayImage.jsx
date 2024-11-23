@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { updateNode } from '/LocalTreeData.React/src/api/nodes/nodesApi';
+import { updateNode } from '../../src/api/nodes/nodesApi';
 
 // Define a functional component named UploadAndDisplayImage
 const UploadAndDisplayImage = (thumbnailUpload = false) => {
