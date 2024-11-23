@@ -131,7 +131,7 @@ const TreesMenu = ({trees}) => {
                 <Link to={"/tree/"+tree.id}> 
                 
                 <button 
-                    className='menu-button'
+                    className='menu-button tree-menu-item'
                     style = {{fontSize: '3.25vw', marginTop:'2vh', padding: '0 0 0 0', backgroundColor: '#DCDCDC', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', height: '27vh', width: '19.5vw'}}
                     //onClick={(event) => {ValidateButtonClick(event.target);}} 
                 >
@@ -162,7 +162,7 @@ const TreesMenu = ({trees}) => {
                     <span class="tooltip-right">New Tree</span>
                 </button>
             </div>
-            <div className='text-overflow' style = {{left: '30vw', fontSize: '10vh', height: '16vh', position: 'relative', width: '16vw'}}>
+            <div className='text-overflow tree-menu-header' style = {{ left: '34vw', fontSize: '12vh', height: '16vh', position: 'relative', width: '16vw'}}>
                     Trees
             </div>
             </div>

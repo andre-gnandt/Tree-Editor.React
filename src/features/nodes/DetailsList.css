@@ -10,6 +10,16 @@
     --container-outline-color: #DCDCDC;
 }
 
+.tree-menu-header
+{
+    color: var(--form-focused-color);
+}
+
+.tree-menu-item
+{
+    color: var(--form-focused-color);
+}
+
 .dialog-root 
 {
     background-color: #DCDCDC;
