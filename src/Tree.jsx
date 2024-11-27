@@ -154,22 +154,18 @@ const Tree = () => {
   async function updateManyNodes(id, nodeList){
     putOptions.body = JSON.stringify(nodeList);
     Saving();
-    const response = await fetch("http://localhost:11727/api/Nodes/Many/"+id, putOptions); 
-    DoneSaving();
-            
-    if(response?.ok)
-    {
-        Success();
-        response.then((response)=>response.json())
-        .then((responseJson)=>
-            {  
-                return responseJson;
-            });
-    }else 
-    {
-        Error();
-    } 
-    return null;
+    try{
+      return await fetch("http://localhost:11727/api/Nodes/Many/"+id, putOptions)
+      .then((response)=>response.json())
+                .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
+            }
+            catch(error)
+            {
+
+            }
+            DoneSaving();
+            Error();
+            return null;  
   };
 
   function RenderCreationButtons()

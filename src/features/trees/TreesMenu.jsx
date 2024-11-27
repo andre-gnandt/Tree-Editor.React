@@ -162,7 +162,7 @@ const TreesMenu = ({trees}) => {
                     <span class="tooltip-right">New Tree</span>
                 </button>
             </div>
-            <div className='text-overflow tree-menu-header' style = {{ left: '34vw', fontSize: '12vh', height: '16vh', position: 'relative', width: '16vw'}}>
+            <div className='text-overflow tree-menu-header' style = {{ left: '34vw', fontSize: '10vh', height: '16vh', position: 'relative', width: '16vw'}}>
                     Trees
             </div>
             </div>

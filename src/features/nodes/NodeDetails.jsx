@@ -125,15 +125,36 @@ const NodeDetails = (input) => {
     }
 
     async function DeleteSingle(id){
-        await fetch("http://localhost:11727/api/Nodes/Delete-One"+id, {method: 'DELETE'})
-        .then((response)=>response.json())
-        .then((responseJson)=>{return responseJson});
+        Saving();
+        try{
+            return await fetch("http://localhost:11727/api/Nodes/Delete-One"+id, {method: 'DELETE'})
+            .then((response)=>response.json())
+                .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
+            }
+            catch(error)
+            {
+
+            }
+            DoneSaving();
+            Error();
+            return null;  
     };
 
     async function DeleteCascade(id){
-        await fetch("http://localhost:11727/api/Nodes/Delete-Cascade"+id, {method: 'DELETE'})
-        .then((response)=>response.json())
-        .then((responseJson)=>{return responseJson});
+        
+        Saving();
+        try{
+            return await fetch("http://localhost:11727/api/Nodes/Delete-Cascade"+id, {method: 'DELETE'})
+            .then((response)=>response.json())
+                .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
+            }
+            catch(error)
+            {
+
+            }
+            DoneSaving();
+            Error();
+            return null;  
     };
 
     async function updateNode(id, node){
@@ -148,12 +169,9 @@ const NodeDetails = (input) => {
             {
 
             }
-
             DoneSaving();
-
             Error();
-            return null;
-            
+            return null;      
     };
 
     async function createNode(node){
@@ -165,24 +183,19 @@ const NodeDetails = (input) => {
         postOptions.body = JSON.stringify(node);
 
         Saving();
-        var response = await fetch("http://localhost:11727/api/Nodes/", postOptions);
-        
-        DoneSaving();
-            
-            if(response?.ok)
+        try{
+            return await fetch("http://localhost:11727/api/Nodes/", postOptions)
+            .then((response)=>response.json())
+                .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
+            }
+            catch(error)
             {
-                Success();
-                response.then((response)=>response.json())
-                .then((responseJson)=>
-                    {
+
+            }
+            DoneSaving();
+            Error();
+            return null;  
         
-                        return responseJson;
-                    });
-            }else 
-            {
-                Error();
-            }       
-        return null;
     };
 
     async function createRoot(node){
@@ -193,24 +206,18 @@ const NodeDetails = (input) => {
         }
         postOptions.body = JSON.stringify(node);
         Saving();
-        var response =  await fetch("http://localhost:11727/api/Nodes/Root", postOptions)
-        
-        DoneSaving();
-            
-            if(response?.ok)
+        try{
+            return await fetch("http://localhost:11727/api/Nodes/Root", postOptions)
+            .then((response)=>response.json())
+                .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
+            }
+            catch(error)
             {
-                Success();
-                response.then((response)=>response.json())
-                .then((responseJson)=>
-                    {
-                  
-                        return responseJson;
-                    });
-            }else 
-            {
-                Error();
-            }       
-        return null;
+
+            }
+            DoneSaving();
+            Error();
+            return null;  
     };
 
     function RemoveDescendants(node)
