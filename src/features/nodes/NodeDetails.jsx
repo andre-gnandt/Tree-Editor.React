@@ -109,6 +109,21 @@ const NodeDetails = (input) => {
         setHideButtons(changeCount.current);
     }
 
+    const SetNodeVar = (node) => {
+        props.data = node.data;
+        props.title = node.title;
+        props.number = node.number;
+        props.description = node.description;
+        props.rankId = node.rankId;
+        props.level = node.level;
+        props.nodeId = node.nodeId;
+        props.id = node.id;
+        props.isDeleted = node.isDeleted;
+        props.files = node.files;
+        props.thumbnailId = node.thumbnailId;
+        props.treeId = node.treeId;
+    }
+
     const setNode = (prop) => {
         prop.data = node.data;
         prop.title = node.title;
@@ -374,11 +389,11 @@ const NodeDetails = (input) => {
             if(node.nodeId != props.nodeId)
             {
                 const oldParentId = props.nodeId;
-                setNode(props);
+                SetNodeVar(updatedNode);
                 input.render("update", props, node.id, node.nodeId, oldParentId);
             }
             else{
-                setNode(props);
+                SetNodeVar(updatedNode);
                 input.render("update", props, node.id);
             }
         }
@@ -386,7 +401,7 @@ const NodeDetails = (input) => {
         {            
             var resultNode = await createNode(node);
             if(!resultNode) return;
-            setNode(props);
+            SetNodeVar(resultNode);
             props['id'] = resultNode.id;
             input.nodeList.push(props);
             input.render("create", props);
@@ -398,7 +413,7 @@ const NodeDetails = (input) => {
         {
             var resultNode = await createRoot(node);
             if(!resultNode) return;
-            setNode(props);
+            SetNodeVar(resultNode);
             props['id'] = resultNode.id;
             input.nodeList.push(props);
             nodeList.current = [];
