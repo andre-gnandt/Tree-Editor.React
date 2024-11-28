@@ -13,7 +13,7 @@ const initialState = {
   children: [],
   files: [],
   thumbnailId: null,
-  isDeleted: false,
+  isDeleted: 0,
 }
 
 export const nodeSlice = createSlice({

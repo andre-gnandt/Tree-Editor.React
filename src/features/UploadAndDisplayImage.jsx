@@ -30,7 +30,7 @@ const node =
     rankId: null,
     children: [],
     files: nodeFiles ? [...nodeFiles] : [],
-    isDeleted: false,
+    isDeleted: 0,
 };
 
 
@@ -71,7 +71,7 @@ if(firstRender.current)
       size: String(selectedImage.size),
       type: selectedImage.type,
       data: Array.from(new Uint8Array(event.target.result, 0)),
-      isDeleted: false
+      isDeleted: 0
     };
     if(thumbnailUpload) node['thumbnailId'] = selectedImage.name;
     node.files.push(file);

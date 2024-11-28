@@ -70,7 +70,7 @@ const UploadFile = (props) => {
         type: selectedImage.type,
         data: Array.from(new Uint8Array(event.target.result, 0)),
         base64: URL.createObjectURL(selectedImage), // only used here to render image in tree without making any api calls (not base64 in this unique case)
-        isDeleted: false
+        isDeleted: 0
       };
       if(thumbnailUpload)
       {

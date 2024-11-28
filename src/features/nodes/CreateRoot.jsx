@@ -28,7 +28,7 @@ const CreateRoot = (props) => {
         files: [],
         thumbnailId: null,
         treeId: props.treeId,
-        isDeleted: false,
+        isDeleted: 0,
     };
 
     const unMount = () => 
