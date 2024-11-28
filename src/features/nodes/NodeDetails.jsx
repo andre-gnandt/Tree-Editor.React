@@ -139,10 +139,32 @@ const NodeDetails = (input) => {
         prop.treeId = node.treeId;
     }
 
-    async function DeleteSingle(id){
+    const GetUpdateNodeObject = (node) =>
+    {
+        const updateNodeObject =
+        {
+            id: node.id,
+            data: node.data,
+            title: node.title,
+            number: node.number,
+            description: node.description,
+            rankId: node.rankId,
+            level: node.level,
+            isDeleted: node.isDeleted,
+            thumbnailId: node.thumbnailId,
+            treeId: node.treeId,
+            nodeId: node.nodeId,
+            files: []
+        };
+
+        return updateNodeObject;
+    }
+
+    async function DeleteSingle(parentId, deleteNode){
         Saving();
+        putOptions.body = JSON.stringify(deleteNode);;
         try{
-            return await fetch("http://localhost:11727/api/Nodes/Delete-One"+id, {method: 'DELETE'})
+            return await fetch("http://localhost:11727/api/Nodes/Delete-One/"+parentId, putOptions)
             .then((response)=>response.json())
                 .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
             }
@@ -158,6 +180,7 @@ const NodeDetails = (input) => {
     async function DeleteCascade(id){
         
         Saving();
+       
         try{
             return await fetch("http://localhost:11727/api/Nodes/Delete-Cascade"+id, {method: 'DELETE'})
             .then((response)=>response.json())
@@ -356,7 +379,17 @@ const NodeDetails = (input) => {
     {   
         if(deleteType.current === "single")
         {
-            await DeleteSingle(props.id);
+            const deleteNode = GetUpdateNodeObject(props);
+            const children = [];
+            props.children.forEach(child => 
+            {
+                children.push(GetUpdateNodeObject(child));
+            }
+            )
+
+            deleteNode["children"]  = children;
+
+            await DeleteSingle(props.nodeId, deleteNode);
             input.render("delete single", null, node.id, null, node.nodeId);
         }
         else
