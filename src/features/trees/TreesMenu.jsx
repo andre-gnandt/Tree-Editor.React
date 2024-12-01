@@ -38,7 +38,7 @@ const TreesMenu = ({trees}) => {
 
   async function DeleteTree(id)
   {
-    await fetch("http://localhost:11727/api/Trees/"+id, {method: 'DELETE'})
+    await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Trees/"+id, {method: 'DELETE'})
     .then((response)=>response.json())
     .then((responseJson)=>{return responseJson});
   

@@ -10,7 +10,7 @@ const Startup = () => {
   }
  
   async function GetTreeList(){
-    await fetch("http://localhost:11727/api/Trees").then(res => res.json()).then(
+    await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Trees").then(res => res.json()).then(
         result => { 
           var trees = result;
           setList(trees);

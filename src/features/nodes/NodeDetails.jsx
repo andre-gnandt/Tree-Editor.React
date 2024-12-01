@@ -165,7 +165,7 @@ const NodeDetails = (input) => {
         Saving();
         putOptions.body = JSON.stringify(deleteNode);;
         try{
-            return await fetch("http://localhost:11727/api/Nodes/Delete-One/"+parentId, putOptions)
+            return await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Nodes/Delete-One/"+parentId, putOptions)
             .then((response)=>response.json())
                 .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
             }
@@ -183,7 +183,7 @@ const NodeDetails = (input) => {
         Saving();
        
         try{
-            return await fetch("http://localhost:11727/api/Nodes/Delete-Cascade"+id, {method: 'DELETE'})
+            return await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Nodes/Delete-Cascade"+id, {method: 'DELETE'})
             .then((response)=>response.json())
                 .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
             }
@@ -200,7 +200,7 @@ const NodeDetails = (input) => {
             Saving();
             putOptions.body = JSON.stringify(node);
             try{
-                return await fetch("http://localhost:11727/api/Nodes/"+id, putOptions)
+                return await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Nodes/"+id, putOptions)
                 .then((response)=>response.json())
                 .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
             }
@@ -223,7 +223,7 @@ const NodeDetails = (input) => {
 
         Saving();
         try{
-            return await fetch("http://localhost:11727/api/Nodes/", postOptions)
+            return await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Nodes/", postOptions)
             .then((response)=>response.json())
                 .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
             }
@@ -246,7 +246,7 @@ const NodeDetails = (input) => {
         postOptions.body = JSON.stringify(node);
         Saving();
         try{
-            return await fetch("http://localhost:11727/api/Nodes/Root", postOptions)
+            return await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Nodes/Root", postOptions)
             .then((response)=>response.json())
                 .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
             }

@@ -30,7 +30,7 @@ const TreeNode = (props) => {
     function GetFilesByNodeId(id)
   {
     var value = null;
-    fetch("http://localhost:11727/api/Files/Get-Files-By-Node/"+id).then(res=> res.json()).then(
+    fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Files/Get-Files-By-Node/"+id).then(res=> res.json()).then(
         result => {
           value = result;
           setFiles(value);

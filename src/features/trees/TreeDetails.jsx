@@ -19,7 +19,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
     const [description, setDescription] = useState(inputTree.description);
 
     async function deleteTree(id){
-        await fetch("http://localhost:11727/api/Trees/"+id, {method: 'DELETE'})
+        await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Trees/"+id, {method: 'DELETE'})
         .then((response)=>response.json())
         .then((responseJson)=>{return responseJson});
     };
@@ -31,7 +31,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
             body: ""
         }
         postOptions.body = JSON.stringify(tree);
-        return await fetch("http://localhost:11727/api/Trees/", postOptions)
+        return await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Trees/", postOptions)
         .then((response)=>response.json())
         .then((responseJson)=>{return responseJson});;
     };
@@ -43,7 +43,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
             body: ""
         }
         putOptions.body = JSON.stringify(tree);
-        return await fetch("http://localhost:11727/api/Trees/"+id, putOptions)
+        return await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Trees/"+id, putOptions)
         .then((response)=>response.json())
         .then((responseJson)=>{return responseJson});
     };

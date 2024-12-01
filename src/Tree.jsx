@@ -155,7 +155,7 @@ const Tree = () => {
     putOptions.body = JSON.stringify(nodeList);
     Saving();
     try{
-      return await fetch("http://localhost:11727/api/Nodes/Many/"+id, putOptions)
+      return await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Nodes/Many/"+id, putOptions)
       .then((response)=>response.json())
                 .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
             }
@@ -363,7 +363,7 @@ const Tree = () => {
   }
 
   async function GetTree(){
-    await fetch("http://localhost:11727/api/Trees/FullTree/"+id).then(res => res.json()).then(
+    await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Trees/FullTree/"+id).then(res => res.json()).then(
         result => { 
           setRequestComplete(true);
           setTreeFetch(result);

@@ -7,14 +7,14 @@ const putOptions = {
 
 export async function updateNode(id, node){
     putOptions.body = JSON.stringify(node);
-    await fetch("http://localhost:11727/api/Nodes/"+id, putOptions)
+    await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Nodes/"+id, putOptions)
     .then((response)=>response.json())
     .then((responseJson)=>{return responseJson});
 };
 
 export function GetNode(id){
     let value = null;
-    fetch("http://localhost:11727/api/Nodes/"+id).then(res=> res.json()).then(
+    fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Nodes/"+id).then(res=> res.json()).then(
         result => {
           value = result;
         }
@@ -23,7 +23,7 @@ export function GetNode(id){
 };
 
 export default async function GetTrees(){
-    await fetch("http://localhost:11727/api/Nodes/Trees").then(res => res.json()).then(
+    await fetch("https://treeeditor-private-old-hill-8065.fly.dev/api/Nodes/Trees").then(res => res.json()).then(
         result => { return result;}
     );
     return null;
