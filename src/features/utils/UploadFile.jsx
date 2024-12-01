@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setStateProperty } from "../nodes/nodeSlice";
-import '../nodes/detailsList.css';
+import '../nodes/DetailsList.css';
 import 'primeicons/primeicons.css';
 
 const UploadFile = (props) => {

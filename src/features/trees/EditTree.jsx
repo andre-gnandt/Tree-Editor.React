@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Dialog } from 'primereact/dialog';
 import TreeDetails from './TreeDetails';
-import '../nodes/detailsList.css';
+import '../nodes/DetailsList.css';
 import '../trees/tree.css';
 import 'primeicons/primeicons.css';
 import Draggable from 'react-draggable';

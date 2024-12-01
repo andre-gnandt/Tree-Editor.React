@@ -8,7 +8,7 @@ import { DataView} from 'primereact/dataview';
 import '/node_modules/primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
-import '../nodes/detailsList.css';
+import '../nodes/DetailsList.css';
 
 const TreesMenu = ({trees}) => {
   const [createTree, setCreateTree] = useState(null);

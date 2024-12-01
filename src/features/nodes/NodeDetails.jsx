@@ -6,7 +6,7 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import { updateNode } from '../../api/nodes/nodesApi';
 import { Dialog } from 'primereact/dialog';
-import './detailsList.css';
+import './DetailsList.css';
 import UploadFile from '../utils/UploadFile';
 import { Provider } from 'react-redux';
 import { store } from '../../store';

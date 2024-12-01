@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Dialog } from 'primereact/dialog';
-import './detailsList.css'
+import './DetailsList.css'
 import NodeDetails from './NodeDetails';
 import { Provider } from 'react-redux';
 import { store } from '../../store';

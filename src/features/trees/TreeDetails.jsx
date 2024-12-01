@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dialog } from 'primereact/dialog';
-import '../nodes/detailsList.css';
+import '../nodes/DetailsList.css';
 import '../trees/tree.css';
 import Draggable from 'react-draggable';
 import { useNavigate } from 'react-router-dom';
