@@ -154,7 +154,8 @@ const NodeDetails = (input) => {
             thumbnailId: node.thumbnailId,
             treeId: node.treeId,
             nodeId: node.nodeId,
-            files: []
+            files: [],
+            children: []
         };
 
         return updateNodeObject;
