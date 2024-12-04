@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import Draggable from 'react-draggable';
 import { Dialog } from 'primereact/dialog';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TreeDetails from './TreeDetails';
 import { InputText } from 'primereact/inputtext';
 import { DataView} from 'primereact/dataview';
@@ -11,6 +11,7 @@ import '../trees/tree.css';
 import '../nodes/detailsList.css';
 
 const TreesMenu = ({trees}) => {
+  const navigate = useNavigate();
   const [createTree, setCreateTree] = useState(null);
   const [search, setSearch] = useState(null);
   const [deleteOptions, setDeleteOptions] = useState(null);
@@ -128,16 +129,16 @@ const TreesMenu = ({trees}) => {
         return (
             <div className='col-3' key = {tree.id} >
                 <i className='pi pi-times' onClick={() => {setDeleteOptions(tree.id)}} style = {{cursor: 'pointer', zIndex: 20, top: '2vh', position: 'relative', height: '14px', width: '14px', fontSize: '14px'}}/>
-                <Link to={"/tree/"+tree.id}> 
+                {/*<Link to={{ pathname: '/tree/'+tree.id, state: 'flushDeal' }}>*/} 
                 
-                <button 
-                    className='menu-button tree-menu-item'
-                    style = {{fontSize: '3.25vw', marginTop:'2vh', padding: '0 0 0 0', backgroundColor: '#DCDCDC', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', height: '27vh', width: '19.5vw'}}
-                    //onClick={(event) => {ValidateButtonClick(event.target);}} 
-                >
-                    {tree.name}
-                </button>
-                </Link> 
+                  <button 
+                      className='menu-button tree-menu-item'
+                      style = {{fontSize: '3.25vw', marginTop:'2vh', padding: '0 0 0 0', backgroundColor: '#DCDCDC', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', height: '27vh', width: '19.5vw'}}
+                      onClick={(event) => {window.location.href = '/tree/'+tree.id}} 
+                  >
+                      {tree.name}
+                  </button>
+                {/*</Link>*/}
             </div>
         );
     }

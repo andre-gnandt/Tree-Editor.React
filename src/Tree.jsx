@@ -27,15 +27,12 @@ import './features/trees/tree.css';
 const Tree = () => {
   const id = useParams().id;
   const navigate = useNavigate();
-  const firstRender = useRef(true);
   const [treeFetch, setTreeFetch] = useState(null);
   const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
   //const [treeState, setTree] = useState(null);
   //const [treeDetailsState, setTreeDetails] = useState(null);
   var originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
   var tree = originalTree != null ? structuredClone(originalTree) : null;
-  const [requestComplete, setRequestComplete] = useState(false);
-  const [createNode, setCreateNode] = useState(null);
   const pixelsToCentimetres = PixelSizeInCentimetres();
   var maxLevels = new Object();
   var scrollXBefore = 0;
@@ -64,6 +61,9 @@ const Tree = () => {
   const iconSize =  String(0.08*window.innerHeight)+'px';
   const horizontalBorder = 15; //in pixels
   var testRender = false;
+
+  window.removeEventListener('resize', ReRenderTree, true);
+  window.addEventListener('resize', ReRenderTree);
 
   const Saving = () => 
     {
@@ -205,7 +205,7 @@ const Tree = () => {
   {
     if(!document.getElementById('tree-root') || !window.location.href.includes('tree/'+id))
     {
-      window.removeEventListener('resize', ReRenderTree);
+      window.removeEventListener('resize', ReRenderTree, true);
       return;
     }
 
@@ -314,6 +314,11 @@ const Tree = () => {
     document.getElementById('save-tree-positions').disabled = !(treeUnsaved);
     document.getElementById('revert-tree-positions').disabled = !(treeUnsaved);
     
+    if(callback)
+    {
+      window.removeEventListener('resize', ReRenderTree, true);
+      window.addEventListener('resize', ReRenderTree);
+    }
     //if(callback === "new root" && nodeList.length === 1) window.location.reload();
   }
 
@@ -365,7 +370,6 @@ const Tree = () => {
   async function GetTree(){
     await fetch("http://localhost:11727/api/Trees/FullTree/"+id).then(res => res.json()).then(
         result => { 
-          setRequestComplete(true);
           setTreeFetch(result);
           doneLoading();
         }
@@ -911,6 +915,8 @@ const Tree = () => {
       originalTree = structuredClone(tree);
       document.getElementById('save-tree-positions').disabled = true;
       document.getElementById('revert-tree-positions').disabled = true;
+      window.removeEventListener('resize', ReRenderTree, true);
+      window.addEventListener('resize', ReRenderTree);
     }
   }
 
