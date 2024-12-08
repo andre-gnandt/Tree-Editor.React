@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import TreeDetails from './TreeDetails';
 import { InputText } from 'primereact/inputtext';
 import { DataView} from 'primereact/dataview';
+import HeaderInfo from '../utils/HeaderInfo';
 import history from '../../history';
 import '/node_modules/primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
@@ -155,9 +156,10 @@ const TreesMenu = ({trees}) => {
 
   return (
     <>
-        <>
-        <div id = 'button-container' style ={{height: '16vh', position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
-            <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '16vh'}}>
+      <div>
+        <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
+          <HeaderInfo/>
+          <div id = 'button-container-inner' style = {{position: 'relative', display:'flex', top: '0px', width: '100vw', height: '16vh'}}>
             <div id = 'create-container' style = {{height: '100%', display:'flex', width: String((iconDimension))+"px"}}>
                 <button className = 'button-header button-create tooltip'>
                     <i id = 'create-tree-button' className='pi pi-upload' style = {{fontSize: '14vh'}} onClick = {() => { setCreateTree(true);}} />
@@ -167,9 +169,9 @@ const TreesMenu = ({trees}) => {
             <div className='text-overflow tree-menu-header' style = {{ left: '34vw', fontSize: '10vh', height: '16vh', position: 'relative', width: '16vw'}}>
                     Trees
             </div>
-            </div>
+          </div>
         </div>
-        <div id = 'content-container' style = {{position: 'relative', top: '22vh', height: '70vh', width: '82vw', left: '9vw'}}>
+        <div id = 'content-container' style = {{position: 'absolute', top: 'calc( 22vh + 4vw)', height: '70vh', width: '82vw', left: '9vw'}}>
         {  
             (list != null && list.length > 0) ? 
             (
@@ -186,6 +188,7 @@ const TreesMenu = ({trees}) => {
             )
         }
         </div>
+      </div>
         <Draggable  onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
             <Dialog className={"dialogContent2"} onHide = {() => {setCreateTree(false);}} visible = {createTree} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}}>
                 <TreeDetails 
@@ -197,11 +200,7 @@ const TreesMenu = ({trees}) => {
             </Dialog>
         </Draggable>
         {GetConfirmDelete()}
-        </>
-        
-        
-        
-    </>
+    </>  
   );
 }
 

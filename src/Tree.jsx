@@ -10,6 +10,7 @@ import CreateNode from './features/nodes/CreateNode';
 import CreateRoot from './features/nodes/CreateRoot';
 import EditTree from './features/trees/EditTree';
 import { useNavigate } from 'react-router-dom';
+import HeaderInfo from './features/utils/HeaderInfo';
 import history from './history';
 import 'primeicons/primeicons.css';
 import './features/trees/tree.css';
@@ -575,7 +576,7 @@ const Tree = () => {
   function GetNodeDimensions()
   {
     const maximumNodeSize = window.innerHeight*0.5
-    const verticalSpace = 0.92*window.innerHeight;
+    const verticalSpace = 0.92*window.innerHeight-0.04*window.innerWidth;
     const horizontalSpace = window.innerWidth -  (2*horizontalBorder);
 
     const maxHeight = verticalSpace/treeHeight;
@@ -661,7 +662,7 @@ const Tree = () => {
 
   function RenderChildren(tree, node, row = 1, offset = 0)
   {  
-      const verticalOffset = 0.11*window.innerHeight;
+      const verticalOffset = 0.11*window.innerHeight+0.04*window.innerWidth;
       const elements = [];
       elements.push((AppendChildNode(tree, node, node["left"]+offset, row, nodeDimension, verticalOffset)));
       
@@ -1135,8 +1136,11 @@ const Tree = () => {
     <>
       { (treeFetch && treeDetails) && (
         <>
-          <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
-          <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '8vh', justifyContent: 'center', alignItems: 'center'}}>
+        <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
+          <HeaderInfo 
+            middleText={"Drag and drop nodes on eachother to change the tree structure. Save or undo these changes with the 2 buttons located directly beneath this text."}
+          />
+          <div id = 'button-container-inner' style = {{position: 'relative', display:'flex', top: '0px', width: '100vw', height: '8vh', justifyContent: 'center', alignItems: 'center'}}>
             <div style = {{marginRight: 'auto', height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",}}>
                 {/*<Link to ="/">*/}
                   <button 
