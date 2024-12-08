@@ -20,6 +20,7 @@ const NodeDetails = (input) => {
     const[resetFiles, setResetFiles] = useState({reset: false});
     const [deleteOptions, setDeleteOptions] = useState("");
     const deleteType = useRef("cascade"); //single | cascade
+    const fileChangeCount = useRef(0);
     const nodeList = useRef([]);
 
     const SetChangeTracker = 'setChangeTracker' in input ? input.setChangeTracker : null;
@@ -99,14 +100,14 @@ const NodeDetails = (input) => {
     {
         if(showButtons)
         {
-            changeCount.current++;
+            fileChangeCount.current = 1;
         }
         else 
         {
-            changeCount.current = 0;
+            fileChangeCount.current = 0;
         }
 
-        setHideButtons(changeCount.current);
+        setHideButtons(changeCount.current+fileChangeCount.current);
     }
 
     const SetNodeVar = (node) => {
@@ -298,7 +299,7 @@ const NodeDetails = (input) => {
 
         if((previousChangeCount == 0 && changeCount.current != 0) || (previousChangeCount != 0 && changeCount.current == 0))
         {
-            setHideButtons(changeCount.current);
+            setHideButtons(changeCount.current+fileChangeCount.current);
         }
     }
 
@@ -463,8 +464,18 @@ const NodeDetails = (input) => {
         if(node.title && node.title.trim().length > 0)
         {
             changeCount.current = 0;
-            setHideButtons(changeCount.current);
+            setHideButtons(0);
         }
+    }
+
+    const ResetForm = () =>
+    {
+        document.getElementById('file-upload-button').value = null;
+        titlePresent.current = true; 
+        changeCount.current = 0; 
+        setHideButtons(0);
+        setResetFiles({reset: true}); 
+        handleChange(props, cloneNode);
     }
 
     const GetHeader = () => {
@@ -511,7 +522,7 @@ const NodeDetails = (input) => {
                         </div>
                     </div> 
                 </div>
-                <div className={(changeCount.current === 0 && titleRequired) ? 'container': 'container-shrunk'} style = {{position: 'relative'}} > 
+                <div className={(hideButtons === 0 && titleRequired) ? 'container': 'container-shrunk'} style = {{position: 'relative'}} > 
                     <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
                         <div className="thumbnail-container">
                             <Provider store = {store}>
@@ -589,10 +600,10 @@ const NodeDetails = (input) => {
                     )
                     }
                 </div> 
-                <div hidden = {changeCount.current === 0 && titleRequired} style = {{height: (changeCount.current === 0 && titleRequired)? '0vh':'6.5vh', width: '40vw', position: 'relative', left: '1.5vw', display: 'flex'}}>
-                    <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{ fontSize: '4vh', display: 'flex', height: '100%'}}>
-                        <button hidden = {changeCount.current === 0} className='button text-overflow' style = {{height: '100%', width: '16vh', marginRight: '1vh'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
-                        <button hidden = {changeCount.current === 0} className='button text-overflow' style = {{height: '100%', width: '16vh'}} onClick = {() => {titlePresent.current = true; changeCount.current = 0; setResetFiles({reset: true}); handleChange(props, cloneNode); }} > Reset </button>
+                <div hidden = {hideButtons === 0 && titleRequired} style = {{height: (hideButtons === 0 && titleRequired)? '0vh':'6.5vh', width: '40vw', position: 'relative', left: '1.5vw', display: 'flex'}}>
+                    <div hidden = {hideButtons === 0}  id = 'node-details-button-container' style = {{ fontSize: '4vh', display: 'flex', height: '100%'}}>
+                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{height: '100%', width: '16vh', marginRight: '1vh'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{height: '100%', width: '16vh'}} onClick = {() => { ResetForm();}} > Reset </button>
                     </div>
                     <div className='text-overflow title-required-container'  hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', textAlign: 'bottom'}}>Title is required!</div>
                 </div>
