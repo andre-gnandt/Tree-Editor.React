@@ -36,7 +36,9 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
         .then((responseJson)=>{return responseJson});;
     };
 
-    async function updateTree(id, tree){
+    async function updateTree(id, input){
+        const tree = {...input};
+        delete tree['rootId'];
         const putOptions =  {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
