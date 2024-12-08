@@ -473,6 +473,7 @@ const NodeDetails = (input) => {
         document.getElementById('file-upload-button').value = null;
         titlePresent.current = true; 
         changeCount.current = 0; 
+        fileChangeCount.current = 0;
         setHideButtons(0);
         setResetFiles({reset: true}); 
         handleChange(props, cloneNode);
