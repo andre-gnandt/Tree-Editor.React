@@ -430,6 +430,8 @@ const NodeDetails = (input) => {
                 SetNodeVar(updatedNode);
                 input.render("update", props, node.id);
             }
+
+            dispatch(cloneNode(props));
         }
         else if(create)
         {            
@@ -440,7 +442,7 @@ const NodeDetails = (input) => {
             input.nodeList.push(props);
             input.render("create", props);
 
-            dispatch(setStateProperty({key: 'id', value: resultNode.id}));
+            dispatch(cloneNode(props));
             setCreate(false);
         }  
         else if(root)
@@ -453,7 +455,7 @@ const NodeDetails = (input) => {
             nodeList.current = [];
             input.render("new root", props);
 
-            dispatch(setStateProperty({key: 'id', value: resultNode.id}));
+            dispatch(cloneNode(props));
             setRoot(false);
         }  
 
