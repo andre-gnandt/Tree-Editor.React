@@ -10,6 +10,7 @@ import CreateNode from './features/nodes/CreateNode';
 import CreateRoot from './features/nodes/CreateRoot';
 import EditTree from './features/trees/EditTree';
 import { useNavigate } from 'react-router-dom';
+import history from './history';
 import 'primeicons/primeicons.css';
 import './features/trees/tree.css';
 
@@ -29,8 +30,6 @@ const Tree = () => {
   const navigate = useNavigate();
   const [treeFetch, setTreeFetch] = useState(null);
   const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
-  //const [treeState, setTree] = useState(null);
-  //const [treeDetailsState, setTreeDetails] = useState(null);
   var originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
   var tree = originalTree != null ? structuredClone(originalTree) : null;
   const pixelsToCentimetres = PixelSizeInCentimetres();
@@ -61,9 +60,6 @@ const Tree = () => {
   const iconSize =  String(0.08*window.innerHeight)+'px';
   const horizontalBorder = 15; //in pixels
   var testRender = false;
-
-  window.removeEventListener('resize', ReRenderTree, true);
-  window.addEventListener('resize', ReRenderTree);
 
   const Saving = () => 
     {
@@ -113,7 +109,6 @@ const Tree = () => {
   {
     waitForTree();
   }
-  window.addEventListener('resize', ReRenderTree);
 
   useEffect(() => {
     
@@ -125,6 +120,10 @@ const Tree = () => {
       
       //RenderCreationButtons();
     }
+
+    window.addEventListener('resize', ReRenderTree);
+
+    return () => window.removeEventListener('resize', ReRenderTree);
   });
 
   function PixelSizeInCentimetres() {
@@ -203,12 +202,6 @@ const Tree = () => {
 
   function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
   {
-    if(!document.getElementById('tree-root') || !window.location.href.includes('tree/'+id))
-    {
-      window.removeEventListener('resize', ReRenderTree, true);
-      return;
-    }
-
     const treeContainer = createRoot(document.getElementById('tree-root'));
     if(!tree && !newNode)
     {
@@ -314,11 +307,6 @@ const Tree = () => {
     document.getElementById('save-tree-positions').disabled = !(treeUnsaved);
     document.getElementById('revert-tree-positions').disabled = !(treeUnsaved);
     
-    if(callback)
-    {
-      window.removeEventListener('resize', ReRenderTree, true);
-      window.addEventListener('resize', ReRenderTree);
-    }
     //if(callback === "new root" && nodeList.length === 1) window.location.reload();
   }
 
@@ -915,8 +903,6 @@ const Tree = () => {
       originalTree = structuredClone(tree);
       document.getElementById('save-tree-positions').disabled = true;
       document.getElementById('revert-tree-positions').disabled = true;
-      window.removeEventListener('resize', ReRenderTree, true);
-      window.addEventListener('resize', ReRenderTree);
     }
   }
 
@@ -1152,9 +1138,9 @@ const Tree = () => {
           <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
           <div id = 'button-container-inner' style = {{position: 'sticky', display:'flex', top: '0px', width: '100vw', height: '8vh', justifyContent: 'center', alignItems: 'center'}}>
             <div style = {{marginRight: 'auto', height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",}}>
-                <Link to ="/">
+                {/*<Link to ="/">*/}
                   <button 
-                    //onClick={(event) => {navigate("/");}}
+                    onClick={(event) => { navigate("/");}}
                     className='button-header button-save tooltip' 
                     style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
                     { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
@@ -1162,7 +1148,7 @@ const Tree = () => {
                     <i className='pi pi-home save-icon' style = {{fontSize: '8vh'}} />
                     <span class="tooltip-right">Home</span>
                   </button>
-                </Link>
+                {/*</Link>*/}
               <EditTree id = {id} tree = {treeDetails}/>
             </div>          
             <div style = {{height: '100%', width: '41vh', display: 'flex',  marginRight: 'auto'}}>

@@ -145,7 +145,6 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
             SetInputTree(newTree);
             reRenderList("create", newTree);
             setCreate(false);
-            history.push(window.location);
             navigate("tree/"+newTree.id);
         }
         else

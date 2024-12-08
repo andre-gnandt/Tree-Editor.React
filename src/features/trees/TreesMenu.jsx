@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import TreeDetails from './TreeDetails';
 import { InputText } from 'primereact/inputtext';
 import { DataView} from 'primereact/dataview';
+import history from '../../history';
 import '/node_modules/primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
@@ -134,7 +135,7 @@ const TreesMenu = ({trees}) => {
                   <button 
                       className='menu-button tree-menu-item'
                       style = {{fontSize: '3.25vw', marginTop:'2vh', padding: '0 0 0 0', backgroundColor: '#DCDCDC', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', height: '27vh', width: '19.5vw'}}
-                      onClick={(event) => {window.location.href = '/tree/'+tree.id}} 
+                      onClick={(event) => {navigate('/tree/'+tree.id);}} 
                   >
                       {tree.name}
                   </button>
