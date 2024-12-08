@@ -10,7 +10,10 @@ import Draggable from 'react-draggable';
 const TreeNode = (props) => {
     const[dialog, setDialog] = useState(false);
     const[manualReRender, setManualReRender] = useState(1); //used for callback re renders
-    const[files, setFiles] = useState(null);
+    
+    //When file gallery is added, set this to an api call to get
+    //all files by node id
+    const[files, setFiles] = useState(props.props.files); 
     if(props == null || props.props == null || !('id' in props.props)) return (<></>);   
     var buttonMouseDown = new Object();
     var buttonMouseUp = new Object();
@@ -27,21 +30,6 @@ const TreeNode = (props) => {
         setDialog(false);
     }
 
-    function GetFilesByNodeId(id)
-  {
-    var value = null;
-    fetch("http://localhost:11727/api/Files/Get-Files-By-Node/"+id).then(res=> res.json()).then(
-        result => {
-          value = result;
-          setFiles(value);
-          props.props.files = value;
-
-          //if(files != null){
-            setDialog(true);
-          //}
-        }
-    );
-  }
 
     function GetElementPosition(element)
     {
@@ -58,13 +46,8 @@ const TreeNode = (props) => {
         if(buttonMouseUp.X === buttonMouseDown.X && buttonMouseUp.Y === buttonMouseDown.Y)
         {
             props.props["dialog"] = true;
-            GetFilesByNodeId(props.props.id);
-             
-            /*
-            if(files != null){
-                setDialog(true);
-            }
-                */
+            setDialog(true);
+            //GetFilesByNodeId(props.props.id);         
         }
     }
 
