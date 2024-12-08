@@ -554,7 +554,7 @@ const Tree = () => {
             className={child.id+" treenode-container"} 
             onMouseOver={() => {mouseOverNode = child.id;}}
             onMouseOut={() => {mouseOverNode = null;}} 
-            style = {{backgroundColor: '#F0F0F0', borderRadius: String(nodeSize*0.2)+'px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 4, position:'absolute',top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', display: 'table', border: '2px solid red', maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
+            style = {{display: 'flex', justifyContent: 'center', alignItems: 'center',backgroundColor: '#F0F0F0', borderRadius: String(nodeSize*0.2)+'px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 4, position:'absolute',top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', display: 'table', border: '2px solid red',  height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
           > 
             <TreeNode 
               setChangeTracker = {UpdateChangeTrackerCallback}

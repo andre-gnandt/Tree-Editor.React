@@ -11,7 +11,7 @@ const TreeNode = (props) => {
     const[dialog, setDialog] = useState(false);
     const[manualReRender, setManualReRender] = useState(1); //used for callback re renders
     
-    //When file gallery is added, set this to an api call to get
+    //After file gallery is added, set this to an api call to get
     //all files by node id
     const[files, setFiles] = useState(props.props.files); 
     if(props == null || props.props == null || !('id' in props.props)) return (<></>);   
@@ -66,7 +66,7 @@ const TreeNode = (props) => {
         return(
             <>  
                 { props.props.thumbnailId ? 
-                    <div style = {{height: '100%', width: '100%', position: 'relative', textAlign: 'center', color: 'white', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap',}}>
+                    <div style = {{height: String(props.css.nodeSize)+'px', width: String(props.css.nodeSize)+'px'}}>
                         <img className='image' style = {{cursor: 'pointer'}} onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {GetImageSource()}/>
                         <div
                             onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}}
@@ -74,7 +74,9 @@ const TreeNode = (props) => {
                                         position: 'absolute',
                                         top: '50%',
                                         left: '50%',
-                                        transform: 'translate(-50%, -50%)', cursor: 'pointer'}}
+                                        transform: 'translate(-50%, -50%)', cursor: 'pointer'
+                                        ,  color: 'white', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'
+                                    }}
                         >
                             {props.props.title}
                         </div>                      
