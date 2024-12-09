@@ -1110,12 +1110,12 @@ const Tree = () => {
 
     return (
       <>
-            <div style = {{position: 'absolute', left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String(maximumNodeSize/4)+'px', height: String(maximumNodeSize)+'px', width: String(maximumNodeSize)+'px'}}>
+            <div style = {{position: 'absolute', left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String(maximumNodeSize/4+window.innerWidth*0.04)+'px', height: String(maximumNodeSize)+'px', width: String(maximumNodeSize)+'px'}}>
               <button onClick={(event) => {document.getElementById('create-root-button').click();}} className='button-root-empty' style = {{padding: '0 0 0 0', backgroundColor: 'lightGrey', color: '#d68a16'}}>
                   <i className='pi pi-warehouse' style = {{fontSize: String(maximumNodeSize)+'px'}} onClick = {() => { setCreateNode(true);}} />
               </button> 
             </div >
-              <span style = {{fontSize: '5vh', color: '#d68a16', position: 'absolute', left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String((5*maximumNodeSize/4)+20)+'px', width: String(maximumNodeSize)+'px'}}>
+              <span style = {{fontSize: '5vh', color: '#d68a16', position: 'absolute', left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String((5*maximumNodeSize/4)+20+window.innerWidth*0.04)+'px', width: String(maximumNodeSize)+'px'}}>
                 This tree is empty, click the icon above to create the root node!
               </span>
           </>
