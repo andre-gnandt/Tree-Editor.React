@@ -127,7 +127,6 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
     {   
         await deleteTree(id);
         unMount();
-        //history.push(window.location);
         navigate("/");
     }
 
@@ -160,6 +159,16 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
             changeCount.current = 0;
             setHideButtons(changeCount.current);
         }
+    }
+
+    const ResetForm = () => 
+    {
+        titlePresent.current = true; 
+        changeCount.current = 0; 
+        setHideButtons(0);
+        setName(inputTree.name); 
+        setDescription(inputTree.description);
+
     }
 
     const GetHeader = () => {
@@ -211,14 +220,6 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
                                 onChange = {(e) => {CheckValueChange(inputTree.name, name, e.target.value); setName(e.target.value);}} value = {name ? name : ""} />
                         </div>
                     </div>
-                    
-                        {/*
-                         container:   height: calc(83.5vh - 5vw);
-                                        max-height: calc(83.5vh - 5vw); 
-                         Title = 39.275vh
-                            
-                         result: calc(44.225 - 5vw)
-                        */}
                         <div className = 'tree-description-container' style = {{justifyContent: 'center', textAlign: 'center', display: 'flex', width: '36vw', position: 'relative', left: '2vw'}}>
                             <InputTextarea 
                                 maxLength={1000}
@@ -231,11 +232,11 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
                         </div>
                   
                 </div> 
-                <div  style = {{backgroundColor: (changeCount.current === 0 && titleRequired) ? '#F0F0F0' : '#DCDCDC', maxHeight: '6.5vh', height: '6.5vh', width: '40vw', position: 'relative', left: '1.5vw', display: 'flex'}}>
-                    <div hidden = {changeCount.current === 0}  id = 'node-details-button-container' style = {{ fontSize: '4vh', display: 'flex',  maxHeight: '6.5vh', height: '6.5vh',}}>
+                <div  style = {{backgroundColor: (hideButtons === 0 && titleRequired) ? '#F0F0F0' : '#DCDCDC', maxHeight: '6.5vh', height: '6.5vh', width: '40vw', position: 'relative', left: '1.5vw', display: 'flex'}}>
+                    <div hidden = {hideButtons === 0}  id = 'node-details-button-container' style = {{ fontSize: '4vh', display: 'flex',  maxHeight: '6.5vh', height: '6.5vh',}}>
  
-                        <button hidden = {changeCount.current === 0} className='button text-overflow' style = {{ maxHeight: '6.5vh', height: '6.5vh', width: '16vh', marginRight: '1vh'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
-                        <button hidden = {changeCount.current === 0} className='button text-overflow' style = {{ maxHeight: '6.5vh', height: '6.5vh', width: '16vh'}} onClick = {() => {titlePresent.current = true; changeCount.current = 0; setName(inputTree.name); setDescription(inputTree.description); }} > Reset </button>
+                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{ maxHeight: '6.5vh', height: '6.5vh', width: '16vh', marginRight: '1vh'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{ maxHeight: '6.5vh', height: '6.5vh', width: '16vh'}} onClick = {() => { ResetForm(); }} > Reset </button>
                     </div>
                     <div className='text-overflow title-required-container'  hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', textAlign: 'bottom'}}>Title is required!</div>
                 </div>

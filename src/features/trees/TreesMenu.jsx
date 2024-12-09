@@ -17,19 +17,8 @@ const TreesMenu = ({trees}) => {
   const [createTree, setCreateTree] = useState(null);
   const [search, setSearch] = useState(null);
   const [deleteOptions, setDeleteOptions] = useState(null);
-  const treeList = useRef([...trees]); 
-  const [list, setList] = useState([...treeList.current]);
+  const [treeList, setTreeList] = useState(trees);
   const iconDimension = 0.16*window.innerHeight;
-
-  /*
-  function GetNodeSize()
-  {
-    const widthToHeight = 0.7;
-    const maximumWidth = window.innerWidth/7;
-    const maximumHeight = window.innerHeight/5.5;
-
-    if(maximumHeight < )
-  }*/
 
   function CompareTrees(a, b)
   {
@@ -51,9 +40,9 @@ const TreesMenu = ({trees}) => {
   async function HandleDeleteTree()
   {
     await DeleteTree(deleteOptions);
-    var index = treeList.current.findIndex((object) => object.id === deleteOptions);
-    treeList.current.splice(index, 1);
-    setList([...treeList.current]);
+    var index = treeList.findIndex((object) => object.id === deleteOptions);
+    treeList.splice(index, 1);
+    setTreeList([...treeList]);
     setDeleteOptions(null);
   }
 
@@ -86,20 +75,20 @@ const TreesMenu = ({trees}) => {
 
   function FilterTree()
   {
-    if(!search || !list || list.length == 0 || search.length == 0) return list;
+    if(!search || !treeList || treeList.length == 0 || search.length == 0) return treeList;
 
-    return list.filter((tree) => { return (tree.name.toLowerCase().includes(search.toLowerCase()))});
+    return treeList.filter((tree) => { return (tree.name.toLowerCase().includes(search.toLowerCase()))});
   }
 
   function reRenderList(callback = null, newTree = null)
   {
     if(callback === "create")
     {
-        treeList.current.push(newTree);
+        treeList.push(newTree);
     }
 
-    treeList.current.sort(CompareTrees);
-    setList([...treeList.current]);
+    treeList.sort(CompareTrees);
+    setTreeList([...treeList]);
   }
 
   const EmptyListJSX = () => 
@@ -173,11 +162,11 @@ const TreesMenu = ({trees}) => {
         </div>
         <div id = 'content-container' style = {{position: 'absolute', top: 'calc( 22vh + 4vw)', height: '70vh', width: '82vw', left: '9vw'}}>
         {  
-            (list != null && list.length > 0) ? 
+            (treeList != null && treeList.length > 0) ? 
             (
             <>
                 <InputText placeholder='Search...' style = {{marginBottom: '5vh', height: '8vh', width: '40vw', borderRadius: '4vh', fontSize: '5vh'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
-                <DataView className='data-table' style = {{scrollbarColor: 'blue',height: '59vh', maxHeight: '59vh'}} rows={4} value = {FilterTree(list)} listTemplate={listTemplate} layout = {"grid"} />
+                <DataView className='data-table' style = {{scrollbarColor: 'blue',height: '59vh', maxHeight: '59vh'}} rows={4} value = {FilterTree(treeList)} listTemplate={listTemplate} layout = {"grid"} />
             </>
             )
             :
