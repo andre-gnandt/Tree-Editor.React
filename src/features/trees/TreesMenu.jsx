@@ -115,8 +115,6 @@ const TreesMenu = ({trees}) => {
 
   const gridItem = (tree) => 
     {   
-        //container: 82vw 57vh
-        //columns: 3, rows: 2
         return (
             <div className='col-3' key = {tree.id} >
                 <i className='pi pi-times' onClick={() => {setDeleteOptions(tree.id)}} style = {{cursor: 'pointer', zIndex: 20, top: '2vh', position: 'relative', height: '14px', width: '14px', fontSize: '14px'}}/>

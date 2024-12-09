@@ -1,17 +1,15 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect} from 'react'
 import { useParams } from 'react-router-dom';
 import TreeNode from './features/nodes/TreeNode';
 import LineTo from 'react-lineto';
 import './App.css'
 import Draggable from 'react-draggable';
-import { Link } from "react-router-dom";
 import { createRoot } from 'react-dom/client';
 import CreateNode from './features/nodes/CreateNode';
 import CreateRoot from './features/nodes/CreateRoot';
 import EditTree from './features/trees/EditTree';
 import { useNavigate } from 'react-router-dom';
 import HeaderInfo from './features/utils/HeaderInfo';
-import history from './history';
 import 'primeicons/primeicons.css';
 import './features/trees/tree.css';
 
@@ -36,9 +34,7 @@ const Tree = () => {
   const pixelsToCentimetres = PixelSizeInCentimetres();
   var maxLevels = new Object();
   var scrollXBefore = 0;
-  var scrollXAfter = 0;
   var scrollYBefore = 0;
-  var scrollYAfter = 0;
   var scrollDistanceX = 0;
   var scrollDistanceY = 0;
   var treeWidth = 0;
@@ -52,13 +48,9 @@ const Tree = () => {
   var nodeList = [];
   var dragging = false;
   var mouseOverNode = null;
-  const maximumNodeSize = 0.5*window.innerHeight;
-  const windowWidth = window.innerWidth;
-  //var 
   const minimumNodeSize = 1.15/pixelsToCentimetres; //1.4 cm in pixels
   var nodeDimension = 80;
-  const iconDimension = 0.08*window.innerHeight
-  const iconSize =  String(0.08*window.innerHeight)+'px';
+  const iconDimension = 0.08*window.innerHeight;
   const horizontalBorder = 15; //in pixels
   var testRender = false;
 
@@ -369,13 +361,6 @@ const Tree = () => {
     ShowLoading();
     await GetTree();
   }
-
-  /*
-  if(firstRender.current){
-    waitForTree();
-    firstRender.current = false;
-  }
-  */
 
   function ResetElementPositions(node)
   {
@@ -1081,14 +1066,6 @@ const Tree = () => {
       }
   };
 
-  /*
-  function WaitAndGetElement(elementid)
-  {
-    const nodeElement = document.getElementById(node.id);
-    if(!nodeElement){  }
-  }
-    */
-
   function CorrectTransforms(node)
   {
     if(node != null && ('children' in node))
@@ -1146,9 +1123,8 @@ const Tree = () => {
                   <button 
                     onClick={(event) => { navigate("/");}}
                     className='button-header button-save tooltip' 
-                    style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
-                    { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
-                    }
+                    style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}
+                  >
                     <i className='pi pi-home save-icon' style = {{fontSize: '8vh'}} />
                     <span class="tooltip-right">Home</span>
                   </button>

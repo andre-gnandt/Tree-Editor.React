@@ -11,8 +11,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
     const navigate = useNavigate();
     const[hideButtons, setHideButtons] = useState(0);
     const changeCount = useRef(0);
-    const titlePresent = useRef(true);
-    const [titleRequired, setTitleRequired] = useState(titlePresent.current);
+    const [titleRequired, setTitleRequired] = useState(true);
     const [deleteOptions, setDeleteOptions] = useState("");
     const [create, setCreate] = useState(creation);
     const [name, setName] = useState(inputTree.name);
@@ -134,7 +133,6 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
     {
         if(!name || name.trim().length === 0)
         {
-            titlePresent.current = false;
             setTitleRequired(false);
         }
         else if(create)
@@ -163,7 +161,6 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
 
     const ResetForm = () => 
     {
-        titlePresent.current = true; 
         changeCount.current = 0; 
         setHideButtons(0);
         setName(inputTree.name); 
@@ -176,8 +173,8 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
         
         return <>Tree Details</>;
     }
-     // container: , top: '2.5vw', left: '1.5vw'}}>}
-    //style = {{marginBottom: (hideButtons === 0) ? '0vh' : '3.275vh'}}
+
+
         return(
         <>  
             <div className='dialog-root'>
