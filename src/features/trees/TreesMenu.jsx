@@ -157,12 +157,12 @@ const TreesMenu = ({trees}) => {
             </div>
           </div>
         </div>
-        <div id = 'content-container' style = {{position: 'absolute', top: 'calc( 22vh + 4vw)', height: '70vh', width: '82vw', left: '9vw'}}>
+        <div id = 'content-container' style = {{position: 'absolute', top: 'calc(22vh + 4vw)', height: '70vh', width: '82vw', left: '9vw'}}>
         {  
             (treeList != null && treeList.length > 0) ? 
             (
             <>
-                <InputText placeholder='Search...' style = {{marginBottom: '5vh', height: '8vh', width: '40vw', borderRadius: '4vh', fontSize: '5vh'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
+                <InputText placeholder='Search...' style = {{position: 'relative', left: '20.5vw', marginBottom: '5vh', height: '8vh', width: '40vw', borderRadius: '4vh', fontSize: '5vh'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
                 <DataView className='data-table' style = {{scrollbarColor: 'blue',height: '59vh', maxHeight: '59vh'}} rows={4} value = {FilterTree(treeList)} listTemplate={listTemplate} layout = {"grid"} />
             </>
             )

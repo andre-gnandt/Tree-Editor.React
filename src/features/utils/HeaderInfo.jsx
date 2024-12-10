@@ -9,7 +9,7 @@ const HeaderInfo = ({middleText = null}) => {
 
             { (middleText) && 
                 (
-                    <div style = {{position: 'absolute', left: '25vw', fontSize: '1.2vw', width: '50vw'}}>
+                    <div style = {{textAlign: 'center', justifyContent: 'center', position: 'absolute', left: '25vw', fontSize: '1.2vw', width: '50vw'}}>
                         {middleText}
                     
                     </div>

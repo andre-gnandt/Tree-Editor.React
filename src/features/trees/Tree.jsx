@@ -1,19 +1,17 @@
-import { useState, useEffect} from 'react'
-import { useParams } from 'react-router-dom';
-import TreeNode from './features/nodes/TreeNode';
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import { store } from './store';
+import {useEffect} from 'react'
+import TreeNode from '../nodes/TreeNode';
+import { Provider} from 'react-redux';
+import { store } from '../../store';
 import LineTo from 'react-lineto';
-import './App.css'
 import Draggable from 'react-draggable';
 import { createRoot } from 'react-dom/client';
-import CreateNode from './features/nodes/CreateNode';
-import CreateRoot from './features/nodes/CreateRoot';
-import EditTree from './features/trees/EditTree';
+import CreateNode from '../nodes/CreateNode';
+import CreateRoot from '../nodes/CreateRoot';
+import EditTree from '../trees/EditTree';
 import { useNavigate } from 'react-router-dom';
-import HeaderInfo from './features/utils/HeaderInfo';
+import HeaderInfo from '../utils/HeaderInfo';
 import 'primeicons/primeicons.css';
-import './features/trees/tree.css';
+import '../trees/tree.css';
 
 /*extra node properties include:
 'position'
@@ -24,13 +22,11 @@ import './features/trees/tree.css';
 'path'
 */
 
-//Due to strange issues and positioning with the CSS transform property of tree nodes on re renders, this component will NEVER Re render
+//Due to strange issues and positioning with the CSS transform 
+//property of tree nodes on re renders, this component will NEVER Re render
 //Re renders of the tree diagram must be done manually
-const Tree = () => {
-  const id = useParams().id;
+const Tree = ({id, treeFetch}) => {
   const navigate = useNavigate();
-
-  const [treeFetch, setTreeFetch] = useState(null);
   const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
   var originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
   var tree = originalTree != null ? structuredClone(originalTree) : null;
@@ -100,11 +96,6 @@ const Tree = () => {
         document.getElementById('error').hidden = false;
         const myTimeout = setTimeout(ClearError, 2000);
     }
-
-  if(!treeFetch)
-  {
-    waitForTree();
-  }
 
   useEffect(() => {
     
@@ -344,20 +335,6 @@ const Tree = () => {
       delete changeTracker[child.id];
       originalDictionary[child.id] = {...nodeDictionary[child.id]};
     })
-  }
-
-  async function GetTree(){
-    await fetch("http://localhost:11727/api/Trees/FullTree/"+id).then(res => res.json()).then(
-        result => { 
-          setTreeFetch(result);
-          doneLoading();
-        }
-    );   
-  };
-
-  async function waitForTree(){
-    ShowLoading();
-    await GetTree();
   }
 
   function ResetElementPositions(node)
