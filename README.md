@@ -1,8 +1,5 @@
-# React + Vite
+# Tree Editor Web App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+-This is the frontend code for the Tree Editor Web App written in ReactJS. A deployed version of the App is currently at https://treeeditor-react-private-black-leaf-3836.fly.dev/.
+Please be mindful of the long api response times, the backend server and the database server are external from one another and are located in different regions.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
