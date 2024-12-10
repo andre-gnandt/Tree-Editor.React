@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setStateProperty } from "../nodes/nodeSlice";
 import '../nodes/detailsList.css';
@@ -7,31 +7,26 @@ import 'primeicons/primeicons.css';
 const UploadFile = ({reset, fileChangeCallBack, inputNode}) => {
   const dispatch = useDispatch();
   const uploadName = useRef(null);
-  const newUpload = useRef(false);
-
   const node = {...inputNode};
     node.files = inputNode.files? [...inputNode.files] : [];
-  
   const nodeFiles = inputNode.files;
-  const reader = new FileReader();
-  
+
   const [selectedImage, setSelectedImage] = useState(null);
-  const [defaultFile, setDefaultFile] = useState(node.thumbnailId ? GetImageSource() : null);
-  
-  if(reset.reset)
-  {
-    reset.reset = false;
-    setDefaultFile(node.thumbnailId ? GetImageSource() : null);
+  const [defaultFile, setDefaultFile] = useState(inputNode.thumbnailId ? GetImageSource() : null);
+  const reader = new FileReader();
+
+  useEffect(() => {
+    if(selectedImage)
+    {
+      reader.onload = GetFileData;
+      reader.readAsArrayBuffer(selectedImage);
+    }    
+  }, [selectedImage]);
+
+  useEffect(() => {
+    setDefaultFile(inputNode.thumbnailId ? GetImageSource() : null);
     setSelectedImage(null);
-  }
-
-  if(selectedImage && newUpload.current)
-  {
-
-    newUpload.current = false;
-    reader.onload = GetFileData;
-    reader.readAsArrayBuffer(selectedImage);
-  }
+  }, [reset]);
 
   function GetImageSource()
     {
@@ -176,7 +171,6 @@ const UploadFile = ({reset, fileChangeCallBack, inputNode}) => {
                     }
 
                     uploadName.current = fileName;
-                    newUpload.current = true;
                     setSelectedImage(event.target.files[0]); 
                 }}
             />

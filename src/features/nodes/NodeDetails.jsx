@@ -23,7 +23,8 @@ const NodeDetails = ({
     const[hideButtons, setHideButtons] = useState(0);
     const changeCount = useRef(0);
     const[titleRequired, setTitleRequired] = useState(true);
-    const[resetFiles, setResetFiles] = useState({reset: false});
+    //const[resetFiles, setResetFiles] = useState({reset: false});
+    const resetThumbnail = useRef(1);
     const [deleteOptions, setDeleteOptions] = useState("");
     const deleteType = useRef("cascade"); //single | cascade
     const fileChangeCount = useRef(0);
@@ -417,8 +418,9 @@ const NodeDetails = ({
         document.getElementById('file-upload-button').value = null;
         changeCount.current = 0; 
         fileChangeCount.current = 0;
+        resetThumbnail.current = resetThumbnail.current * -1;
         setHideButtons(0);
-        setResetFiles({reset: true}); 
+        //setResetFiles({reset: true}); 
         handleChange(inputNode, cloneNode);
     }
 
@@ -468,7 +470,7 @@ const NodeDetails = ({
                 <div className={(hideButtons === 0 && titleRequired) ? 'container': 'container-shrunk'} style = {{position: 'relative'}} > 
                     <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
                         <div className="thumbnail-container">                         
-                            <UploadFile reset = {resetFiles} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
+                            <UploadFile /* reset = {resetFiles} */ reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
                         </div>
                         <div className='title-container'>
                             <InputTextarea 
