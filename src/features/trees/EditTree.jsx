@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState} from 'react'
 import { Dialog } from 'primereact/dialog';
 import TreeDetails from './TreeDetails';
 import '../nodes/detailsList.css';

@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import history from './history';
-import TreesMenuPage from "./TreesMenuPage";
+import TreesMenuPage from "./pages/trees/TreesMenuPage";
 import TreePage from "./pages/trees/TreePage";
 
 const App = () => {

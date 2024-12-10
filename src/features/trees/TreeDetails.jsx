@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dialog } from 'primereact/dialog';
 import '../nodes/detailsList.css';
 import '../trees/tree.css';
 import Draggable from 'react-draggable';
 import { useNavigate } from 'react-router-dom';
-import history from '../../history';
 
 const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree, creation  = false}) => {
     const navigate = useNavigate();

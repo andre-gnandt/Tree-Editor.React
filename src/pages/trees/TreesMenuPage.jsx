@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import TreesMenu from './features/trees/TreesMenu';
+import TreesMenu from '../../features/trees/TreesMenu';
 
 const TreesMenuPage = () => {
   const [list, setList] = useState(null);   

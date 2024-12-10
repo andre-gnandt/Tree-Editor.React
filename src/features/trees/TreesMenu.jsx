@@ -1,12 +1,11 @@
 import { useState, useRef } from 'react'
 import Draggable from 'react-draggable';
 import { Dialog } from 'primereact/dialog';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TreeDetails from './TreeDetails';
 import { InputText } from 'primereact/inputtext';
 import { DataView} from 'primereact/dataview';
 import HeaderInfo from '../utils/HeaderInfo';
-import history from '../../history';
 import '/node_modules/primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
