@@ -1,38 +1,39 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { cloneNode, setStateProperty, updateNodeData, updateNodeNumber, updateNodeDescription, updateNodeTitle, updateNodeRank, updateNodeParent} from './nodeSlice'
 import { InputText} from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
-import { updateNode } from '../../api/nodes/nodesApi';
 import { Dialog } from 'primereact/dialog';
 import './detailsList.css';
 import UploadFile from '../utils/UploadFile';
-import { Provider } from 'react-redux';
-import { store } from '../../store';
 import Draggable from 'react-draggable';
 
-const NodeDetails = (input) => {
+const NodeDetails = ({
+    SetChangeTracker, 
+    unMount,
+    renderTreeNode , 
+    files, 
+    rootNode, 
+    render, 
+    inputNode, 
+    nodeList, 
+    nodeDictionary,
+    create = false,
+    root = false
+    })  =>     
+    {
+    const dispatch = useDispatch();
+    const node = useSelector(state => state.node);
     const[hideButtons, setHideButtons] = useState(0);
     const changeCount = useRef(0);
-    const titlePresent = useRef(true);
-    const[titleRequired, setTitleRequired] = useState(titlePresent.current);
+    const[titleRequired, setTitleRequired] = useState(true);
     const[resetFiles, setResetFiles] = useState({reset: false});
     const [deleteOptions, setDeleteOptions] = useState("");
     const deleteType = useRef("cascade"); //single | cascade
     const fileChangeCount = useRef(0);
-    const nodeList = useRef([]);
-
-    const SetChangeTracker = 'setChangeTracker' in input ? input.setChangeTracker : null;
-    const [create, setCreate] = useState('create' in input ? input['create'] : false);
-    const [root, setRoot] = useState('root' in input ? input['root'] : false);
-    const node = useSelector(state => state.node);
-    const dispatch = useDispatch();
-    const firstRender = useRef(true);
-    const unMount = input.unMount;
-    const props = input.input;
-    //const rootNode = input.rootNode;
-    const renderTreeNode = input.renderTreeNode;
+    const [Create, setCreate] = useState(create);
+    const [Root, setRoot] = useState(root);
 
     const Saving = () => 
     {
@@ -78,20 +79,6 @@ const NodeDetails = (input) => {
         const myTimeout = setTimeout(ClearError, 2000);
     }
 
-    const SetStateFiles = (value) => {
-        firstRender.current = false;
-        dispatch(setStateProperty({key: 'files', value: value}));
-      }
-
-    if(firstRender.current){
-        firstRender.current = false;
-        dispatch(cloneNode(props));
-        SetStateFiles(input.files);
-        nodeList.current = [...input.nodeList];
-        RemoveDescendants(props);
-        nodeList.current = nodeList.current.sort(CompareNodes);
-    }
-
     const handleChange = (value, method) => {
         dispatch(method(value));
     }
@@ -111,33 +98,18 @@ const NodeDetails = (input) => {
     }
 
     const SetNodeVar = (node) => {
-        props.data = node.data;
-        props.title = node.title;
-        props.number = node.number;
-        props.description = node.description;
-        props.rankId = node.rankId;
-        props.level = node.level;
-        props.nodeId = node.nodeId;
-        props.id = node.id;
-        props.isDeleted = node.isDeleted;
-        props.files = node.files;
-        props.thumbnailId = node.thumbnailId;
-        props.treeId = node.treeId;
-    }
-
-    const setNode = (prop) => {
-        prop.data = node.data;
-        prop.title = node.title;
-        prop.number = node.number;
-        prop.description = node.description;
-        prop.rankId = node.rankId;
-        prop.level = node.level;
-        prop.nodeId = node.nodeId;
-        prop.id = node.id;
-        prop.isDeleted = node.isDeleted;
-        prop.files = node.files;
-        prop.thumbnailId = node.thumbnailId;
-        prop.treeId = node.treeId;
+        inputNode.data = node.data;
+        inputNode.title = node.title;
+        inputNode.number = node.number;
+        inputNode.description = node.description;
+        inputNode.rankId = node.rankId;
+        inputNode.level = node.level;
+        inputNode.nodeId = node.nodeId;
+        inputNode.id = node.id;
+        inputNode.isDeleted = node.isDeleted;
+        inputNode.files = node.files;
+        inputNode.thumbnailId = node.thumbnailId;
+        inputNode.treeId = node.treeId;
     }
 
     const GetUpdateNodeObject = (node) =>
@@ -260,26 +232,6 @@ const NodeDetails = (input) => {
             return null;  
     };
 
-    function RemoveDescendants(node)
-    {
-        const removeIndex = nodeList.current.findIndex((object) => object.id === node.id);
-        if(removeIndex > -1)  nodeList.current.splice(removeIndex, 1);
-        node.children.forEach(child => {
-            RemoveDescendants(child);
-        });
-    }
-
-    function CompareNodes(a, b)
-    {
-        if ( a.title < b.title ){                                                                   
-            return -1;
-          }
-          if ( a.title > b.title ){
-            return 1;
-          }
-          return 0;
-    }
-
     function CheckValueChange(originalValue, previousValue, newValue)
     {
 
@@ -365,7 +317,7 @@ const NodeDetails = (input) => {
 
     function RenderCreateOrSaveButton()
     {
-        if(create || root)
+        if(Create || Root)
         {
             return (
                 <>Create</>
@@ -381,9 +333,9 @@ const NodeDetails = (input) => {
     {   
         if(deleteType.current === "single")
         {
-            const deleteNode = GetUpdateNodeObject(props);
+            const deleteNode = GetUpdateNodeObject(inputNode);
             const children = [];
-            props.children.forEach(child => 
+            inputNode.children.forEach(child => 
             {
                 children.push(GetUpdateNodeObject(child));
             }
@@ -391,13 +343,13 @@ const NodeDetails = (input) => {
 
             deleteNode["children"]  = children;
 
-            await DeleteSingle(props.nodeId, deleteNode);
-            input.render("delete single", null, node.id, null, node.nodeId);
+            await DeleteSingle(inputNode.nodeId, deleteNode);
+            render("delete single", null, node.id, null, node.nodeId);
         }
         else
         {
-            await DeleteCascade(props.id);
-            input.render("delete cascade", null, node.id, null, node.nodeId);
+            await DeleteCascade(inputNode.id);
+            render("delete cascade", null, node.id, null, node.nodeId);
         }
         unMount();
     }
@@ -412,51 +364,48 @@ const NodeDetails = (input) => {
     {
         if(!node.title || node.title.trim().length === 0)
         {
-            titlePresent.current = false;
             setTitleRequired(false);
         }
-        else if(!create && !root)
+        else if(!Create && !Root)
         {
             
             var updatedNode = await updateNode(node.id, node); 
             if(!updatedNode) return;
             
-            if(node.nodeId != props.nodeId)
+            if(node.nodeId != inputNode.nodeId)
             {
-                const oldParentId = props.nodeId;
+                const oldParentId = inputNode.nodeId;
                 SetNodeVar(updatedNode);
-                input.render("update", props, node.id, node.nodeId, oldParentId);
+                render("update", inputNode, node.id, node.nodeId, oldParentId);
             }
             else{
                 SetNodeVar(updatedNode);
-                input.render("update", props, node.id);
+                render("update", inputNode, node.id);
             }
 
-            dispatch(cloneNode(props));
+            dispatch(cloneNode(inputNode));
         }
-        else if(create)
+        else if(Create)
         {            
             var resultNode = await createNode(node);
             if(!resultNode) return;
+            
             SetNodeVar(resultNode);
-            props['id'] = resultNode.id;
-            input.nodeList.push(props);
-            input.render("create", props);
+            render("create", inputNode);
 
-            dispatch(cloneNode(props));
+            dispatch(cloneNode(inputNode));
             setCreate(false);
         }  
-        else if(root)
+        else if(Root)
         {
             var resultNode = await createRoot(node);
             if(!resultNode) return;
+            
             SetNodeVar(resultNode);
-            props['id'] = resultNode.id;
-            input.nodeList.push(props);
-            nodeList.current = [];
-            input.render("new root", props);
+            nodeList.length = 0;
+            render("new root", inputNode);
 
-            dispatch(cloneNode(props));
+            dispatch(cloneNode(inputNode));
             setRoot(false);
         }  
 
@@ -471,22 +420,20 @@ const NodeDetails = (input) => {
     const ResetForm = () =>
     {
         document.getElementById('file-upload-button').value = null;
-        titlePresent.current = true; 
         changeCount.current = 0; 
         fileChangeCount.current = 0;
         setHideButtons(0);
         setResetFiles({reset: true}); 
-        handleChange(props, cloneNode);
+        handleChange(inputNode, cloneNode);
     }
 
     const GetHeader = () => {
-        if(create)return <>Create New Node</>;
-        if(root)return <>Create New Root</>;
+        if(Create)return <>Create New Node</>;
+        if(Root)return <>Create New Root</>;
         
         return <>Node Content</>;
     }
-     // container: , top: '2.5vw', left: '1.5vw'}}>}
-    //style = {{marginBottom: (hideButtons === 0) ? '0vh' : '3.275vh'}}
+
         return(
         <>  
             <div className='dialog-root'>
@@ -495,7 +442,7 @@ const NodeDetails = (input) => {
                         <i onClick={() => {unMount()}} className='pi pi-times' style = {{ marginRight: 'auto', cursor: 'pointer', fontSize: '6.5vh'}}/>
                         <div className='dialog-header' style = {{fontSize: '5vh', width: '33vw', textAlign: 'center', verticalAlign: 'middle'}}>{GetHeader()}</div>                   
                         <div style = {{marginLeft: 'auto', height: '6.5vh', width: '7vw',  float: 'right' }}>
-                        { (node.nodeId && !root && !create) && (
+                        { (node.nodeId && !Root && !Create) && (
                             <>
                                 
                                 <button className='button text-overflow' 
@@ -525,10 +472,8 @@ const NodeDetails = (input) => {
                 </div>
                 <div className={(hideButtons === 0 && titleRequired) ? 'container': 'container-shrunk'} style = {{position: 'relative'}} > 
                     <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
-                        <div className="thumbnail-container">
-                            <Provider store = {store}>
-                                <UploadFile reset = {resetFiles} fileChangeCallBack = {FileChangeCallBack} files = {input.files} node = {input.input} thumbnailUpload = {(props.thumbnailId)} create = {create} />
-                            </Provider>  
+                        <div className="thumbnail-container">                         
+                            <UploadFile reset = {resetFiles} fileChangeCallBack = {FileChangeCallBack} files = {files} node = {inputNode} thumbnailUpload = {(inputNode.thumbnailId)} create = {Create} /> 
                         </div>
                         <div className='title-container'>
                             <InputTextarea 
@@ -538,7 +483,7 @@ const NodeDetails = (input) => {
                                 placeholder="Title" 
                                 className= {(titleRequired) ? "title" : "title-required"}
                                 spellCheck = {false}
-                                onChange = {(e) => {CheckValueChange(props.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title ? node.title : ""} />
+                                onChange = {(e) => {CheckValueChange(inputNode.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title ? node.title : ""} />
                         </div>
                     </div>
                     <div className="entryContainer">
@@ -546,7 +491,7 @@ const NodeDetails = (input) => {
                             Description:  
                         </div> 
                         <div className="fullWidthRight" style = {{height: '17vh'}}>
-                            <InputTextarea maxLength={1000} placeholder='Description...' autoResize style = {{height: '17vh'}} rows={5} className = "input" onChange = {(e) => {CheckValueChange(props.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
+                            <InputTextarea maxLength={1000} placeholder='Description...' autoResize style = {{height: '17vh'}} rows={5} className = "input" onChange = {(e) => {CheckValueChange(inputNode.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
                         </div>
                     </div>
                     <div className="entryContainer">
@@ -554,7 +499,7 @@ const NodeDetails = (input) => {
                             Data: 
                         </div>
                         <div className="fullWidthRight" style = {{height: '26vh'}}>
-                            <InputTextarea maxLength={1000} placeholder='Data...' autoResize rows={7} style = {{height: '26vh'}} className = "input-data" onChange = {(e) => {CheckValueChange(props.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
+                            <InputTextarea maxLength={1000} placeholder='Data...' autoResize rows={7} style = {{height: '26vh'}} className = "input-data" onChange = {(e) => {CheckValueChange(inputNode.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
                         </div>
                     </div>
                     <div className="entryContainer">
@@ -562,7 +507,7 @@ const NodeDetails = (input) => {
                             Number:  
                         </div> 
                         <div className="fullWidthRight">
-                            <InputText maxLength={1000} placeholder='Number...' className = "input" type = 'number' keyfilter='int' onChange = {(e) => {CheckValueChange(props.number, node.number, e.target.value); handleChange(e.target.value, updateNodeNumber);}} value = {node.number ? node.number : ""} />
+                            <InputText maxLength={1000} placeholder='Number...' className = "input" type = 'number' keyfilter='int' onChange = {(e) => {CheckValueChange(inputNode.number, node.number, e.target.value); handleChange(e.target.value, updateNodeNumber);}} value = {node.number ? node.number : ""} />
                         </div>
                     </div>
                     {/*
@@ -575,7 +520,7 @@ const NodeDetails = (input) => {
                         </div>
                     </div>
                     */}
-                    { (!root && props.nodeId) && (
+                    { (!Root && inputNode.nodeId) && (
                         <div className="entryContainer">
                             <div className = "fullWidthLeft">
                                 Parent:  
@@ -591,9 +536,9 @@ const NodeDetails = (input) => {
                                     //className='input'
                                     disabled = {node.nodeId ? false : true}
                                     filter
-                                    onChange = {(e) => {CheckValueChange(props.nodeId, node.nodeId, e.target.value.id); handleChange(e.target.value.id, updateNodeParent);}} 
-                                    value = {nodeList.current.find((object) => object.id === node.nodeId)}
-                                    options = {nodeList.current}
+                                    onChange = {(e) => {CheckValueChange(inputNode.nodeId, node.nodeId, e.target.value.id); handleChange(e.target.value.id, updateNodeParent);}} 
+                                    value = {nodeList.find((object) => object.id === node.nodeId)}
+                                    options = {nodeList}
                                     optionLabel='title'
                                     />
                             </div>

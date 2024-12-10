@@ -1,6 +1,8 @@
 import { useState, useEffect} from 'react'
 import { useParams } from 'react-router-dom';
 import TreeNode from './features/nodes/TreeNode';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { store } from './store';
 import LineTo from 'react-lineto';
 import './App.css'
 import Draggable from 'react-draggable';
@@ -27,6 +29,7 @@ import './features/trees/tree.css';
 const Tree = () => {
   const id = useParams().id;
   const navigate = useNavigate();
+
   const [treeFetch, setTreeFetch] = useState(null);
   const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
   var originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
@@ -541,16 +544,18 @@ const Tree = () => {
             onMouseOver={() => {mouseOverNode = child.id;}}
             onMouseOut={() => {mouseOverNode = null;}} 
             style = {{display: 'flex', justifyContent: 'center', alignItems: 'center',backgroundColor: '#F0F0F0', borderRadius: String(nodeSize*0.2)+'px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 4, position:'absolute',top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', display: 'table', border: '2px solid red',  height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
-          > 
-            <TreeNode 
-              setChangeTracker = {UpdateChangeTrackerCallback}
-              rootNode = {tree} 
-              render = {ReRenderTree} 
-              props = {child} 
-              css = {{nodeSize: nodeSize}} 
-              nodeList = {nodeList} 
-              nodeDictionary = {nodeDictionary}
-            />
+          >
+            <Provider store ={store}>
+              <TreeNode 
+                setChangeTracker = {UpdateChangeTrackerCallback}
+                rootNode = {tree} 
+                render = {ReRenderTree} 
+                inputNode = {child} 
+                css = {{nodeSize: nodeSize}} 
+                nodeList = {nodeList} 
+                nodeDictionary = {nodeDictionary}
+              />
+            </Provider> 
           </div>
         </Draggable>
       </>
@@ -1047,9 +1052,13 @@ const Tree = () => {
   {
     return (
       <>
-        <CreateRoot treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
-        <CreateNode treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
-      </>
+        <Provider store ={store}>
+          <CreateRoot treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+        </Provider>
+        <Provider store ={store}>
+          <CreateNode  treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+        </Provider>
+      </> 
     );
   }
 

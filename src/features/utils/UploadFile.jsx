@@ -194,5 +194,4 @@ const UploadFile = (props) => {
   );
 };
 
-// Export the UploadAndDisplayImage component as default
 export default UploadFile;

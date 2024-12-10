@@ -3,19 +3,15 @@ import { Dialog } from 'primereact/dialog';
 //import './detailsList.css'
 import '../trees/tree.css';
 import NodeDetails from './NodeDetails';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { store } from '../../store';
 import 'primeicons/primeicons.css';
 import Draggable from 'react-draggable';
+import { cloneNode } from './nodeSlice';
 
-const CreateNode = (props) => {
+const CreateNode = ({nodeList, nodeDictionary, iconSize, rootNode, render, treeId}) => {
     const [createNode, setCreateNode] = useState(null);
-    const nodeList = props.nodeList;
-    const nodeDictionary = props.nodeDictionary;
-    const iconSize = props.iconSize;
-    const tree = props.rootNode;
-    const ReRenderTree = props.render;
-    const rootId = tree ? tree.id : null;
+    const dispatch = useDispatch();
 
     const newNode = 
     {
@@ -24,12 +20,12 @@ const CreateNode = (props) => {
         level: 0,
         description: null,
         number: null,
-        nodeId: rootId,
+        nodeId: rootNode ? rootNode.id : null,
         rankId: null,
         children: [],
         files: [],
         thumbnailId: null,
-        treeId: props.treeId,
+        treeId: rootNode ? rootNode.treeId : null,
         isDeleted: false,
     };
 
@@ -38,17 +34,38 @@ const CreateNode = (props) => {
         setCreateNode(false);
     }
 
+    function CompareNodes(a, b)
+    {
+        if ( a.title < b.title ){                                                                   
+            return -1;
+          }
+          if ( a.title > b.title ){
+            return 1;
+          }
+          return 0;
+    }
+
+    function GetNodeList()
+    {   
+        const newList = [...nodeList];
+        return newList.sort(CompareNodes);
+    }
+
+    const OpenDialog = () => 
+    {
+        dispatch(cloneNode(newNode));
+        setCreateNode(true);
+    }
+
     return (
         <>  
-            <button className = {(rootId == null) ? 'button-header button-save tooltip' : 'button-header button-create tooltip'} disabled = {(rootId == null )}>
-                <i className='pi pi-upload' style = {{fontSize: '7.2vh'}} onClick = {() => { setCreateNode(true);}} />
+            <button className = {(newNode.nodeId == null) ? 'button-header button-save tooltip' : 'button-header button-create tooltip'} disabled = {(newNode.nodeId == null )}>
+                <i className='pi pi-upload' style = {{fontSize: '7.2vh'}} onClick = {() => { OpenDialog();}} />
                 <span class="tooltip-left">New Node</span>
             </button>
             <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
                 <Dialog className={"dialogContent"} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}} visible = {createNode} onHide={() => {if (!createNode) return; setCreateNode(false);}} > 
-                    <Provider store = {store}>
-                        <NodeDetails unMount = {unMount} rootNode = {tree} files = {newNode.files} create = {true} render = {ReRenderTree} input = {newNode} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
-                    </Provider>
+                        <NodeDetails unMount = {unMount} rootNode = {rootNode} files = {newNode.files} create = {true} render = {render} inputNode = {newNode} nodeList = {GetNodeList()} nodeDictionary = {nodeDictionary}/>
                 </Dialog>
             </Draggable>
         </>
