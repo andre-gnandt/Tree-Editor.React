@@ -1,4 +1,4 @@
-import { Loading, DoneLoading } from "../../features/utils/UtilityFunctions";
+import { Loading, DoneLoading, error } from "../../features/utils/UtilityFunctions";
 
 const postOptions =  {
     method: 'POST',
@@ -39,12 +39,23 @@ async function updateTree(id, input){
 
 async function GetFullTree(id){
     Loading();
-    return await fetch(baseURL+"/api/Trees/FullTree/"+id).then(res => res.json()).then(
-        result => { 
-          DoneLoading();
-          return result;
-        }
-    );   
+
+    try{
+        return await fetch(baseURL+"/api/Trees/FullTree/"+id).then(res => res.json()).then(
+            result => { 
+            DoneLoading();
+            return result;
+            }
+        );   
+    }
+    catch(error)
+    {
+
+    }
+
+    DoneLoading();
+    //error();
+    return null;
 };
 
 async function GetTreeList(){
