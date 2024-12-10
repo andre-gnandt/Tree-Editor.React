@@ -10,15 +10,10 @@ import UploadFile from '../utils/UploadFile';
 import Draggable from 'react-draggable';
 
 const NodeDetails = ({
-    SetChangeTracker, 
     unMount,
-    renderTreeNode , 
-    files, 
-    rootNode, 
     render, 
     inputNode, 
     nodeList, 
-    nodeDictionary,
     create = false,
     root = false
     })  =>     
@@ -473,7 +468,7 @@ const NodeDetails = ({
                 <div className={(hideButtons === 0 && titleRequired) ? 'container': 'container-shrunk'} style = {{position: 'relative'}} > 
                     <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
                         <div className="thumbnail-container">                         
-                            <UploadFile reset = {resetFiles} fileChangeCallBack = {FileChangeCallBack} files = {files} node = {inputNode} thumbnailUpload = {(inputNode.thumbnailId)} create = {Create} /> 
+                            <UploadFile reset = {resetFiles} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
                         </div>
                         <div className='title-container'>
                             <InputTextarea 
@@ -486,6 +481,31 @@ const NodeDetails = ({
                                 onChange = {(e) => {CheckValueChange(inputNode.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title ? node.title : ""} />
                         </div>
                     </div>
+                    { (!Root && inputNode.nodeId) && (
+                        <div className="entryContainer">
+                            <div className = "fullWidthLeft">
+                                Parent:  
+                            </div> 
+                            <div className="fullWidthRight">
+                                <Dropdown  
+                                    maxLength={1000}
+                                    className = "dropdown"
+                                    placeholder='Select Parent...'
+                                    panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
+                                    //style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
+                                    onFocus={(event) => {}}
+                                    //className='input'
+                                    disabled = {node.nodeId ? false : true}
+                                    filter
+                                    onChange = {(e) => {CheckValueChange(inputNode.nodeId, node.nodeId, e.target.value.id); handleChange(e.target.value.id, updateNodeParent);}} 
+                                    value = {nodeList.find((object) => object.id === node.nodeId)}
+                                    options = {nodeList}
+                                    optionLabel='title'
+                                    />
+                            </div>
+                        </div> 
+                    )
+                    }
                     <div className="entryContainer">
                         <div className = "fullWidthLeft">
                             Description:  
@@ -520,31 +540,6 @@ const NodeDetails = ({
                         </div>
                     </div>
                     */}
-                    { (!Root && inputNode.nodeId) && (
-                        <div className="entryContainer">
-                            <div className = "fullWidthLeft">
-                                Parent:  
-                            </div> 
-                            <div className="fullWidthRight">
-                                <Dropdown  
-                                    maxLength={1000}
-                                    className = "dropdown"
-                                    placeholder='Select Parent...'
-                                    panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
-                                    //style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
-                                    onFocus={(event) => {}}
-                                    //className='input'
-                                    disabled = {node.nodeId ? false : true}
-                                    filter
-                                    onChange = {(e) => {CheckValueChange(inputNode.nodeId, node.nodeId, e.target.value.id); handleChange(e.target.value.id, updateNodeParent);}} 
-                                    value = {nodeList.find((object) => object.id === node.nodeId)}
-                                    options = {nodeList}
-                                    optionLabel='title'
-                                    />
-                            </div>
-                        </div> 
-                    )
-                    }
                 </div> 
                 <div hidden = {hideButtons === 0 && titleRequired} style = {{height: (hideButtons === 0 && titleRequired)? '0vh':'6.5vh', width: '40vw', position: 'relative', left: '1.5vw', display: 'flex'}}>
                     <div hidden = {hideButtons === 0}  id = 'node-details-button-container' style = {{ fontSize: '4vh', display: 'flex', height: '100%'}}>

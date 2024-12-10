@@ -118,8 +118,7 @@ const TreesMenu = ({trees}) => {
         return (
             <div className='col-3' key = {tree.id} >
                 <i className='pi pi-times' onClick={() => {setDeleteOptions(tree.id)}} style = {{cursor: 'pointer', zIndex: 20, top: '2vh', position: 'relative', height: '14px', width: '14px', fontSize: '14px'}}/>
-                {/*<Link to={{ pathname: '/tree/'+tree.id, state: 'flushDeal' }}>*/} 
-                
+                {/*<Link to={{ pathname: '/tree/'+tree.id, state: 'flushDeal' }}>*/}     
                   <button 
                       className='menu-button tree-menu-item'
                       style = {{fontSize: '3.25vw', marginTop:'2vh', padding: '0 0 0 0', backgroundColor: '#DCDCDC', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', height: '27vh', width: '19.5vw'}}

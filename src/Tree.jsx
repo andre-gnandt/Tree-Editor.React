@@ -113,12 +113,9 @@ const Tree = () => {
     {
       document.getElementById('save-tree-positions').disabled = true;
       document.getElementById('revert-tree-positions').disabled = true;
-      
-      //RenderCreationButtons();
     }
 
     window.addEventListener('resize', ReRenderTree);
-
     return () => window.removeEventListener('resize', ReRenderTree);
   });
 
@@ -302,8 +299,6 @@ const Tree = () => {
 
     document.getElementById('save-tree-positions').disabled = !(treeUnsaved);
     document.getElementById('revert-tree-positions').disabled = !(treeUnsaved);
-    
-    //if(callback === "new root" && nodeList.length === 1) window.location.reload();
   }
 
   function CompareNodes(a, b)

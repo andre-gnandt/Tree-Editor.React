@@ -1,28 +1,36 @@
 import React, { useState, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setStateProperty } from "../nodes/nodeSlice";
 import '../nodes/detailsList.css';
 import 'primeicons/primeicons.css';
 
-const UploadFile = (props) => {
-  //const stateNode = useSelector(state => state.node);
+const UploadFile = ({reset, fileChangeCallBack, inputNode}) => {
   const dispatch = useDispatch();
-  const thumbnailUpload =  true;
-  const node = {...props.node};
-  const fileChangeCallBack = props.fileChangeCallBack;
-  const firstRender = useRef(true);
   const uploadName = useRef(null);
   const newUpload = useRef(false);
-  const nodeFiles = props.node.files;
+
+  const node = {...inputNode};
+    node.files = inputNode.files? [...inputNode.files] : [];
+  
+  const nodeFiles = inputNode.files;
   const reader = new FileReader();
   
   const [selectedImage, setSelectedImage] = useState(null);
   const [defaultFile, setDefaultFile] = useState(node.thumbnailId ? GetImageSource() : null);
-  if(props.reset.reset)
+  
+  if(reset.reset)
   {
-    props.reset.reset = false;
+    reset.reset = false;
     setDefaultFile(node.thumbnailId ? GetImageSource() : null);
     setSelectedImage(null);
+  }
+
+  if(selectedImage && newUpload.current)
+  {
+
+    newUpload.current = false;
+    reader.onload = GetFileData;
+    reader.readAsArrayBuffer(selectedImage);
   }
 
   function GetImageSource()
@@ -37,24 +45,12 @@ const UploadFile = (props) => {
         return file;
     }
 
-  node.files = nodeFiles? [...nodeFiles] : [];
-
   const SetStateThumbnail = (value) => {
-      firstRender.current = false;
       dispatch(setStateProperty({key: 'thumbnailId', value: value}));
   }
 
   const SetStateFiles = (value) => {
-    firstRender.current = false;
     dispatch(setStateProperty({key: 'files', value: value}));
-  }
-
-  if(selectedImage && newUpload.current)
-  {
-
-    newUpload.current = false;
-    reader.onload = GetFileData;
-    reader.readAsArrayBuffer(selectedImage);
   }
 
   function GetFileData(event)
@@ -72,11 +68,9 @@ const UploadFile = (props) => {
         base64: URL.createObjectURL(selectedImage), // only used here to render image in tree without making any api calls (not base64 in this unique case)
         isDeleted: false
       };
-      if(thumbnailUpload)
-      {
-          node['thumbnailId'] = uploadName.current;
-          SetStateThumbnail(uploadName.current);
-      }
+          
+      node['thumbnailId'] = uploadName.current;
+      SetStateThumbnail(uploadName.current);
 
       //node.files.push(file);  --to be added back once file gallery is created
       node.files = [file]; //to be removed once file gallery is created
@@ -94,7 +88,7 @@ const UploadFile = (props) => {
     setSelectedImage(null);
     SetStateFiles([]); //to be removed when file gallery is created
       
-    if(props.node.thumbnailId) 
+    if(inputNode.thumbnailId) 
     {
       fileChangeCallBack(true);
     }
@@ -141,7 +135,7 @@ const UploadFile = (props) => {
             )          
           }
         </div>
-        <div style = {{}}>
+        <div >
 
             {(selectedImage || defaultFile) ? (
               <>
@@ -186,8 +180,6 @@ const UploadFile = (props) => {
                     setSelectedImage(event.target.files[0]); 
                 }}
             />
-            {///<label for="img" className="button">Upload</label>
-            }
         </div>
     </div>
   </>
