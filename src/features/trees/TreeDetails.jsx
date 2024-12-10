@@ -5,6 +5,7 @@ import '../nodes/DetailsList.css';
 import '../trees/tree.css';
 import Draggable from 'react-draggable';
 import { useNavigate } from 'react-router-dom';
+import { deleteTree, updateTree, createTree } from '../../api/trees/treesApi';
 
 const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree, creation  = false}) => {
     const navigate = useNavigate();
@@ -15,38 +16,6 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
     const [create, setCreate] = useState(creation);
     const [name, setName] = useState(inputTree.name);
     const [description, setDescription] = useState(inputTree.description);
-
-    async function deleteTree(id){
-        await fetch("http://localhost:11727/api/Trees/"+id, {method: 'DELETE'})
-        .then((response)=>response.json())
-        .then((responseJson)=>{return responseJson});
-    };
-
-    async function createTree(tree){
-        const postOptions =  {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: ""
-        }
-        postOptions.body = JSON.stringify(tree);
-        return await fetch("http://localhost:11727/api/Trees/", postOptions)
-        .then((response)=>response.json())
-        .then((responseJson)=>{return responseJson});;
-    };
-
-    async function updateTree(id, input){
-        const tree = {...input};
-        delete tree['rootId'];
-        const putOptions =  {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: ""
-        }
-        putOptions.body = JSON.stringify(tree);
-        return await fetch("http://localhost:11727/api/Trees/"+id, putOptions)
-        .then((response)=>response.json())
-        .then((responseJson)=>{return responseJson});
-    };
 
     function CheckValueChange(originalValue, previousValue, newValue)
     {

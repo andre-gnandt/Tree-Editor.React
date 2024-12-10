@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { GetFullTree } from '../../api/trees/treesApi';
 import Tree from '../../features/trees/Tree';
 
 const TreePage = () => {
@@ -13,29 +14,9 @@ const TreePage = () => {
       }
   });
 
-  const Loading = () => 
-    {
-        document.getElementById('loading').hidden = false;
-    }
-    
-    const DoneLoading = () => 
-    {
-        document.getElementById('loading').hidden = true;
-    }
-
-  async function GetFullTree(){
-    Loading();
-    return await fetch("http://localhost:11727/api/Trees/FullTree/"+id).then(res => res.json()).then(
-        result => { 
-          DoneLoading();
-          return result;
-        }
-    );   
-  };
-
   async function SetFullTree()
   {
-    const getTree = await GetFullTree();
+    const getTree = await GetFullTree(id);
     setTreeFetch(getTree);
   }
 

@@ -34,8 +34,7 @@ async function DeleteSingle(parentId, deleteNode){
 
 async function DeleteCascade(id){
     
-    Saving();
-   
+    Saving();   
     try{
         return await fetch(baseURL+"/api/Nodes/Delete-Cascade"+id, {method: 'DELETE'})
         .then((response)=>response.json())

@@ -6,6 +6,7 @@ import TreeDetails from './TreeDetails';
 import { InputText } from 'primereact/inputtext';
 import { DataView} from 'primereact/dataview';
 import HeaderInfo from '../utils/HeaderInfo';
+import { deleteTree } from '../../api/trees/treesApi';
 import '/node_modules/primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
@@ -27,18 +28,9 @@ const TreesMenu = ({trees}) => {
     return 0;
   }
 
-  async function DeleteTree(id)
-  {
-    await fetch("http://localhost:11727/api/Trees/"+id, {method: 'DELETE'})
-    .then((response)=>response.json())
-    .then((responseJson)=>{return responseJson});
-  
-   };
-
-
   async function HandleDeleteTree()
   {
-    await DeleteTree(deleteOptions);
+    await deleteTree(deleteOptions);
     var index = treeList.findIndex((object) => object.id === deleteOptions);
     treeList.splice(index, 1);
     setTreeList([...treeList]);

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { GetTreeList } from '../../api/trees/treesApi';
 import TreesMenu from '../../features/trees/TreesMenu';
 
 const TreesMenuPage = () => {
@@ -10,14 +11,6 @@ const TreesMenuPage = () => {
         SetTreeList();
       }
   });
- 
-  async function GetTreeList(){
-    return await fetch("http://localhost:11727/api/Trees").then(res => res.json()).then(
-        (result) => { 
-          return result;
-        }
-    );   
-  };
 
   async function SetTreeList()
   {
