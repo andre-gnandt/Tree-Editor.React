@@ -6,7 +6,7 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import { Dialog } from 'primereact/dialog';
 import './detailsList.css';
-import UploadFile from '../utils/UploadFile';
+import UploadThumbnail from '../utils/UploadThumbnail';
 import Draggable from 'react-draggable';
 
 const NodeDetails = ({
@@ -470,7 +470,7 @@ const NodeDetails = ({
                 <div className={(hideButtons === 0 && titleRequired) ? 'container': 'container-shrunk'} style = {{position: 'relative'}} > 
                     <div style = {{display: 'flex', height: '44vh', marginBottom: '5.275vh'}}>
                         <div className="thumbnail-container">                         
-                            <UploadFile /* reset = {resetFiles} */ reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
+                            <UploadThumbnail /* reset = {resetFiles} */ reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
                         </div>
                         <div className='title-container'>
                             <InputTextarea 

@@ -4,7 +4,7 @@ import { setStateProperty } from "../nodes/nodeSlice";
 import '../nodes/detailsList.css';
 import 'primeicons/primeicons.css';
 
-const UploadFile = ({reset, fileChangeCallBack, inputNode}) => {
+const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
   const dispatch = useDispatch();
   const uploadName = useRef(null);
   const node = {...inputNode};
@@ -180,4 +180,4 @@ const UploadFile = ({reset, fileChangeCallBack, inputNode}) => {
   );
 };
 
-export default UploadFile;
+export default UploadThumbnail;
