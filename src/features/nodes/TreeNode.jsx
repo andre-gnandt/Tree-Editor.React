@@ -1,7 +1,7 @@
 import React, { useState} from 'react'
 import { useDispatch} from 'react-redux'
 import { Dialog } from 'primereact/dialog';
-import './detailsList.css';
+import './DetailsList.css';
 import NodeDetails from './NodeDetails';
 import Draggable from 'react-draggable';
 import { cloneNode } from './nodeSlice';

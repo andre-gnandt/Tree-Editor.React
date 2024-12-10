@@ -5,7 +5,7 @@ import { InputText} from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import { Dialog } from 'primereact/dialog';
-import './detailsList.css';
+import './DetailsList.css';
 import UploadThumbnail from '../utils/UploadThumbnail';
 import Draggable from 'react-draggable';
 

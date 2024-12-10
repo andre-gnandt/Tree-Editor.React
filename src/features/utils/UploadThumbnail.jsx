@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setStateProperty } from "../nodes/nodeSlice";
-import '../nodes/detailsList.css';
+import '../nodes/DetailsList.css';
 import 'primeicons/primeicons.css';
 
 const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {

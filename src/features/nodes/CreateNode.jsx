@@ -1,6 +1,6 @@
 import React, { useState} from 'react'
 import { Dialog } from 'primereact/dialog';
-//import './detailsList.css'
+//import './DetailsList.css'
 import '../trees/tree.css';
 import NodeDetails from './NodeDetails';
 import { useDispatch } from 'react-redux';

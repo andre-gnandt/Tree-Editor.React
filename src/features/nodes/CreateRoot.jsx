@@ -1,7 +1,7 @@
 import React, { useState} from 'react'
 import { Dialog } from 'primereact/dialog';
 import { cloneNode } from './nodeSlice';
-import './detailsList.css'
+import './DetailsList.css'
 import NodeDetails from './NodeDetails';
 import { useDispatch } from 'react-redux';
 import 'primeicons/primeicons.css';
