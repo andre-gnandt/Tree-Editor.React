@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { cloneNode, setStateProperty, updateNodeData, updateNodeNumber, updateNodeDescription, updateNodeTitle, updateNodeParent} from './nodeSlice'
+import { DeleteCascade,  DeleteSingle, updateNode, createNode, createRoot } from '../../api/nodes/nodesApi';
 import { InputText} from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
@@ -30,50 +31,6 @@ const NodeDetails = ({
     const fileChangeCount = useRef(0);
     const [Create, setCreate] = useState(create);
     const [Root, setRoot] = useState(root);
-
-    const Saving = () => 
-    {
-        document.getElementById('saving').hidden = false;
-    }
-
-    const DoneSaving = () => 
-    {
-        document.getElementById('saving').hidden = true;
-    }
-
-    const Loading = () => 
-    {
-        document.getElementById('loading').hidden = false;
-    }
-    
-    const DoneLoading = () => 
-    {
-        document.getElementById('loading').hidden = true;
-    }
-
-    function Success() 
-    {
-        const ClearSuccess = () =>
-            {
-                document.getElementById('success').hidden = true;
-                clearTimeout(myTimeout);
-            }
-
-        document.getElementById('success').hidden = false;
-        const myTimeout = setTimeout(ClearSuccess, 1600);
-    }
-    
-    function Error() 
-    {
-        function ClearError()
-        {
-            document.getElementById('error').hidden = true;
-            clearTimeout(myTimeout);
-        }
-
-        document.getElementById('error').hidden = false;
-        const myTimeout = setTimeout(ClearError, 2000);
-    }
 
     const handleChange = (value, method) => {
         dispatch(method(value));
@@ -129,104 +86,6 @@ const NodeDetails = ({
 
         return updateNodeObject;
     }
-
-    async function DeleteSingle(parentId, deleteNode){
-        Saving();
-        putOptions.body = JSON.stringify(deleteNode);;
-        try{
-            return await fetch("http://localhost:11727/api/Nodes/Delete-One/"+parentId, putOptions)
-            .then((response)=>response.json())
-                .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
-            }
-            catch(error)
-            {
-
-            }
-            DoneSaving();
-            Error();
-            return null;  
-    };
-
-    async function DeleteCascade(id){
-        
-        Saving();
-       
-        try{
-            return await fetch("http://localhost:11727/api/Nodes/Delete-Cascade"+id, {method: 'DELETE'})
-            .then((response)=>response.json())
-                .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
-            }
-            catch(error)
-            {
-
-            }
-            DoneSaving();
-            Error();
-            return null;  
-    };
-
-    async function updateNode(id, node){
-            Saving();
-            putOptions.body = JSON.stringify(node);
-            try{
-                return await fetch("http://localhost:11727/api/Nodes/"+id, putOptions)
-                .then((response)=>response.json())
-                .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
-            }
-            catch(error)
-            {
-
-            }
-            DoneSaving();
-            Error();
-            return null;      
-    };
-
-    async function createNode(node){
-        const postOptions =  {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: ""
-        }
-        postOptions.body = JSON.stringify(node);
-
-        Saving();
-        try{
-            return await fetch("http://localhost:11727/api/Nodes/", postOptions)
-            .then((response)=>response.json())
-                .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
-            }
-            catch(error)
-            {
-
-            }
-            DoneSaving();
-            Error();
-            return null;  
-        
-    };
-
-    async function createRoot(node){
-        const postOptions =  {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: ""
-        }
-        postOptions.body = JSON.stringify(node);
-        Saving();
-        try{
-            return await fetch("http://localhost:11727/api/Nodes/Root", postOptions)
-            .then((response)=>response.json())
-                .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
-            }
-            catch(error)
-            {
-
-            }
-            DoneSaving();
-            Error();
-            return null;  
-    };
 
     function CheckValueChange(originalValue, previousValue, newValue)
     {

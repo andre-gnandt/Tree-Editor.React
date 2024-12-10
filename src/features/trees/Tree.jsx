@@ -10,6 +10,7 @@ import CreateRoot from '../nodes/CreateRoot';
 import EditTree from '../trees/EditTree';
 import { useNavigate } from 'react-router-dom';
 import HeaderInfo from '../utils/HeaderInfo';
+import { updateManyNodes } from '../../api/nodes/nodesApi';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
 
@@ -53,50 +54,6 @@ const Tree = ({id, treeFetch}) => {
   const horizontalBorder = 15; //in pixels
   var testRender = false;
 
-  const Saving = () => 
-    {
-        document.getElementById('saving').hidden = false;
-    }
-
-    const DoneSaving = () => 
-    {
-        document.getElementById('saving').hidden = true;
-    }
-
-    const Loading = () => 
-    {
-        document.getElementById('loading').hidden = false;
-    }
-    
-    const DoneLoading = () => 
-    {
-        document.getElementById('loading').hidden = true;
-    }
-
-    function Success() 
-    {
-      const ClearSuccess = () =>
-        {
-            document.getElementById('success').hidden = true;
-            clearTimeout(myTimeout);
-        }
-
-        document.getElementById('success').hidden = false;
-        const myTimeout = setTimeout(ClearSuccess, 1600);
-    }
-    
-    function Error() 
-    {
-        function ClearError()
-        {
-            document.getElementById('error').hidden = true;
-            clearTimeout(myTimeout);
-        }
-
-        document.getElementById('error').hidden = false;
-        const myTimeout = setTimeout(ClearError, 2000);
-    }
-
   useEffect(() => {
     
     if(tree) AddLines(tree);
@@ -115,46 +72,6 @@ const Tree = ({id, treeFetch}) => {
     var dpi = 96; // dots per inch
     var ppd = window.devicePixelRatio; // pixels per dot
     return (cpi / (dpi * ppd));
-  }
-
-  const putOptions = {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    type: 'PUT',
-    body: ""
-}
-
-  function ShowLoading()
-  {
-    document.getElementById('loading').hidden = false;
-  }
-
-  function doneLoading()
-  {
-    document.getElementById('loading').hidden = true;
-  }
-
-  async function updateManyNodes(id, nodeList){
-    putOptions.body = JSON.stringify(nodeList);
-    Saving();
-    try{
-      return await fetch("http://localhost:11727/api/Nodes/Many/"+id, putOptions)
-      .then((response)=>response.json())
-                .then((responseJson)=>{ DoneSaving(); Success(); return responseJson;});
-            }
-            catch(error)
-            {
-
-            }
-            DoneSaving();
-            Error();
-            return null;  
-  };
-
-  function RenderCreationButtons()
-  {
-    const createContainer = createRoot(document.getElementById('create-container'));
-    createContainer.render(CreationButtons());
   }
 
   //used for a non parent changed update of node content
@@ -1020,6 +937,12 @@ const Tree = ({id, treeFetch}) => {
     lineContainer.render(lineJSX);
   }
 
+  function RenderCreationButtons()
+  {
+    const createContainer = createRoot(document.getElementById('create-container'));
+    createContainer.render(CreationButtons());
+  }
+
   const CreationButtons = () => 
   {
     return (
@@ -1033,7 +956,6 @@ const Tree = ({id, treeFetch}) => {
       </> 
     );
   }
-
 
   function SetPositions(node)
   {
