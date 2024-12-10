@@ -25,7 +25,6 @@ const CreateNode = ({nodeList, nodeDictionary, iconSize, rootNode, render, treeI
         files: [],
         thumbnailId: null,
         treeId: rootNode ? rootNode.treeId : null,
-        isDeleted: false,
     };
 
     const unMount = () => 

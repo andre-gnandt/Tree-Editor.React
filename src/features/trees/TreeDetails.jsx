@@ -73,7 +73,6 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
         inputTree['description'] = tree.description;
         inputTree['rootId'] = tree.rootId;
         inputTree['name'] = tree.name;
-        inputTree['isDeleted'] = tree.isDeleted;
     }
 
     function RenderCreateOrSaveButton()

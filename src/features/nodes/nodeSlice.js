@@ -13,7 +13,6 @@ const initialState = {
   children: [],
   files: [],
   thumbnailId: null,
-  isDeleted: false,
 }
 
 export const nodeSlice = createSlice({
@@ -29,7 +28,6 @@ export const nodeSlice = createSlice({
         state.number = action.payload.number;
         state.nodeId = action.payload.nodeId;
         state.rankId = action.payload.rankId;
-        state.isDeleted = action.payload.isDeleted;
         state.files = action.payload.files;
         state.thumbnailId = action.payload.thumbnailId;
         state.treeId = action.payload.treeId;

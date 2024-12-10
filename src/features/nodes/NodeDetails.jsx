@@ -59,7 +59,6 @@ const NodeDetails = ({
         inputNode.level = node.level;
         inputNode.nodeId = node.nodeId;
         inputNode.id = node.id;
-        inputNode.isDeleted = node.isDeleted;
         inputNode.files = node.files;
         inputNode.thumbnailId = node.thumbnailId;
         inputNode.treeId = node.treeId;
@@ -76,7 +75,6 @@ const NodeDetails = ({
             description: node.description,
             rankId: node.rankId,
             level: node.level,
-            isDeleted: node.isDeleted,
             thumbnailId: node.thumbnailId,
             treeId: node.treeId,
             nodeId: node.nodeId,

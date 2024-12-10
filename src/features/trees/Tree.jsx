@@ -98,7 +98,6 @@ const Tree = ({id, treeFetch}) => {
     dest.thumbnailId = src.thumbnailId;
     dest.level = src.level;
     dest.treeId = src.treeId;
-    dest.isDeleted = src.isDeleted;
   }
 
   function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
