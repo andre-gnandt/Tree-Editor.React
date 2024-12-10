@@ -1017,7 +1017,7 @@ const Tree = ({id, treeFetch}) => {
         <>
         <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
           <HeaderInfo 
-            middleText={"Drag and drop nodes on eachother to change the tree structure. Save or undo these changes with the 2 buttons located directly beneath this text."}
+            middleText={"Drag and drop nodes upon eachother in order to change the tree structure. Save or undo these changes using the 2 buttons located directly beneath this text."}
           />
           <div id = 'button-container-inner' style = {{position: 'relative', display:'flex', top: '0px', width: '100vw', height: '8vh', justifyContent: 'center', alignItems: 'center'}}>
             <div style = {{marginRight: 'auto', height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",}}>
