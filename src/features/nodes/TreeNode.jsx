@@ -7,7 +7,7 @@ import Draggable from 'react-draggable';
 import { cloneNode } from './nodeSlice';
 
 
-const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList, nodeDictionary}) => {
+const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList, nodeDictionary, countries}) => {
     const[dialog, setDialog] = useState(false);
 
     const dispatch = useDispatch();
@@ -121,7 +121,7 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
                 } 
                 <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>                              
                     <Dialog className={"dialogContent"} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}} visible = {dialog} onHide={() => {if (!dialog) return; inputNode["dialog"] = false; setDialog(false);}} > 
-                            <NodeDetails SetChangeTracker = {setChangeTracker} unMount = {CloseDialog} renderTreeNode = {RenderTreeNode} files = {files} rootNode = {rootNode} render = {render} inputNode = {inputNode} nodeList = {GetNodeList()} nodeDictionary = {nodeDictionary}/>
+                            <NodeDetails SetChangeTracker = {setChangeTracker} unMount = {CloseDialog} renderTreeNode = {RenderTreeNode} files = {files} rootNode = {rootNode} render = {render} inputNode = {inputNode} nodeList = {GetNodeList()} nodeDictionary = {nodeDictionary} countries = {countries}/>
                     </Dialog>
                 </Draggable>      
             </> 

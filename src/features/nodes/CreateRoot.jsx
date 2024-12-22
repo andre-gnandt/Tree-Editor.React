@@ -20,6 +20,8 @@ const CreateRoot = ({nodeList, nodeDictionary, iconSize, rootNode, render, treeI
         number: null,
         nodeId: null,
         rankId: null,
+        country: null,
+        region: null,
         children: [],
         files: [],
         thumbnailId: null,

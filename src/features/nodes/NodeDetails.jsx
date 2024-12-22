@@ -16,11 +16,15 @@ const NodeDetails = ({
     inputNode, 
     nodeList, 
     create = false,
-    root = false
+    root = false,
+    countries
     })  =>     
     {
+    console.log("countries:");
+    console.log(countries);
     const dispatch = useDispatch();
     const node = useSelector(state => state.node);
+    const [regions, setRegions] = useState(GetRegions(node.country));
     const[hideButtons, setHideButtons] = useState(0);
     const changeCount = useRef(0);
     const[titleRequired, setTitleRequired] = useState(true);
@@ -34,6 +38,10 @@ const NodeDetails = ({
 
     const handleChange = (value, method) => {
         dispatch(method(value));
+    }
+
+    const SetStateProperty = (key, value) => {
+        dispatch(setStateProperty({key: key, value: value}));
     }
 
     const FileChangeCallBack = (showButtons) => 
@@ -50,12 +58,22 @@ const NodeDetails = ({
         setHideButtons(changeCount.current+fileChangeCount.current);
     }
 
+    function GetRegions(country) 
+    {
+        if(!country || country === "None") return [];
+        
+        const findIndex = countries.findIndex((object) => object.countryName === country);
+        return countries[findIndex]["regions"];
+    }
+
     const SetNodeVar = (node) => {
         inputNode.data = node.data;
         inputNode.title = node.title;
         inputNode.number = node.number;
         inputNode.description = node.description;
         inputNode.rankId = node.rankId;
+        inputNode.country = node.country;
+        inputNode.region = node.region;
         inputNode.level = node.level;
         inputNode.nodeId = node.nodeId;
         inputNode.id = node.id;
@@ -74,6 +92,8 @@ const NodeDetails = ({
             number: node.number,
             description: node.description,
             rankId: node.rankId,
+            country: node.country,
+            region: node.region,
             level: node.level,
             thumbnailId: node.thumbnailId,
             treeId: node.treeId,
@@ -205,12 +225,6 @@ const NodeDetails = ({
             render("delete cascade", null, node.id, null, node.nodeId);
         }
         unMount();
-    }
-
-    const putOptions = {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: ""
     }
 
     async function HandleSaveOrCreate()
@@ -373,6 +387,47 @@ const NodeDetails = ({
                             <InputTextarea maxLength={1000} placeholder='Description...' autoResize style = {{height: '17vh'}} rows={5} className = "input" onChange = {(e) => {CheckValueChange(inputNode.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
                         </div>
                     </div>
+                    <div className="entryContainer">
+                        <div className = "fullWidthLeft">
+                            Country:  
+                        </div> 
+                        <div className="fullWidthRight">
+                            <Dropdown  
+                                maxLength={1000}
+                                className = "dropdown"
+                                placeholder='Select Country...'
+                                panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
+                                //style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
+                                onFocus={(event) => {}}
+                                //className='input'
+                                filter
+                                onChange = {(e) => {/* CheckValueChange(inputNode.country, node.country, e.target.value.countryName); */ if() setRegions(GetRegions(e.target.value.countryName)); SetStateProperty("country", e.target.value.countryName !== "None" ? e.target.value.countryName : null)}} 
+                                value = {countries.find((object) => object.countryName === node.country)}
+                                options = {countries}
+                                optionLabel='countryName'
+                                />
+                        </div>
+                    </div> 
+                    <div className="entryContainer">
+                        <div className = "fullWidthLeft">
+                            Region (State):  
+                        </div> 
+                        <div className="fullWidthRight">
+                            <Dropdown  
+                                maxLength={1000}
+                                className = "dropdown"
+                                placeholder='Select Region...'
+                                panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
+                                //style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
+                                //className='input'
+                                filter
+                                onChange = {(e) => {/* CheckValueChange(inputNode.country, node.country, e.target.value.countryName); */ SetStateProperty("region", e.target.value.name)}} 
+                                value = {regions.find((object) => object.name === node.region)}
+                                options = {regions}
+                                optionLabel='name'
+                                />
+                        </div>
+                    </div> 
                     <div className="entryContainer">
                         <div className = "fullWidthLeft">
                             Data: 

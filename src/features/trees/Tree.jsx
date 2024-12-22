@@ -26,7 +26,7 @@ import '../trees/tree.css';
 //Due to strange issues and positioning with the CSS transform 
 //property of tree nodes on re renders, this component will NEVER Re render
 //Re renders of the tree diagram must be done manually
-const Tree = ({id, treeFetch}) => {
+const Tree = ({id, treeFetch, countries = null}) => {
   const navigate = useNavigate();
   const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
   var originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
@@ -64,7 +64,7 @@ const Tree = ({id, treeFetch}) => {
     }
 
     window.addEventListener('resize', ReRenderTree);
-    return () => window.removeEventListener('resize', ReRenderTree);
+    return () =>{ window.removeEventListener('resize', ReRenderTree);}
   });
 
   function PixelSizeInCentimetres() {
@@ -96,6 +96,9 @@ const Tree = ({id, treeFetch}) => {
     dest.data = src.data;
     dest.rankId = src.rankId;
     dest.thumbnailId = src.thumbnailId;
+    dest.description = src.description;
+    dest.country = src.country;
+    dest.region = src.region;
     dest.level = src.level;
     dest.treeId = src.treeId;
   }
@@ -442,6 +445,7 @@ const Tree = ({id, treeFetch}) => {
                 css = {{nodeSize: nodeSize}} 
                 nodeList = {nodeList} 
                 nodeDictionary = {nodeDictionary}
+                countries = {countries}
               />
             </Provider> 
           </div>

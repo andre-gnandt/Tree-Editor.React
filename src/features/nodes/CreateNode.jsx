@@ -21,6 +21,8 @@ const CreateNode = ({nodeList, nodeDictionary, iconSize, rootNode, render, treeI
         number: null,
         nodeId: rootNode ? rootNode.id : null,
         rankId: null,
+        country: null,
+        region: null,
         children: [],
         files: [],
         thumbnailId: null,

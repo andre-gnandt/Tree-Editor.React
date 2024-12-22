@@ -10,6 +10,8 @@ const initialState = {
   nodeId: null,
   treeId: null,
   rankId: null,
+  region: null,
+  country: null,
   children: [],
   files: [],
   thumbnailId: null,
@@ -28,6 +30,8 @@ export const nodeSlice = createSlice({
         state.number = action.payload.number;
         state.nodeId = action.payload.nodeId;
         state.rankId = action.payload.rankId;
+        //state.country = action.payload.country;
+        //state.region = action.payload.region;
         state.files = action.payload.files;
         state.thumbnailId = action.payload.thumbnailId;
         state.treeId = action.payload.treeId;
