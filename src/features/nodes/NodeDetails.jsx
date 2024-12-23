@@ -20,8 +20,6 @@ const NodeDetails = ({
     countries
     })  =>     
     {
-    console.log("countries:");
-    console.log(countries);
     const dispatch = useDispatch();
     const node = useSelector(state => state.node);
     const [regions, setRegions] = useState(GetRegions(node.country));
@@ -63,7 +61,9 @@ const NodeDetails = ({
         if(!country || country === "None") return [];
         
         const findIndex = countries.findIndex((object) => object.countryName === country);
-        return countries[findIndex]["regions"];
+        const regions = [...countries[findIndex]["regions"]];
+        regions.unshift({name: "None", shortCode: "NA"});
+        return regions;
     }
 
     const SetNodeVar = (node) => {
@@ -291,8 +291,31 @@ const NodeDetails = ({
         fileChangeCount.current = 0;
         resetThumbnail.current = resetThumbnail.current * -1;
         setHideButtons(0);
+        setRegions(GetRegions(inputNode.country));
         //setResetFiles({reset: true}); 
         handleChange(inputNode, cloneNode);
+    }
+
+    const CountrySelected = (originalValue, previousValue, newValue) =>
+    {
+        if(newValue === "None") newValue = null;
+        if(newValue != previousValue)
+        {
+            CheckValueChange(originalValue, previousValue, newValue);
+            setRegions(GetRegions(newValue));
+            SetStateProperty("country", newValue);
+            SetStateProperty("region", null);
+        }
+    }
+
+    const RegionSelected = (originalValue, previousValue, newValue) => 
+    {
+        if(newValue === "None") newValue = null;
+        if(newValue != previousValue)
+        {
+            CheckValueChange(originalValue, previousValue, newValue);
+            SetStateProperty("region", newValue);
+        }
     }
 
     const GetHeader = () => {
@@ -394,15 +417,13 @@ const NodeDetails = ({
                         <div className="fullWidthRight">
                             <Dropdown  
                                 maxLength={1000}
+                                showClear
                                 className = "dropdown"
                                 placeholder='Select Country...'
                                 panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
-                                //style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
-                                onFocus={(event) => {}}
-                                //className='input'
                                 filter
-                                onChange = {(e) => {/* CheckValueChange(inputNode.country, node.country, e.target.value.countryName); */ if() setRegions(GetRegions(e.target.value.countryName)); SetStateProperty("country", e.target.value.countryName !== "None" ? e.target.value.countryName : null)}} 
-                                value = {countries.find((object) => object.countryName === node.country)}
+                                onChange = {(e) => {CountrySelected(inputNode.country, node.country, e.target.value ? e.target.value.countryName : null)}} 
+                                value = {node.country ? countries.find((object) => object.countryName === node.country) : null}
                                 options = {countries}
                                 optionLabel='countryName'
                                 />
@@ -410,19 +431,18 @@ const NodeDetails = ({
                     </div> 
                     <div className="entryContainer">
                         <div className = "fullWidthLeft">
-                            Region (State):  
+                            Region:  
                         </div> 
                         <div className="fullWidthRight">
                             <Dropdown  
                                 maxLength={1000}
+                                showClear
                                 className = "dropdown"
                                 placeholder='Select Region...'
                                 panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
-                                //style = {{border: '3px solid rgba(204, 223, 255, 0.9)'}}
-                                //className='input'
                                 filter
-                                onChange = {(e) => {/* CheckValueChange(inputNode.country, node.country, e.target.value.countryName); */ SetStateProperty("region", e.target.value.name)}} 
-                                value = {regions.find((object) => object.name === node.region)}
+                                onChange = {(e) => {RegionSelected(inputNode.region, node.region, e.target.value ? e.target.value.name : null)}} 
+                                value = {node.region ? regions.find((object) => object.name === node.region) : null}
                                 options = {regions}
                                 optionLabel='name'
                                 />
