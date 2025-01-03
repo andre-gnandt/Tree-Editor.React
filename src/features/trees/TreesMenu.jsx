@@ -180,13 +180,13 @@ const TreesMenu = ({trees}) => {
             </div>
           </div>
         </div>
-        <div id = 'content-container' style = {{position: 'absolute', top: 'calc(22vh + 4vw)', height: '66vh', width: '82vw', left: '9vw'}}>
+        <div id = 'content-container' style = {{position: 'absolute', top: 'calc(22vh + 4vw)', height: 'calc(66vh - 4vw)', width: '82vw', left: '9vw'}}>
         {  
             (treeList != null && treeList.length > 0) ? 
             (
             <>
-                <InputText placeholder='Search...' style = {{position: 'relative', left: '20.5vw', marginBottom: '2.5vh', height: '7vh', width: '40vw', borderRadius: '3.5vh', fontSize: '5vh'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
-                <DataView className='data-table' style = {{scrollbarColor: 'blue',height: '55vh', maxHeight: '55vh'}} rows={4} value = {FilterTree(treeList)} listTemplate={listTemplate} layout = {"grid"} />
+                <InputText placeholder='Search...' style = {{position: 'relative', left: '20.5vw', marginBottom: '3.7vh', height: '8vh', width: '40vw', borderRadius: '4vh', fontSize: '5vh'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
+                <DataView className='data-table' style = {{scrollbarColor: 'blue',height: 'calc(62vh - 4vw)', maxHeight: 'calc(62vh - 4vw)'}} rows={4} value = {FilterTree(treeList)} listTemplate={listTemplate} layout = {"grid"} />
             </>
             )
             :
