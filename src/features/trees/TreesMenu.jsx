@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useEffect} from 'react'
 import Draggable from 'react-draggable';
 import { Dialog } from 'primereact/dialog';
 import { useNavigate } from "react-router-dom";
@@ -18,7 +18,29 @@ const TreesMenu = ({trees}) => {
   const [search, setSearch] = useState(null);
   const [deleteOptions, setDeleteOptions] = useState(null);
   const [treeList, setTreeList] = useState(trees);
+  const [manualReRender, setManualReRender] = useState(1);
   const iconDimension = 0.16*window.innerHeight;
+
+  useEffect(() => {
+      window.addEventListener('resize', ReRender);
+      return () => window.removeEventListener('resize', ReRender);
+    });
+
+  function ReRender()
+  {
+    setManualReRender(-1*manualReRender);
+  }
+
+  function FitFontSize(maxSize, maxWidth, text)
+  {
+    var maxLength = 26;
+    var length = text.length <= maxLength ? text.length : maxLength;
+    var size = maxWidth/length;
+    var fit = size <= maxSize ? size : maxSize;
+
+    return String(fit)+"vw";
+
+  }
 
   function CompareTrees(a, b)
   {
@@ -26,6 +48,13 @@ const TreesMenu = ({trees}) => {
     if(a.name < b.name) return -1;
 
     return 0;
+  }
+
+  function isMobile()
+  {
+    if(window.innerHeight > window.innerWidth) return true;
+
+    return false;
   }
 
   async function HandleDeleteTree()
@@ -106,20 +135,23 @@ const TreesMenu = ({trees}) => {
 
   const gridItem = (tree) => 
     {   
+
         return (
-            <div className='col-3' key = {tree.id} >
-                <i className='pi pi-times' onClick={() => {setDeleteOptions(tree.id)}} style = {{cursor: 'pointer', zIndex: 20, top: '2vh', position: 'relative', height: '14px', width: '14px', fontSize: '14px'}}/>
-                {/*<Link to={{ pathname: '/tree/'+tree.id, state: 'flushDeal' }}>*/}     
-                  <button 
-                      className='menu-button tree-menu-item'
-                      style = {{fontSize: '3.25vw', marginTop:'2vh', padding: '0 0 0 0', backgroundColor: '#DCDCDC', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', height: '27vh', width: '19.5vw'}}
-                      onClick={(event) => {navigate('/tree/'+tree.id);}} 
-                  >
-                      {tree.name}
-                  </button>
-                {/*</Link>*/}
-            </div>
-        );
+          <div className= {isMobile() ? 'col-6' : 'col-3'} key = {tree.id} >
+              <i className='pi pi-times' onClick={() => {setDeleteOptions(tree.id)}} style = {{cursor: 'pointer', zIndex: 20, top: '2vh', position: 'relative', height: '14px', width: '14px', fontSize: '14px'}}/>
+              {/*<Link to={{ pathname: '/tree/'+tree.id, state: 'flushDeal' }}>*/}     
+                <button 
+                    className='menu-button tree-menu-item'
+                    style = {{fontSize: isMobile() ? FitFontSize(18, 70, tree.name) : FitFontSize(10, 35, tree.name), marginTop:'2vh', padding: '0 0 0 0', backgroundColor: '#DCDCDC', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', height: isMobile() ? '23.19vw' : '11.9vw', width: isMobile() ? '38vw' : '19.5vw'}}
+                    onClick={(event) => {navigate('/tree/'+tree.id);}} 
+                >
+                    {tree.name}
+                    
+                </button>
+              {/*</Link>*/}
+          </div>
+      );
+
     }
 
   const listTemplate = (trees) => {
