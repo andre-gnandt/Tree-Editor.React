@@ -7,7 +7,7 @@ import Draggable from 'react-draggable';
 import { useNavigate } from 'react-router-dom';
 import { deleteTree, updateTree, createTree } from '../../api/trees/treesApi';
 
-const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree, creation  = false}) => {
+const TreeDetails = ({mobile = false, reRenderList = null, unMount = null, id = null, inputTree, creation  = false}) => {
     const navigate = useNavigate();
     const[hideButtons, setHideButtons] = useState(0);
     const changeCount = useRef(0);
@@ -146,10 +146,10 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
         <>  
             <div className='dialog-root'>
                 <div id = 'fixed-header' className='fixed-header'>
-                    <div style = {{top: '1.5vw', position: 'relative', height: '6.5vh', fontSize: '6vh', display: 'flex', textAlign: 'center', justifyContent: 'center'}}>
-                        <i onClick={() => {unMount()}} className='pi pi-times' style = {{ marginRight: 'auto', cursor: 'pointer', fontSize: '6.5vh'}}/>
-                        <div className='dialog-header' style = {{fontSize: '5vh', width: '33vw', textAlign: 'center', verticalAlign: 'middle'}}>{GetHeader()}</div>                   
-                        <div style = {{marginLeft: 'auto', height: '6.5vh', width: '7vw',  float: 'right' }}>
+                    <div style = {{top: '28%', position: 'relative', height: '78%', display: 'flex'}}>
+                        <i onClick={() => {unMount()}} className='pi pi-times' style = {{ width: '17.5%', marginRight: 'auto', cursor: 'pointer', fontSize: mobile ? '6vw' : '6.5vh'}}/>
+                        <div className='dialog-header' style = {{fontSize: mobile ? '4vw' : '5.3vh', width: '65%', textAlign: 'center', verticalAlign: 'middle'}}>{GetHeader()}</div>                   
+                        <div style = {{marginLeft: 'auto', height: '100%', width: '17.5%',  float: 'right' }}>
                         { (!create) && (
                             <> 
                                 <button className='button text-overflow' 
@@ -171,7 +171,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
                     </div> 
                 </div>
                 <div className={'container-2'} style = {{position: 'relative', overflowY: 'hidden'}} > 
-                    <div style = {{top: '1vh' , width: '36vw', left:'2vw', position: 'relative', display: 'flex', height: '33vh', marginBottom: '5.275vh'}}>
+                    <div style = {{top: '2%' , width: '92%', left:'4%', position: 'relative', display: 'flex', height: '48%', marginBottom: '7.5%'}}>
                         <div className='tree-title-container' style = {{justifyContent: 'center', textAlign: 'center', display: 'flex'}}>
                             <InputTextarea 
                                 maxLength={50}
@@ -179,32 +179,35 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
                                 rows = {1} 
                                 placeholder="Title..." 
                                 className= {(titleRequired) ? "tree-title" : "tree-title-required"}
-                                style = {{justifyContent: 'center', textAlign: 'center', display: 'flex'}}
+                                style = {{justifyContent: 'center', textAlign: 'center', display: 'flex', fontSize: mobile ? '': '10vh'}}
                                 spellCheck = {false}
                                 onChange = {(e) => {CheckValueChange(inputTree.name, name, e.target.value); setName(e.target.value);}} value = {name ? name : ""} />
                         </div>
                     </div>
-                        <div className = 'tree-description-container' style = {{justifyContent: 'center', textAlign: 'center', display: 'flex', width: '36vw', position: 'relative', left: '2vw'}}>
+                        <div className = 'tree-description-container' style = {{justifyContent: 'center', textAlign: 'center', display: 'flex', width: '92%', position: 'relative', left: '4%'}}>
                             <InputTextarea 
                                 maxLength={1000}
                                 placeholder='Description...'   
                                 autoResize  
                                 rows={6} 
                                 className = 'tree-description' 
-                                style = {{justifyContent: 'center', verticalAlign: 'middle', textAlign: 'center', display: 'flex'}}
+                                style = {{fontSize: mobile ? '' : '4vh', justifyContent: 'center', verticalAlign: 'middle', textAlign: 'center', display: 'flex'}}
                                 onChange = {(e) => {CheckValueChange(inputTree.description, description, e.target.value); setDescription(e.target.value);}} value = {description ? description : ""} />
                         </div>
                   
                 </div> 
-                <div  style = {{backgroundColor: (hideButtons === 0 && titleRequired) ? '#F0F0F0' : '#DCDCDC', maxHeight: '6.5vh', height: '6.5vh', width: '40vw', position: 'relative', left: '1.5vw', display: 'flex'}}>
-                    <div hidden = {hideButtons === 0}  id = 'node-details-button-container' style = {{ fontSize: '4vh', display: 'flex',  maxHeight: '6.5vh', height: '6.5vh',}}>
+                {//height : 6.5vh
+                <div  style = {{backgroundColor: (hideButtons === 0 && titleRequired) ? '#F0F0F0' : '#DCDCDC', maxHeight: '7.2%', height: '7.2%', width: '93%', position: 'relative', left: '3.5%', display: 'flex'}}>
+                    <div hidden = {hideButtons === 0}  id = 'node-details-button-container' style = {{ fontSize: mobile ? '' : '4vh', width: "38%", display: 'flex',  maxHeight: '100%', height: '100%',}}>
  
-                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{ maxHeight: '6.5vh', height: '6.5vh', width: '16vh', marginRight: '1vh'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
-                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{ maxHeight: '6.5vh', height: '6.5vh', width: '16vh'}} onClick = {() => { ResetForm(); }} > Reset </button>
+                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{fontSize: mobile ? '': '3.8vh', maxHeight: '100%', height: '100%', width: '50%', marginRight: '2%'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{fontSize: mobile ? '': '3.8vh', maxHeight: '100%', height: '100%', width: '50%'}} onClick = {() => { ResetForm(); }} > Reset </button>
                     </div>
-                    <div className='text-overflow title-required-container'  hidden = {(titleRequired)} style = {{marginLeft: '2vw', width: '100%', color: 'red', textAlign: 'bottom'}}>Title is required!</div>
+                    <div className='text-overflow title-required-container'  hidden = {(titleRequired)} style = {{ fontSize: mobile ? '' : '3vh', color: 'red', textAlign: 'bottom'}}>Title is required!</div>
                 </div>
+                }
             </div>
+
         </>    
         );
 }

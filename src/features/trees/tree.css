@@ -55,7 +55,7 @@
 .tree-title-container
 {
   position: relative;
-  width: 36vw;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,10 +65,11 @@
 {
   text-align: center;
   width: 100%;
-  font-size: 10vh;
+  /*font-size: 10vh;*/
   font-family: 'Courier, monospace';
-  height: 11vh;
-  max-height: 33vh;
+  height: 12%;
+  max-height: 100%;
+  /*max-height: 33vh;*/
   border: none;
   color: rgb(49, 152, 170);
   background-color: var(--container-color);
@@ -93,10 +94,10 @@
 .tree-title-required {
     text-align: center;
     width: 100%;
-    font-size: 10vh;
+    /*font-size: 10vh;*/
     font-family: 'Courier, monospace';
-    height: 11vh;
-    max-height: 33vh;
+    height: 12%;
+    max-height: 100%;
     color: rgb(49, 152, 170);
     background-color: var(--container-color);
     border: 4px solid red;
@@ -110,17 +111,21 @@
 
 .tree-description-container
 {
+  /*
   height: 25.225vh;
   max-height: 25.225vh;
+  */
+  height: 35.9%;
+  max-height: 35.9%;
 }
 
 .tree-description {
 
   width: 100%;
-  height: 25.225vh;
-  max-height: 25.225vh;
+  height: 100%;
+  max-height: 100%;
   font-family: 'Courier, monospace';
-  font-size: 4vh;
+  /*font-size: 4vh;*/
   border: none;
   color: var(--form-border-color);
   border-radius: 2vh;

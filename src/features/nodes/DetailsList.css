@@ -63,10 +63,8 @@
 }
 
 .dialogContent2 {
-    width: 45vw;
-    height: 90vh;
+    /*height: 90vh; */
     max-height: 90vh;
-    border-radius: 5vw;
     background-color: var(--container-outline-color);
     overflow: hidden;
     overflow-y: hidden;
@@ -116,9 +114,9 @@
 .fixed-header
 {
     background-color: var(--container-outline-color);
-    height: calc(6.5vh + 1.5vw);
-    width: 40vw;
-    left: 1.5vw;
+    height: 10%;
+    width: 93%;
+    left: 3.5%;
     position: relative;
     z-index: 2;
     cursor: grab;
@@ -150,30 +148,30 @@
 {
   overflow-y: scroll;
   scrollbar-gutter: none;
-  scrollbar-color: var(--form-focused-color) lightGrey ;
+  scrollbar-color: var(--form-focused-color) rgb(253, 240, 240) ;
 }
 
 .container-2{
     padding: 0 0 0 0;
     background-color: var(--container-color);
-    width: 40vw;
-    max-width: 40vw;
-    height: calc(77.5vh - 5vw);
-    max-height: calc(77.5vh - 5vw);
+    width: 93%;
+    max-width: 93%;
+    height: 78%;
+    max-height: 78%;
     overflow-y: hidden;
     overflow-x: hidden;
-    left: 1.5vw;
+    left: 3.5%;
 }
 
 .container-shrunk {
     padding: 0 0 0 0;
     background-color: var(--container-color);
-    width: 40vw;
-    max-width: 40vw;
+    width: 93%;
+    max-width: 93%;
     max-height: calc(77vh - 5vw);
     overflow-y: auto;
     overflow-x: hidden;
-    left: 1.5vw;
+    left: 3.5%;
 }
 
 .entryContainer {
@@ -219,8 +217,9 @@
 /*33vh 2vw*/
 .title-required-container
 {
-    font-size: 3vh;
-    width: calc(38vw - 33vh);
+    /*font-size: 3vh;*/
+    margin-left: 4%;
+    width: 37%;
 }
 
 .title-required {
