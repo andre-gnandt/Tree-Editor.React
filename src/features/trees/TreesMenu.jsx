@@ -199,7 +199,7 @@ const TreesMenu = ({trees}) => {
         </div>
       </div>
         <Draggable  onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
-            <Dialog style = {{width: mobile ? '88vw' : String(0.42*screen.width)+"px", height: mobile ? '73.9vw' : '90vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}} className={"dialogContent2"} onHide = {() => {setCreateTree(false);}} visible = {createTree} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '9px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}}>
+            <Dialog style = {{width: mobile ? '88vw' : String(0.45*screen.width)+"px", height: mobile ? '73.9vw' : '86vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}} className={"dialogContent2"} onHide = {() => {setCreateTree(false);}} visible = {createTree} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}}>
                 <TreeDetails 
                     mobile = {mobile}
                     inputTree={{name: null, description: null}}

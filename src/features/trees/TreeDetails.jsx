@@ -148,12 +148,12 @@ const TreeDetails = ({mobile = false, reRenderList = null, unMount = null, id = 
                 <div id = 'fixed-header' className='fixed-header'>
                     <div style = {{top: '28%', position: 'relative', height: '78%', display: 'flex'}}>
                         <i onClick={() => {unMount()}} className='pi pi-times' style = {{ width: '17.5%', marginRight: 'auto', cursor: 'pointer', fontSize: mobile ? '6vw' : '6.5vh'}}/>
-                        <div className='dialog-header' style = {{fontSize: mobile ? '4vw' : '5.3vh', width: '65%', textAlign: 'center', verticalAlign: 'middle'}}>{GetHeader()}</div>                   
+                        <div className='dialog-header' style = {{fontSize: mobile ? '4vw' : '4.8vh', width: '65%', textAlign: 'center', verticalAlign: 'middle'}}>{GetHeader()}</div>                   
                         <div style = {{marginLeft: 'auto', height: '100%', width: '17.5%',  float: 'right' }}>
                         { (!create) && (
                             <> 
                                 <button className='button text-overflow' 
-                                    style = {{width:'100%', backgroundColor: 'red', height: '6.5vh', maxHeight: '6.5vh', float: 'right', fontSize: '3vh', justifyContent: 'center'}} 
+                                    style = {{width:'100%', backgroundColor: 'red', height: '90%', maxHeight: '90%', float: 'right', fontSize: mobile ? '2.5vw' : '3vh', justifyContent: 'center'}} 
                                     onClick={() => {setDeleteOptions("confirm")}}                       
                                 >
                                 Delete</button>                   
@@ -179,7 +179,7 @@ const TreeDetails = ({mobile = false, reRenderList = null, unMount = null, id = 
                                 rows = {1} 
                                 placeholder="Title..." 
                                 className= {(titleRequired) ? "tree-title" : "tree-title-required"}
-                                style = {{justifyContent: 'center', textAlign: 'center', display: 'flex', fontSize: mobile ? '': '10vh'}}
+                                style = {{justifyContent: 'center', textAlign: 'center', display: 'flex', fontSize: mobile ? '8vw': '10vh'}}
                                 spellCheck = {false}
                                 onChange = {(e) => {CheckValueChange(inputTree.name, name, e.target.value); setName(e.target.value);}} value = {name ? name : ""} />
                         </div>
@@ -191,7 +191,7 @@ const TreeDetails = ({mobile = false, reRenderList = null, unMount = null, id = 
                                 autoResize  
                                 rows={6} 
                                 className = 'tree-description' 
-                                style = {{fontSize: mobile ? '' : '4vh', justifyContent: 'center', verticalAlign: 'middle', textAlign: 'center', display: 'flex'}}
+                                style = {{fontSize: mobile ? '3.2vw' : '4vh', justifyContent: 'center', verticalAlign: 'middle', textAlign: 'center', display: 'flex'}}
                                 onChange = {(e) => {CheckValueChange(inputTree.description, description, e.target.value); setDescription(e.target.value);}} value = {description ? description : ""} />
                         </div>
                   
@@ -200,10 +200,10 @@ const TreeDetails = ({mobile = false, reRenderList = null, unMount = null, id = 
                 <div  style = {{backgroundColor: (hideButtons === 0 && titleRequired) ? '#F0F0F0' : '#DCDCDC', maxHeight: '7.2%', height: '7.2%', width: '93%', position: 'relative', left: '3.5%', display: 'flex'}}>
                     <div hidden = {hideButtons === 0}  id = 'node-details-button-container' style = {{ fontSize: mobile ? '' : '4vh', width: "38%", display: 'flex',  maxHeight: '100%', height: '100%',}}>
  
-                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{fontSize: mobile ? '': '3.8vh', maxHeight: '100%', height: '100%', width: '50%', marginRight: '2%'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
-                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{fontSize: mobile ? '': '3.8vh', maxHeight: '100%', height: '100%', width: '50%'}} onClick = {() => { ResetForm(); }} > Reset </button>
+                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{fontSize: mobile ? '3.4vw': '3.8vh', maxHeight: '100%', height: '100%', width: '50%', marginRight: '2%'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{fontSize: mobile ? '3.4vw': '3.8vh', maxHeight: '100%', height: '100%', width: '50%'}} onClick = {() => { ResetForm(); }} > Reset </button>
                     </div>
-                    <div className='text-overflow title-required-container'  hidden = {(titleRequired)} style = {{ fontSize: mobile ? '' : '3vh', color: 'red', textAlign: 'bottom'}}>Title is required!</div>
+                    <div className='text-overflow title-required-container'  hidden = {(titleRequired)} style = {{ fontSize: mobile ? '2.8vw' : '3vh', color: 'red', textAlign: 'bottom'}}>Title is required!</div>
                 </div>
                 }
             </div>

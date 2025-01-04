@@ -64,7 +64,7 @@
 
 .dialogContent2 {
     /*height: 90vh; */
-    max-height: 90vh;
+    max-height: 86vh;
     background-color: var(--container-outline-color);
     overflow: hidden;
     overflow-y: hidden;
