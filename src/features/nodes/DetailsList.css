@@ -100,9 +100,11 @@
 }
 
 .thumbnail-container {
+    /*
     height: 44vh;
     width: 33vh;
-    margin-right: 4vh;
+    
+    padding-right: 5%; */
     display: flex;
 }
 
@@ -122,6 +124,7 @@
     cursor: grab;
 }
 
+/*
 .container {
     padding: 0 0 0 0;
     background-color: var(--container-color);
@@ -131,6 +134,19 @@
     overflow-y: auto;
     overflow-x: hidden;
     left: 1.5vw;
+}
+*/
+
+.container {
+    padding: 0 0 0 0;
+    background-color: var(--container-color);
+    width: 93%;
+    max-width: 93%;
+    height: 86%;
+    max-height: 86%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    left: 3.5%;
 }
 
 .menu-button:hover
@@ -168,7 +184,8 @@
     background-color: var(--container-color);
     width: 93%;
     max-width: 93%;
-    max-height: calc(77vh - 5vw);
+    height: 86%;
+    max-height: 78%;
     overflow-y: auto;
     overflow-x: hidden;
     left: 3.5%;
@@ -176,9 +193,14 @@
 
 .entryContainer {
     display: flex;
-    margin-bottom: 3.275vh;
+    /*margin-bottom: 3.275vh;*/
+    /*
+    height: 9.1%;
+    margin-bottom: 4.8%;
+    */
 }
 
+/*
 .fullWidthLeft {
     width: 15.58vw;
     height: 6.5vh;
@@ -187,16 +209,28 @@
     font-size: 4.2vh;
     color: var(--form-focused-color) !important;
 }
+*/
+
+.fullWidthLeft {
+    width: 39%;
+    /*height: 6.5vh;*/
+    height: 100%;
+    font: 'Palatino, serif';
+    font-family: 'Palatino, serif';
+    /*font-size: 4.2vh;*/
+    color: var(--form-focused-color) !important;
+}
 
 .fullWidthRight {
-    width: 24.42vw;
-    height: 6.5vh;
+    width: 61%;
+    /*height: 6.5vh;*/
+    height: 100%;
     font-family: 'Courier, monospace';
     border: none;
 }
 
 .title-container {
-    width: calc(40vw - 37vh);
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -228,7 +262,7 @@
     font-size: 10vh;
     font-family: 'Courier, monospace';
     height: 10vh;
-    max-height: 33vh;
+    max-height: 44vh;
     border: 4px solid red;
     color: rgb(49, 152, 170);
 }
@@ -275,11 +309,11 @@ span
     width: 100%;
     height: 100%;
     font-family: 'Courier, monospace';
-    font-size: 3vh;
+    /*font-size: 3vh;*/
     border: 3px solid var(--form-border-color);
     color: var(--form-border-color);
     border-radius: 2vh;
-    max-height: 17vh;
+    max-height: 100%;
     background-color: var(--container-color);
 }
 
@@ -300,10 +334,10 @@ span
     width: 100%;
     height: 100%;
     font-family: 'Courier, monospace';
-    font-size: 3vh;
+    /*font-size: 3vh;*/
     color: var(--form-border-color);
     border-radius: 2vh;
-    max-height: 17vh;
+    max-height: 100%;
     background-color: var(--container-color);
 }
 
@@ -318,11 +352,11 @@ span
     width: 100%;
     height: 100%;
     font-family: 'Courier, monospace';
-    font-size: 3vh;
+    /*font-size: 3vh;*/
     border: 3px solid var(--form-border-color);
     color: var(--form-border-color);
     border-radius: 2vh;
-    max-height: 26vh;
+    max-height: 100%;
     background-color: var(--container-color);
 } 
 

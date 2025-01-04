@@ -4,7 +4,7 @@ import { setStateProperty } from "../nodes/nodeSlice";
 import '../nodes/DetailsList.css';
 import 'primeicons/primeicons.css';
 
-const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
+const UploadThumbnail = ({mobile = false, reset, fileChangeCallBack, inputNode}) => {
   const dispatch = useDispatch();
   const uploadName = useRef(null);
   const node = {...inputNode};
@@ -104,7 +104,7 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
   return (
   <>
     <div id = 'thumbnail-uploader' style = {{height: '100%', width: '100%'}}>
-        <div style = {{height: '33vh', width: '100%'}} className="title-container" onMouseOver={() => {FitThumbnailImage(false);}} onMouseOut = {() => {FitThumbnailImage(true);}}>
+        <div style = {{height: mobile ? '' : '33vh', width: '100%'}} className="title-container" onMouseOver={() => {FitThumbnailImage(false);}} onMouseOut = {() => {FitThumbnailImage(true);}}>
           { (selectedImage || defaultFile ) ? (
                 <>
                   <div id = 'thumbnail-expander' className="thumbnail-expanded">
@@ -119,9 +119,9 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
             :
             (
               <>
-                <div className = 'thumbnail-placeholder' onClick = {() => {document.getElementById('file-upload-button').click();}}>
-                  <i className='pi pi-upload' style = {{position: 'relative', top: '8vh', fontSize: '11vh', height: '11vh', width: '11vh'}}/>
-                  <div style = {{position: 'relative', top: '10vh'}}>
+                <div className = 'thumbnail-placeholder'  onClick = {() => {document.getElementById('file-upload-button').click();}}>
+                  <i className='pi pi-upload' style = {{position: 'relative', top: mobile ? '' : '8vh', fontSize: mobile ? '' : '11vh', height: mobile? '' : '11vh', width: mobile ? '' : '11vh'}}/>
+                  <div style = {{position: 'relative', top: mobile ? '' : '10vh'}}>
                     Upload Image!
                   </div>
                 </div>
@@ -133,17 +133,17 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
 
             {(selectedImage || defaultFile) ? (
               <>
-                <div className="text-overflow dialog-header" style = {{fontSize: '3vh', height: '5vh', width: '100%'}}>{selectedImage ? selectedImage.name : defaultFile.name}</div>
+                <div className="text-overflow dialog-header" style = {{fontSize: mobile ? '' :  '3vh', height: mobile ? '' :  '5vh', width: '100%'}}>{selectedImage ? selectedImage.name : defaultFile.name}</div>
                 <div style = {{height: '6vh', display: 'flex'}}>
-                  <button className="button text-overflow" style = {{fontSize: '3vh', width: '16vh', height: '6vh', marginRight: '1vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
-                  <button className="button text-overflow" style = {{fontSize: '3vh', width: '16vh', height: '6vh'}} onClick={() => {RemoveImage();}}>Remove</button>
+                  <button className="button text-overflow" style = {{fontSize:mobile ? '' :  '3vh', width: mobile ? '' :  '16vh', height: mobile ? '' :  '6vh', marginRight: mobile ? '' : '1vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
+                  <button className="button text-overflow" style = {{fontSize:mobile ? '' :  '3vh', width: mobile ? '' :  '16vh', height: mobile ? '' :  '6vh'}} onClick={() => {RemoveImage();}}>Remove</button>
                 </div>
               </>
             ) : 
             (
               <>
-                <div style = {{height: '4vh', width: '100%'}}></div>
-                <button className="button text-overflow" style = {{fontSize: '3vh', width: '16vh', height: '6vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
+                <div className="text-overflow dialog-header" style = {{fontSize: mobile ? '' :  '3vh', height: mobile ? '' :  '5vh', width: '100%'}}>No Thumbnail</div>
+                <button className="button text-overflow" style = {{fontSize: mobile ? '' :  '3vh', width: mobile ? '' :  '16vh', height: mobile ? '' :  '6vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
               </>
             )}  
 

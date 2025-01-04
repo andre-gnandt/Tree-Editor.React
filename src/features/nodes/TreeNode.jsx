@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { useDispatch} from 'react-redux'
 import { Dialog } from 'primereact/dialog';
 import './DetailsList.css';
@@ -12,12 +12,30 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
 
     const dispatch = useDispatch();
     const[manualReRender, setManualReRender] = useState(1); //used for callback re renders
+    const [mobile, setMobile] = useState(window.innerHeight > 0.85 * window.innerWidth ? true : false);
     
     //After file gallery is added, set this to an api call to get
     //all files by node id on click/open of node details
     const[files, setFiles] = useState(inputNode.files);    
     var buttonMouseDown = new Object();
     var buttonMouseUp = new Object();
+
+    useEffect(() => {
+        window.addEventListener('resize', isMobile);
+        return () => window.removeEventListener('resize', isMobile);
+    });
+
+    function isMobile()
+    {
+        if(window.innerHeight > 0.85 * window.innerWidth)
+        {
+            setMobile(true);
+        }
+        else
+        {
+            setMobile(false);
+        }
+    }
 
     //used for callback re renders
     function RenderTreeNode()
@@ -120,8 +138,16 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
                     </button> 
                 } 
                 <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>                              
-                    <Dialog className={"dialogContent"} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}} visible = {dialog} onHide={() => {if (!dialog) return; inputNode["dialog"] = false; setDialog(false);}} > 
-                            <NodeDetails SetChangeTracker = {setChangeTracker} unMount = {CloseDialog} renderTreeNode = {RenderTreeNode} files = {files} rootNode = {rootNode} render = {render} inputNode = {inputNode} nodeList = {GetNodeList()} nodeDictionary = {nodeDictionary}/>
+                    <Dialog 
+                        style = {{width: mobile ? '88vw' : String(0.45*screen.width)+"px", height: mobile ? '73.9vw' : '86vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}}
+                        className={"dialogContent"} 
+                        draggable 
+                        showHeader = {false}  
+                        contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}} 
+                        visible = {dialog} 
+                        onHide={() => {if (!dialog) return; inputNode["dialog"] = false; setDialog(false);}}
+                    > 
+                            <NodeDetails mobile = {mobile} SetChangeTracker = {setChangeTracker} unMount = {CloseDialog} renderTreeNode = {RenderTreeNode} files = {files} rootNode = {rootNode} render = {render} inputNode = {inputNode} nodeList = {GetNodeList()} nodeDictionary = {nodeDictionary}/>
                     </Dialog>
                 </Draggable>      
             </> 
