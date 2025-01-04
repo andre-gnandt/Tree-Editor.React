@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import { useDispatch} from 'react-redux'
 import { Dialog } from 'primereact/dialog';
 import './DetailsList.css';
@@ -20,10 +20,20 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
     var buttonMouseDown = new Object();
     var buttonMouseUp = new Object();
 
+    
     useEffect(() => {
-        window.addEventListener('resize', isMobile);
+
+        if(dialog && inputNode['dialog'])
+        {
+            window.addEventListener('resize', isMobile);
+        }
+        else
+        {
+            window.removeEventListener('resize', isMobile);
+        }
+
         return () => window.removeEventListener('resize', isMobile);
-    });
+    });    
 
     function isMobile()
     {
@@ -46,6 +56,7 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
     const CloseDialog = () =>
     {
         inputNode['dialog'] = false;
+        window.removeEventListener('resize', isMobile);
         setDialog(false);
     }
 
@@ -145,7 +156,7 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
                         showHeader = {false}  
                         contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}} 
                         visible = {dialog} 
-                        onHide={() => {if (!dialog) return; inputNode["dialog"] = false; setDialog(false);}}
+                        onHide={() => {if (!dialog) return; CloseDialog();}}
                     > 
                             <NodeDetails mobile = {mobile} SetChangeTracker = {setChangeTracker} unMount = {CloseDialog} renderTreeNode = {RenderTreeNode} files = {files} rootNode = {rootNode} render = {render} inputNode = {inputNode} nodeList = {GetNodeList()} nodeDictionary = {nodeDictionary}/>
                     </Dialog>

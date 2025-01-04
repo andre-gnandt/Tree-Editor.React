@@ -21,10 +21,12 @@ const TreesMenu = ({trees}) => {
   const [mobile, setMobile] = useState(window.innerHeight > 0.85 * window.innerWidth ? true : false);
   const iconDimension = 0.16*window.innerHeight;
 
+  
   useEffect(() => {
       window.addEventListener('resize', isMobile);
       return () => window.removeEventListener('resize', isMobile);
     });
+  
 
   function FitFontSize(maxSize, maxWidth, text)
   {

@@ -196,7 +196,7 @@ const TreeDetails = ({mobile = false, reRenderList = null, unMount = null, id = 
                         </div>
                   
                 </div> 
-                {//height : 6.5vh
+                {
                 <div  style = {{backgroundColor: (hideButtons === 0 && titleRequired) ? '#F0F0F0' : '#DCDCDC', maxHeight: '7.2%', height: '7.2%', width: '93%', position: 'relative', left: '3.5%', display: 'flex'}}>
                     <div hidden = {hideButtons === 0}  id = 'node-details-button-container' style = {{ fontSize: mobile ? '' : '4vh', width: "38%", display: 'flex',  maxHeight: '100%', height: '100%',}}>
  
