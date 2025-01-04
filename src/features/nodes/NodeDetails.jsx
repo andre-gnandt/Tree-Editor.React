@@ -321,11 +321,12 @@ const NodeDetails = ({
                     </div> 
                 </div>
                 <div className={(hideButtons === 0 && titleRequired) ? 'container': 'container-shrunk'} style = {{position: 'relative'}} > 
-                    <div style = {{position: 'relative', display: 'flex', width: '100%', height: mobile ? '' : '44vh', marginBottom: mobile ? '5vw': '5.275vh'}}>
-                        <div className="thumbnail-container" style = {{height: mobile ? '' : '44vh', width: mobile ? '' : '33vh'}}>                         
+                    <div style = {{position: 'relative', display: 'flex', width: '100%', height: mobile ? '39.6vw' : '44vh', marginBottom: mobile ? '5vw': '5.275vh'}}>
+                        <div className="thumbnail-container" style = {{height: mobile ? '39.6vw' : '44vh', width: mobile ? '29.7vw' : '33vh'}}>                         
                             <UploadThumbnail /* reset = {resetFiles} */ mobile = {mobile} reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
                         </div>
-                        <div className='title-container' style = {{marginLeft: '4%', width: mobile ? '' : 'calc(92% - 33vh)'}}>
+                        {
+                        <div className='title-container' style = {{marginLeft: '4%', width: mobile ? 'calc(92% - 27.75vw)' : 'calc(92% - 33vh)'}}>
                             <InputTextarea 
                                 maxLength={50}
                                 autoResize 
@@ -335,6 +336,7 @@ const NodeDetails = ({
                                 spellCheck = {false}
                                 onChange = {(e) => {CheckValueChange(inputNode.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title ? node.title : ""} />
                         </div>
+                        }
                     </div>
                     { (!Root && inputNode.nodeId) && (
                         <div className="entryContainer" style = {{height: mobile ? '5.7vw' : '6.5vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
