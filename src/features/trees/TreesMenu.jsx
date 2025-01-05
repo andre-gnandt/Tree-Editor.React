@@ -120,13 +120,13 @@ const TreesMenu = ({trees}) => {
       return (
         <>
           <div>
-              <div style = {{marginLeft: 'auto', marginRight: 'auto', height: String(maximumNodeSize)+'vh', width: String(maximumNodeSize)+'vh'}}>
-                <button onClick={(event) => {document.getElementById('create-tree-button').click();}} className='button-root-empty' style = {{padding: '0 0 0 0', backgroundColor: 'lightGrey', color: '#0cdc16'}}>
+              <div className='empty-list-container' style = {{height: String(maximumNodeSize)+'vh', width: String(maximumNodeSize)+'vh'}}>
+                <button onClick={(event) => {document.getElementById('create-tree-button').click();}} className='button-root-empty'>
                     <i className='pi pi-upload' style = {{fontSize: String(maximumNodeSize)+'vh'}} onClick = {() => { setCreateTree(true);}} />
                 </button> 
               </div >
 
-                <div style = {{marginLeft: 'auto', marginRight: 'auto', fontSize: '5vh', color: '#0cdc16',  width: String(maximumNodeSize)+'vh'}}>
+                <div className='empty-list-message' style = {{width: String(maximumNodeSize)+'vh'}}>
                   There are no trees, click above to create one!
                 </div>
             
@@ -140,11 +140,14 @@ const TreesMenu = ({trees}) => {
 
         return (
           <div className= {mobile ? 'col-6' : 'col-3'} key = {tree.id} >
-              <i className='pi pi-times' onClick={() => {setDeleteOptions(tree.id)}} style = {{cursor: 'pointer', zIndex: 20, top: '2vh', position: 'relative', height: '14px', width: '14px', fontSize: '14px'}}/>
+              <i className='pi pi-times menu-item-icon' onClick={() => {setDeleteOptions(tree.id)}}/>
               {/*<Link to={{ pathname: '/tree/'+tree.id, state: 'flushDeal' }}>*/}     
                 <button 
                     className='menu-button tree-menu-item'
-                    style = {{fontSize: mobile ? FitFontSize(18, 70, tree.name) : FitFontSize(10, 35, tree.name), marginTop:'2vh', padding: '0 0 0 0', backgroundColor: '#DCDCDC', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', height: mobile ? '23.19vw' : '11.9vw', width: mobile ? '38vw' : '19.5vw'}}
+                    style = {{fontSize: mobile ? FitFontSize(18, 70, tree.name) : FitFontSize(10, 35, tree.name), 
+                              height: mobile ? '23.19vw' : '11.9vw',
+                              width: mobile ? '38vw' : '19.5vw'
+                            }}
                     onClick={(event) => {navigate('/tree/'+tree.id);}} 
                 >
                     {tree.name}
@@ -168,27 +171,27 @@ const TreesMenu = ({trees}) => {
   return (
     <>
       <div>
-        <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
+        <div id = 'button-container' className='button-container'>
           <HeaderInfo/>
-          <div id = 'button-container-inner' style = {{position: 'relative', display:'flex', top: '0px', width: '100vw', height: '16vh'}}>
-            <div id = 'create-container' style = {{height: '100%', display:'flex', width: String((iconDimension))+"px"}}>
+          <div id = 'button-container-inner' className = 'button-container-inner' style = {{height: '16vh'}}>
+            <div id = 'create-container' className='create-container' style = {{width: String((iconDimension))+"px"}}>
                 <button className = 'button-header button-create tooltip'>
                     <i id = 'create-tree-button' className='pi pi-upload' style = {{fontSize: '14vh'}} onClick = {() => { setCreateTree(true);}} />
                     <span class="tooltip-right">New Tree</span>
                 </button>
             </div>
-            <div className='tree-menu-header' style = {{ left: '0vw', textAlign: 'center', fontSize: '12.5vh', height: '16vh', position: 'relative', width: 'calc(100vw - 32vh)'}}>
+            <div className='tree-menu-header'>
                     Trees
             </div>
           </div>
         </div>
-        <div id = 'content-container' style = {{position: 'absolute', top: 'calc(22vh + 4vw)', height: 'calc(66vh - 4vw)', width: '82vw', left: '9vw'}}>
+        <div id = 'content-container' className='menu-content-container'>
         {  
             (treeList != null && treeList.length > 0) ? 
             (
             <>
-                <InputText placeholder='Search...' style = {{position: 'relative', left: mobile ? '0vw' : '20.5vw', marginBottom: '3.7vh', height: '8vh', width: mobile ? '80vw' : '40vw', borderRadius: '4vh', fontSize: '5vh'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
-                <DataView className='data-table' style = {{scrollbarColor: 'blue',height: 'calc(62vh - 4vw)', maxHeight: 'calc(62vh - 4vw)'}} rows={4} value = {FilterTree(treeList)} listTemplate={listTemplate} layout = {"grid"} />
+                <InputText placeholder='Search...' className='search-bar' style = {{left: mobile ? '0vw' : '20.5vw', width: mobile ? '80vw' : '40vw'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
+                <DataView className='data-table' rows={4} value = {FilterTree(treeList)} listTemplate={listTemplate} layout = {"grid"} />
             </>
             )
             :
@@ -201,7 +204,15 @@ const TreesMenu = ({trees}) => {
         </div>
       </div>
         <Draggable  onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
-            <Dialog style = {{width: mobile ? '88vw' : String(0.45*screen.width)+"px", height: mobile ? '73.9vw' : '86vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}} className={"dialogContent2"} onHide = {() => {setCreateTree(false);}} visible = {createTree} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}}>
+            <Dialog 
+              style = {{width: mobile ? '88vw' : String(0.45*screen.width)+"px", height: mobile ? '73.9vw' : '86vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}} 
+              className={"dialogContent2"} 
+              onHide = {() => {setCreateTree(false);}} 
+              visible = {createTree} 
+              draggable 
+              showHeader = {false}  
+              contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}}
+            >
                 <TreeDetails 
                     mobile = {mobile}
                     inputTree={{name: null, description: null}}

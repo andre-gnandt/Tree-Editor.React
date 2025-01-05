@@ -21,6 +21,52 @@
     --container-outline-color: #DCDCDC;
 }
 
+
+.empty-list-container
+{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.menu-item-icon
+{
+  cursor: pointer; 
+  z-index: 20;
+  top: 2vh;
+  position: relative;
+  height: 14px;
+  width: 14px;
+  font-size: 14px;
+}
+
+.search-bar
+{
+  position: relative;
+  margin-bottom: 3.7vh;
+  height: 8vh;
+  border-radius: 4vh;
+  font-size: 5vh;
+}
+
+.menu-content-container
+{
+  position: absolute;
+  top: calc(22vh + 4vw);
+  height: calc(66vh - 4vw);
+  width: 82vw;
+  left: 9vw;
+}
+
+.tree-menu-header
+{
+  left: 0vw;
+  text-align: center;
+  font-size: 12.5vh;
+  height: 16vh;
+  position: relative;
+  width: calc(100vw - 32vh);
+}
+
 /*
 .title {
   text-align: center;
@@ -51,6 +97,45 @@
   justify-content: center;
 }
 */
+
+.tree-title-outer
+{
+  top: 2%;
+  width: 92%;
+  left:4%;
+  position: relative;
+  display: flex;
+  height: 48%;
+  margin-bottom: 7.5%;
+}
+
+.header-container
+{
+  display: flex;
+  height: 4vw;
+  width: 100vw;
+  font-size: 2vw;
+  color: white;
+  background-color: black;
+}
+
+.header-middle-text
+{
+  text-align: center;
+  justify-content: center;
+  position: absolute;
+  left: 25vw;
+  font-size: 1.2vw;
+  width: 50vw;
+}
+
+.empty-list-message
+{
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 5vh;
+  color: #0cdc16;  
+}
 
 .tree-title-container
 {
@@ -117,6 +202,9 @@
   */
   height: 35.9%;
   max-height: 35.9%;
+  width: 92%; 
+  position: relative;
+  left: 4%;
 }
 
 .tree-description {
@@ -227,7 +315,10 @@ button:disabled
 }
 
 .button-root-empty
-{
+{   
+    padding: 0 0 0 0; 
+    background-color: lightGrey;
+    color: #0cdc16;
     outline: none;
     border: none;
 }

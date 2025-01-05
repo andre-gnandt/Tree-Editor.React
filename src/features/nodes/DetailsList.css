@@ -10,6 +10,93 @@
     --container-outline-color: #DCDCDC;
 }
 
+.dialog-save-button-left
+{
+    margin-right: 2%;
+}
+
+.dialog-save-button
+{
+    max-height: 100%;
+    height: 100%;
+    width: 50%;
+}
+
+.dialog-save-container
+{
+    width: 38%;
+    display: flex;
+    max-height: 100%;
+    height: 100%;
+}
+
+.dialog-save-banner
+{
+    height: 7.2%;
+    width: 93%;
+    position: relative;
+    left: 3.5%;
+    display: flex;
+    background-color: #DCDCDC;
+}
+
+.dialog-delete
+{
+    margin-left: auto;
+    height: 100%;
+    width: 17.5%;
+    float: right; 
+}
+
+.dialog-header
+{
+    width: 65%;
+}
+
+.dialog-header-inner
+{
+  top: 28%;
+  position: relative;
+  height: 78%;
+  display: flex;
+}
+
+.dialog-close-button
+{
+  width: 17.5%;
+  margin-right: auto;
+  cursor: pointer; 
+}
+
+.create-container
+{
+    height: 100%;
+    display: flex;
+}
+
+.button-container
+{
+    position: fixed;
+    background-color: silver;
+    z-index: 100;
+}
+
+.button-container-inner
+{
+    position: relative;
+    display: flex;
+    width: 100vw;
+}
+
+.center-text
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
+}
+
 .tree-menu-header
 {
     color: var(--form-focused-color);
@@ -18,6 +105,13 @@
 .tree-menu-item
 {
     color: var(--form-focused-color);
+    margin-top:2vh;
+    padding: 0 0 0 0; 
+    background-color: #DCDCDC;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: table-cell;
 }
 
 .dialog-root 
@@ -68,6 +162,13 @@
     background-color: var(--container-outline-color);
     overflow: hidden;
     overflow-y: hidden;
+}
+
+.thumbnail-container-outer
+{
+    position: relative;
+    display: flex;
+    width: 100%;
 }
 
 .thumbnail-placeholder 
@@ -147,6 +248,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     left: 3.5%;
+    position: relative;
 }
 
 .menu-button:hover
@@ -165,6 +267,8 @@
   overflow-y: scroll;
   scrollbar-gutter: none;
   scrollbar-color: var(--form-focused-color) rgb(253, 240, 240) ;
+  height: calc(62vh - 4vw);
+  max-height: calc(62vh - 4vw);
 }
 
 .container-2{
@@ -177,6 +281,7 @@
     overflow-y: hidden;
     overflow-x: hidden;
     left: 3.5%;
+    position: relative;
 }
 
 .container-shrunk {
@@ -189,6 +294,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     left: 3.5%;
+    position: relative;
 }
 
 .entryContainer {
@@ -234,6 +340,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-left: 4%;
 }
 
 .title {
@@ -266,6 +373,8 @@
     /*font-size: 3vh;*/
     margin-left: 4%;
     width: 37%;
+    color: red;
+    text-align: bottom;
 }
 
 .title-required {
@@ -429,6 +538,17 @@ span
     text-align: center;
     justify-content: center;
 }
+
+.dialog-delete-button
+{
+    width: 100%;
+    background-color: red;
+    height: 90%; 
+    max-height: 90%;
+    float: right;
+    justify-content: center;
+}
+
 .button:hover {
     background-color: var(--form-focused-color);
 }

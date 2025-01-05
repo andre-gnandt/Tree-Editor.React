@@ -288,15 +288,15 @@ const NodeDetails = ({
         <>  
             <div className='dialog-root'>
                 <div id = 'fixed-header' className='fixed-header'>
-                    <div style = {{top: '28%', position: 'relative', height: '78%', display: 'flex'}}>
-                        <i onClick={() => {unMount()}} className='pi pi-times' style = {{ width: '17.5%', marginRight: 'auto', cursor: 'pointer', fontSize: mobile ? '6vw' : '6.5vh'}}/>
-                        <div className='dialog-header' style = {{fontSize: mobile ? '4vw' : '4.8vh', width: '65%', textAlign: 'center', verticalAlign: 'middle'}}>{GetHeader()}</div>                   
-                        <div style = {{marginLeft: 'auto', height: '100%', width: '17.5%',  float: 'right'  }}>
+                    <div className='dialog-header-inner'>
+                        <i onClick={() => {unMount()}} className='pi pi-times dialog-close-button' style = {{fontSize: mobile ? '6vw' : '6.5vh'}}/>
+                        <div className='dialog-header center-text' style = {{fontSize: mobile ? '4vw' : '4.8vh'}}>{GetHeader()}</div>                   
+                        <div className='dialog-delete'>
                         { (node.nodeId && !Root && !Create) && (
                             <>
                                 
-                                <button className='button text-overflow' 
-                                    style = {{width:'100%', backgroundColor: 'red', height: '90%', maxHeight: '90%', float: 'right', fontSize: mobile ? '2.5vw' : '3vh', justifyContent: 'center'}} 
+                                <button className='dialog-delete-button button text-overflow' 
+                                    style = {{fontSize: mobile ? '2.5vw' : '3vh'}} 
                                     onClick={() => {setDeleteOptions("options")}}                       
                                 >
                                 Delete</button>                   
@@ -320,13 +320,13 @@ const NodeDetails = ({
                         </div>
                     </div> 
                 </div>
-                <div className={(hideButtons === 0 && titleRequired) ? 'container': 'container-shrunk'} style = {{position: 'relative'}} > 
-                    <div style = {{position: 'relative', display: 'flex', width: '100%', height: mobile ? '39.6vw' : '44vh', marginBottom: mobile ? '5vw': '5.275vh'}}>
+                <div className={(hideButtons === 0 && titleRequired) ? 'container': 'container-shrunk'}> 
+                    <div className='thumbnail-container-outer' style = {{height: mobile ? '39.6vw' : '44vh', marginBottom: mobile ? '5vw': '5.275vh'}}>
                         <div className="thumbnail-container" style = {{height: mobile ? '39.6vw' : '44vh', width: mobile ? '29.7vw' : '33vh'}}>                         
                             <UploadThumbnail /* reset = {resetFiles} */ mobile = {mobile} reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
                         </div>
                         {
-                        <div className='title-container' style = {{marginLeft: '4%', width: mobile ? 'calc(92% - 27.75vw)' : 'calc(92% - 33vh)'}}>
+                        <div className='title-container' style = {{width: mobile ? 'calc(92% - 27.75vw)' : 'calc(92% - 33vh)'}}>
                             <InputTextarea 
                                 maxLength={50}
                                 autoResize 
@@ -368,7 +368,7 @@ const NodeDetails = ({
                             Description:  
                         </div> 
                         <div className="fullWidthRight">
-                            <InputTextarea maxLength={1000} placeholder='Description...' autoResize style = {{height: '100%', fontSize: mobile ? '3vw' : '3vh'}} rows={5} className = "input" onChange = {(e) => {CheckValueChange(inputNode.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
+                            <InputTextarea maxLength={1000} placeholder='Description...' autoResize style = {{fontSize: mobile ? '3vw' : '3vh'}} rows={5} className = "input" onChange = {(e) => {CheckValueChange(inputNode.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
                         </div>
                     </div>
                     <div className="entryContainer" style = {{height: mobile ? '24vw' : '26vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
@@ -376,7 +376,7 @@ const NodeDetails = ({
                             Data: 
                         </div>
                         <div className="fullWidthRight">
-                            <InputTextarea maxLength={1000} placeholder='Data...' autoResize rows={7} style = {{height: '100%', fontSize: mobile ? '3vw' : '3vh'}} className = "input-data" onChange = {(e) => {CheckValueChange(inputNode.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
+                            <InputTextarea maxLength={1000} placeholder='Data...' autoResize rows={7} style = {{fontSize: mobile ? '3vw' : '3vh'}} className = "input-data" onChange = {(e) => {CheckValueChange(inputNode.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
                         </div>
                     </div>
                     <div className="entryContainer" style = {{height: mobile ? '5.7vw' : '6.5vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
@@ -399,12 +399,12 @@ const NodeDetails = ({
                     */}
                 </div> 
                 {
-                <div hidden = {hideButtons === 0 && titleRequired} style = {{marginTop: "1%", height: (hideButtons === 0 && titleRequired)? '0%':'7.2%', width: '93%', position: 'relative', left: '3.5%', display: 'flex'}}>
-                    <div hidden = {hideButtons === 0}  id = 'node-details-button-container' style = {{ fontSize: mobile ? '' : '4vh', width: "38%", display: 'flex', maxHeight: '100%', height: '100%'}}>
-                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{fontSize: mobile ? '3.4vw': '3.8vh' , height: '100%', width: '50%', marginRight: '2%'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
-                        <button hidden = {hideButtons === 0} className='button text-overflow' style = {{fontSize: mobile ? '3.4vw': '3.8vh', height: '100%', width: '50%'}} onClick = {() => { ResetForm();}} > Reset </button>
+                <div className = 'dialog-save-banner' hidden = {hideButtons === 0 && titleRequired} style = {{height: (hideButtons === 0 && titleRequired)? '0%':'7.2%'}}>
+                    <div className = 'dialog-save-container' hidden = {hideButtons === 0}  id = 'node-details-button-container' style = {{ fontSize: mobile ? '' : '4vh'}}>
+                        <button hidden = {hideButtons === 0} className = 'dialog-save-button dialog-save-button-left button text-overflow' style = {{fontSize: mobile ? '3.4vw': '3.8vh'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                        <button hidden = {hideButtons === 0} className = 'dialog-save-button button text-overflow'  style = {{fontSize: mobile ? '3.4vw': '3.8vh'}} onClick = {() => { ResetForm();}} > Reset </button>
                     </div>
-                    <div className='text-overflow title-required-container'  hidden = {(titleRequired)} style = {{fontSize: mobile ? '2.8vw' : '3vh', marginLeft: '4%' ,width: '100%', color: 'red', textAlign: 'bottom'}}>Title is required!</div>
+                    <div className='text-overflow title-required-container'  hidden = {(titleRequired)} style = {{fontSize: mobile ? '2.8vw' : '3vh'}}>Title is required!</div>
                 </div>
                 }
             </div>
