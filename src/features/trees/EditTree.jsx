@@ -52,7 +52,7 @@ const EditTree = ({id, tree}) => {
     return (
         <>  
             <button className = 'button-header button-save tooltip'>
-                <i className='pi pi-file-edit' style = {{fontSize: '7.2vh'}} onClick = {() => { openDialog();}} />
+                <i className='pi pi-file-edit diagram-header-icon' onClick = {() => { openDialog();}} />
                 <span class="tooltip-right">Edit Tree Details</span>
             </button>
             <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>

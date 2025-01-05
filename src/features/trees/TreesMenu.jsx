@@ -121,7 +121,7 @@ const TreesMenu = ({trees}) => {
         <>
           <div>
               <div className='empty-list-container' style = {{height: String(maximumNodeSize)+'vh', width: String(maximumNodeSize)+'vh'}}>
-                <button onClick={(event) => {document.getElementById('create-tree-button').click();}} className='button-root-empty'>
+                <button onClick={(event) => {document.getElementById('create-tree-button').click();}} className='button-list-empty'>
                     <i className='pi pi-upload' style = {{fontSize: String(maximumNodeSize)+'vh'}} onClick = {() => { setCreateTree(true);}} />
                 </button> 
               </div >
@@ -173,7 +173,7 @@ const TreesMenu = ({trees}) => {
       <div>
         <div id = 'button-container' className='button-container'>
           <HeaderInfo/>
-          <div id = 'button-container-inner' className = 'button-container-inner' style = {{height: '16vh'}}>
+          <div id = 'button-container-inner' className = 'button-container-inner'>
             <div id = 'create-container' className='create-container' style = {{width: String((iconDimension))+"px"}}>
                 <button className = 'button-header button-create tooltip'>
                     <i id = 'create-tree-button' className='pi pi-upload' style = {{fontSize: '14vh'}} onClick = {() => { setCreateTree(true);}} />

@@ -126,25 +126,20 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
             <>  
                 { inputNode.thumbnailId ? 
                     <div style = {{height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
-                        <img className='image' style = {{cursor: 'pointer'}} onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {GetImageSource()}/>
+                        <img className='image pointer' onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {GetImageSource()}/>
                         <div
+                            className='image-text text-overflow pointer'
                             onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}}
-                            style = {{  fontSize: String(css.nodeSize*0.155)+'px',
-                                        position: 'absolute',
-                                        top: '50%',
-                                        left: '50%',
-                                        transform: 'translate(-50%, -50%)', cursor: 'pointer'
-                                        ,  color: 'white', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'
-                                    }}
+                            style = {{ fontSize: String(css.nodeSize*0.155)+'px'}}
                         >
                             {inputNode.title}
                         </div>                      
                     </div>
                     :
                     <button 
-                        className='tree-button'       
+                        className='tree-button text-overflow'       
                         onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} 
-                        style = {{ padding: '0 0 0 0 ', fontSize: String(css.nodeSize*0.155)+'px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(css.nodeSize)+'px', maxWidth: String(css.nodeSize)+'px',  height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
+                        style = {{ fontSize: String(css.nodeSize*0.155)+'px', maxHeight:String(css.nodeSize)+'px', maxWidth: String(css.nodeSize)+'px',  height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
                         {inputNode.title}
                     </button> 
                 } 

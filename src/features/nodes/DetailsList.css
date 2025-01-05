@@ -10,6 +10,19 @@
     --container-outline-color: #DCDCDC;
 }
 
+.pointer 
+{
+    cursor: pointer;
+}
+
+.tree-positions-container
+{
+    height: 100%;
+    width: 41vh;
+    display: flex;
+    margin-right: auto;
+}
+
 .dialog-save-button-left
 {
     margin-right: 2%;
@@ -86,6 +99,7 @@
     position: relative;
     display: flex;
     width: 100vw;
+    height: 100%;
 }
 
 .center-text
@@ -138,6 +152,8 @@
 
 .tree-button
 {
+    display: table-cell;
+    padding: 0 0 0 0;
     background-color: var(--container-color);
 }
 
@@ -340,6 +356,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.expandable-title-container
+{
     margin-left: 4%;
 }
 
@@ -592,10 +612,50 @@ textarea:focus
 
 }
 
+.empty-tree-message
+{
+    font-size: 5vh; 
+    color: #d68a16;
+    position: absolute;
+}
+
+.empty-tree-container
+{
+    position: absolute;
+}
+
+.button-root-empty
+{   
+    padding: 0 0 0 0; 
+    background-color: lightGrey;
+    color: #d68a16;
+    outline: none;
+    border: none;
+}
+
+.button-root-empty:hover
+{
+    outline: none;
+    border: none;
+}
+
+.button-root-empty:focus
+{
+    outline: none;
+    border: none;
+}
+
 button:focus
 {
     outline: none;
     border: none;
+}
+
+.flex-box-leftmost
+{
+    margin-right: auto;
+    display: flex;
+    height: 100%;
 }
 
 .save-bar

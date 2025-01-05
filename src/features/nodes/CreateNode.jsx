@@ -90,7 +90,7 @@ const CreateNode = ({nodeList, nodeDictionary, iconSize, rootNode, render, treeI
     return (
         <>  
             <button className = {(newNode.nodeId == null) ? 'button-header button-save tooltip' : 'button-header button-create tooltip'} disabled = {(newNode.nodeId == null )}>
-                <i className='pi pi-upload' style = {{fontSize: '7.2vh'}} onClick = {() => { OpenDialog();}} />
+                <i className='pi pi-upload diagram-header-icon'  onClick = {() => { OpenDialog();}} />
                 <span class="tooltip-left">New Node</span>
             </button>
             <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>

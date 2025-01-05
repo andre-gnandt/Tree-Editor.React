@@ -326,7 +326,7 @@ const NodeDetails = ({
                             <UploadThumbnail /* reset = {resetFiles} */ mobile = {mobile} reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
                         </div>
                         {
-                        <div className='title-container' style = {{width: mobile ? 'calc(92% - 27.75vw)' : 'calc(92% - 33vh)'}}>
+                        <div className='title-container expandable-title-container' style = {{width: mobile ? 'calc(92% - 27.75vw)' : 'calc(92% - 33vh)'}}>
                             <InputTextarea 
                                 maxLength={50}
                                 autoResize 

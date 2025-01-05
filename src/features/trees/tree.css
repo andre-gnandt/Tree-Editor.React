@@ -21,6 +21,22 @@
     --container-outline-color: #DCDCDC;
 }
 
+.image-text
+{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+}
+
+.save-position-changes 
+{
+  font-size: 3vh;
+  height: 100%;
+  width: 100%;
+  padding: 0 0 0 0;
+}
 
 .empty-list-container
 {
@@ -267,6 +283,11 @@
     background-color: var(--button-brown-focused);
 }
 
+.diagram-header-icon
+{
+  font-size: 7.8vh;
+}
+
 .button-header
 {
     height: 100%;
@@ -314,7 +335,7 @@ button:disabled
     border: none;
 }
 
-.button-root-empty
+.button-list-empty
 {   
     padding: 0 0 0 0; 
     background-color: lightGrey;
@@ -323,13 +344,13 @@ button:disabled
     border: none;
 }
 
-.button-root-empty:hover
+.button-list-empty:hover
 {
     outline: none;
     border: none;
 }
 
-.button-root-empty:focus
+.button-list-empty:focus
 {
     outline: none;
     border: none;
@@ -368,6 +389,15 @@ button:focus{
     /*color: var(--button-blue); */
     float: left;
 
+}
+
+.treenode-container
+{
+  background-color: #F0F0F0;
+  z-index: 4;
+  position: absolute;
+  display: table;
+  border: 2px solid red;
 }
 
 .treenode-container:hover 

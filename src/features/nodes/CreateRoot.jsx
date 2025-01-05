@@ -68,7 +68,7 @@ const CreateRoot = ({nodeList, nodeDictionary, iconSize, rootNode, render, treeI
     return (
         <>
             <button className='button-header button-root tooltip' style = {{marginRight: '1vw'}}>
-                <i id = 'create-root-button' className='pi pi-warehouse' style = {{fontSize: '7.2vh'}} onClick = {() => { OpenDialog();}} />
+                <i id = 'create-root-button' className='pi pi-warehouse diagram-header-icon' onClick = {() => { OpenDialog();}} />
                 <span class="tooltip-left">New Root Node</span>
             </button> 
             <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
