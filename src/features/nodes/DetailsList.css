@@ -280,7 +280,7 @@
 
 .data-table
 {
-  overflow-y: scroll;
+  overflow-y: auto;
   scrollbar-gutter: none;
   scrollbar-color: var(--form-focused-color) rgb(253, 240, 240) ;
   height: calc(62vh - 4vw);
