@@ -176,7 +176,7 @@ const TreesMenu = ({trees}) => {
           <div id = 'button-container-inner' className = 'button-container-inner'>
             <div id = 'create-container' className='create-container' style = {{width: String((iconDimension))+"px"}}>
                 <button className = 'button-header button-create tooltip'>
-                    <i id = 'create-tree-button' className='pi pi-upload' style = {{fontSize: '14vh'}} onClick = {() => { setCreateTree(true);}} />
+                    <i id = 'create-tree-button' className='pi pi-upload' style = {{fontSize: '16vh'}} onClick = {() => { setCreateTree(true);}} />
                     <span class="tooltip-right">New Tree</span>
                 </button>
             </div>

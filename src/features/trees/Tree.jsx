@@ -1019,7 +1019,7 @@ const Tree = ({id, treeFetch}) => {
           <HeaderInfo 
             middleText={"Drag and drop nodes upon eachother in order to change the tree structure. Save or undo these changes using the 2 buttons located directly beneath this text."}
           />
-          <div id = 'button-container-inner' className='button-container-inner' >
+          <div id = 'button-container-inner' className='button-container-inner' style = {{height: '8vh'}}>
             <div className='flex-box-leftmost' style = {{width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",}}>   
                   <button 
                     onClick={(event) => { navigate("/");}}
@@ -1042,7 +1042,7 @@ const Tree = ({id, treeFetch}) => {
                   (window.innerHeight < window.innerWidth ) 
                   &&
                   (
-                  <div className='save-tree-positions' >
+                  <div style ={{height: '8vh'}} className='save-tree-positions' >
                     Save Position Changes
                   </div>
                   )
@@ -1050,7 +1050,7 @@ const Tree = ({id, treeFetch}) => {
                 <span class="tooltip-bottom">Save Tree Positions</span>
               </button>
             </div>
-            <div id = 'create-container' className='create-container' style = {{width: String((iconDimension*2)+(0.01*window.innerHeight))+"px", marginRight: '2vw'}}>
+            <div id = 'create-container' className='create-container' style = {{height: String(iconDimension)+'px', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px", marginRight: '2vw'}}>
                 {CreationButtons()}
             </div>
           </div>
