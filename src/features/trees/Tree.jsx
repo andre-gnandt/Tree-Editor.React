@@ -155,12 +155,21 @@ const Tree = ({id, treeFetch}) => {
       else if(callback === "delete single")
       {
         node = AlterTreeStructureForDeleteSingle(inputTree, nodeId, oldParentId);
-        AlterTreeStructureForDeleteSingle(originalTree, nodeId, oldParentId);
+
+        const originalNode = FindNodeInTree(nodeId, originalTree);
+        const newParent = FindNodeInTree(oldParentId, originalTree);
+        AlterTreeStructureForDeleteCascade(originalTree, nodeId, originalNode.nodeId, originalNode);
+        originalNode.children.forEach(child => {
+          child.nodeId = oldParentId;
+          AddNodeToChildren(newParent, child);
+        });   
       }
       else if(callback === "delete cascade")
       {
         node = AlterTreeStructureForDeleteCascade(inputTree, nodeId, oldParentId);
-        AlterTreeStructureForDeleteCascade(originalTree, nodeId, oldParentId);
+        
+        const originalNode = FindNodeInTree(nodeId, originalTree);
+        AlterTreeStructureForDeleteCascade(originalTree, nodeId, originalNode.nodeId, originalNode);
       }
     }
 
