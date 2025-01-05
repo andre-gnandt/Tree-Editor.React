@@ -368,7 +368,7 @@ const NodeDetails = ({
                             Description:  
                         </div> 
                         <div className="fullWidthRight">
-                            <InputTextarea maxLength={1000} placeholder='Description...' autoResize style = {{fontSize: mobile ? '3vw' : '3vh'}} rows={5} className = "input" onChange = {(e) => {CheckValueChange(inputNode.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
+                            <InputTextarea className = "input" maxLength={1000} placeholder='Description...' autoResize style = {{fontSize: mobile ? '3vw' : '3vh', height: '100%'}} rows={5} onChange = {(e) => {CheckValueChange(inputNode.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
                         </div>
                     </div>
                     <div className="entryContainer" style = {{height: mobile ? '24vw' : '26vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
@@ -376,7 +376,7 @@ const NodeDetails = ({
                             Data: 
                         </div>
                         <div className="fullWidthRight">
-                            <InputTextarea maxLength={1000} placeholder='Data...' autoResize rows={7} style = {{fontSize: mobile ? '3vw' : '3vh'}} className = "input-data" onChange = {(e) => {CheckValueChange(inputNode.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
+                            <InputTextarea className = "input-data" maxLength={1000} placeholder='Data...' autoResize rows={7} style = {{fontSize: mobile ? '3vw' : '3vh', height: '100%'}} onChange = {(e) => {CheckValueChange(inputNode.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
                         </div>
                     </div>
                     <div className="entryContainer" style = {{height: mobile ? '5.7vw' : '6.5vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
