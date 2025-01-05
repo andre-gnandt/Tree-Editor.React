@@ -21,6 +21,68 @@
     --container-outline-color: #DCDCDC;
 }
 
+.image-text
+{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+}
+
+.save-position-changes 
+{
+  font-size: 3vh;
+  height: 100%;
+  width: 100%;
+  padding: 0 0 0 0;
+}
+
+.empty-list-container
+{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.menu-item-icon
+{
+  cursor: pointer; 
+  z-index: 20;
+  top: 2vh;
+  position: relative;
+  height: 14px;
+  width: 14px;
+  font-size: 14px;
+}
+
+.search-bar
+{
+  position: relative;
+  margin-bottom: 3.7vh;
+  height: 8vh;
+  border-radius: 4vh;
+  font-size: 5vh;
+}
+
+.menu-content-container
+{
+  position: absolute;
+  top: calc(22vh + 4vw);
+  height: calc(66vh - 4vw);
+  width: 82vw;
+  left: 9vw;
+}
+
+.tree-menu-header
+{
+  left: 0vw;
+  text-align: center;
+  font-size: 12.5vh;
+  height: 16vh;
+  position: relative;
+  width: calc(100vw - 32vh);
+}
+
 /*
 .title {
   text-align: center;
@@ -52,10 +114,49 @@
 }
 */
 
+.tree-title-outer
+{
+  top: 2%;
+  width: 92%;
+  left:4%;
+  position: relative;
+  display: flex;
+  height: 48%;
+  margin-bottom: 7.5%;
+}
+
+.header-container
+{
+  display: flex;
+  height: 4vw;
+  width: 100vw;
+  font-size: 2vw;
+  color: white;
+  background-color: black;
+}
+
+.header-middle-text
+{
+  text-align: center;
+  justify-content: center;
+  position: absolute;
+  left: 25vw;
+  font-size: 1.2vw;
+  width: 50vw;
+}
+
+.empty-list-message
+{
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 5vh;
+  color: #0cdc16;  
+}
+
 .tree-title-container
 {
   position: relative;
-  width: 36vw;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,10 +166,11 @@
 {
   text-align: center;
   width: 100%;
-  font-size: 10vh;
+  /*font-size: 10vh;*/
   font-family: 'Courier, monospace';
-  height: 11vh;
-  max-height: 33vh;
+  height: 12%;
+  max-height: 100%;
+  /*max-height: 33vh;*/
   border: none;
   color: rgb(49, 152, 170);
   background-color: var(--container-color);
@@ -93,10 +195,10 @@
 .tree-title-required {
     text-align: center;
     width: 100%;
-    font-size: 10vh;
+    /*font-size: 10vh;*/
     font-family: 'Courier, monospace';
-    height: 11vh;
-    max-height: 33vh;
+    height: 12%;
+    max-height: 100%;
     color: rgb(49, 152, 170);
     background-color: var(--container-color);
     border: 4px solid red;
@@ -110,17 +212,24 @@
 
 .tree-description-container
 {
+  /*
   height: 25.225vh;
   max-height: 25.225vh;
+  */
+  height: 35.9%;
+  max-height: 35.9%;
+  width: 92%; 
+  position: relative;
+  left: 4%;
 }
 
 .tree-description {
 
   width: 100%;
-  height: 25.225vh;
-  max-height: 25.225vh;
+  height: 100%;
+  max-height: 100%;
   font-family: 'Courier, monospace';
-  font-size: 4vh;
+  /*font-size: 4vh;*/
   border: none;
   color: var(--form-border-color);
   border-radius: 2vh;
@@ -174,6 +283,11 @@
     background-color: var(--button-brown-focused);
 }
 
+.diagram-header-icon
+{
+  font-size: 7.8vh;
+}
+
 .button-header
 {
     height: 100%;
@@ -221,19 +335,22 @@ button:disabled
     border: none;
 }
 
-.button-root-empty
+.button-list-empty
+{   
+    padding: 0 0 0 0; 
+    background-color: lightGrey;
+    color: #0cdc16;
+    outline: none;
+    border: none;
+}
+
+.button-list-empty:hover
 {
     outline: none;
     border: none;
 }
 
-.button-root-empty:hover
-{
-    outline: none;
-    border: none;
-}
-
-.button-root-empty:focus
+.button-list-empty:focus
 {
     outline: none;
     border: none;
@@ -272,6 +389,15 @@ button:focus{
     /*color: var(--button-blue); */
     float: left;
 
+}
+
+.treenode-container
+{
+  background-color: #F0F0F0;
+  z-index: 4;
+  position: absolute;
+  display: table;
+  border: 2px solid red;
 }
 
 .treenode-container:hover 

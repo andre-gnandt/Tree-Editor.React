@@ -4,7 +4,7 @@
 #
 
 app = 'treeeditor-react-private-black-leaf-3836'
-primary_region = 'sea'
+primary_region = 'sjc'
 
 [build]
 

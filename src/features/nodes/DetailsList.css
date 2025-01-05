@@ -10,6 +10,107 @@
     --container-outline-color: #DCDCDC;
 }
 
+.pointer 
+{
+    cursor: pointer;
+}
+
+.tree-positions-container
+{
+    height: 100%;
+    width: 41vh;
+    display: flex;
+    margin-right: auto;
+}
+
+.dialog-save-button-left
+{
+    margin-right: 2%;
+}
+
+.dialog-save-button
+{
+    max-height: 100%;
+    height: 100%;
+    width: 50%;
+}
+
+.dialog-save-container
+{
+    width: 38%;
+    display: flex;
+    max-height: 100%;
+    height: 100%;
+}
+
+.dialog-save-banner
+{
+    height: 7.2%;
+    width: 93%;
+    position: relative;
+    left: 3.5%;
+    display: flex;
+    background-color: #DCDCDC;
+}
+
+.dialog-delete
+{
+    margin-left: auto;
+    height: 100%;
+    width: 17.5%;
+    float: right; 
+}
+
+.dialog-header
+{
+    width: 65%;
+}
+
+.dialog-header-inner
+{
+  top: 28%;
+  position: relative;
+  height: 78%;
+  display: flex;
+}
+
+.dialog-close-button
+{
+  width: 17.5%;
+  margin-right: auto;
+  cursor: pointer; 
+}
+
+.create-container
+{
+    height: 100%;
+    display: flex;
+}
+
+.button-container
+{
+    position: fixed;
+    background-color: silver;
+    z-index: 100;
+}
+
+.button-container-inner
+{
+    position: relative;
+    display: flex;
+    width: 100vw;
+    height: 100%;
+}
+
+.center-text
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
+}
+
 .tree-menu-header
 {
     color: var(--form-focused-color);
@@ -18,6 +119,13 @@
 .tree-menu-item
 {
     color: var(--form-focused-color);
+    margin-top:2vh;
+    padding: 0 0 0 0; 
+    background-color: #DCDCDC;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: table-cell;
 }
 
 .dialog-root 
@@ -44,6 +152,8 @@
 
 .tree-button
 {
+    display: table-cell;
+    padding: 0 0 0 0;
     background-color: var(--container-color);
 }
 
@@ -63,13 +173,18 @@
 }
 
 .dialogContent2 {
-    width: 45vw;
-    height: 90vh;
-    max-height: 90vh;
-    border-radius: 5vw;
+    /*height: 90vh; */
+    max-height: 86vh;
     background-color: var(--container-outline-color);
     overflow: hidden;
     overflow-y: hidden;
+}
+
+.thumbnail-container-outer
+{
+    position: relative;
+    display: flex;
+    width: 100%;
 }
 
 .thumbnail-placeholder 
@@ -85,7 +200,7 @@
   color: var(--form-focused-color);
   text-align: center;
   justify-content: center;
-  font-size: 3vh;
+  /*font-size: 3vh;*/
 }
 
 .thumbnail-placeholder:hover
@@ -102,9 +217,11 @@
 }
 
 .thumbnail-container {
+    /*
     height: 44vh;
     width: 33vh;
-    margin-right: 4vh;
+    
+    padding-right: 5%; */
     display: flex;
 }
 
@@ -116,14 +233,15 @@
 .fixed-header
 {
     background-color: var(--container-outline-color);
-    height: calc(6.5vh + 1.5vw);
-    width: 40vw;
-    left: 1.5vw;
+    height: 10%;
+    width: 93%;
+    left: 3.5%;
     position: relative;
     z-index: 2;
     cursor: grab;
 }
 
+/*
 .container {
     padding: 0 0 0 0;
     background-color: var(--container-color);
@@ -133,6 +251,20 @@
     overflow-y: auto;
     overflow-x: hidden;
     left: 1.5vw;
+}
+*/
+
+.container {
+    padding: 0 0 0 0;
+    background-color: var(--container-color);
+    width: 93%;
+    max-width: 93%;
+    height: 86%;
+    max-height: 86%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    left: 3.5%;
+    position: relative;
 }
 
 .menu-button:hover
@@ -148,39 +280,49 @@
 
 .data-table
 {
-  overflow-y: scroll;
+  overflow-y: auto;
   scrollbar-gutter: none;
-  scrollbar-color: var(--form-focused-color) lightGrey ;
+  scrollbar-color: var(--form-focused-color) rgb(253, 240, 240) ;
+  height: calc(62vh - 4vw);
+  max-height: calc(62vh - 4vw);
 }
 
 .container-2{
     padding: 0 0 0 0;
     background-color: var(--container-color);
-    width: 40vw;
-    max-width: 40vw;
-    height: calc(77.5vh - 5vw);
-    max-height: calc(77.5vh - 5vw);
+    width: 93%;
+    max-width: 93%;
+    height: 78%;
+    max-height: 78%;
     overflow-y: hidden;
     overflow-x: hidden;
-    left: 1.5vw;
+    left: 3.5%;
+    position: relative;
 }
 
 .container-shrunk {
     padding: 0 0 0 0;
     background-color: var(--container-color);
-    width: 40vw;
-    max-width: 40vw;
-    max-height: calc(77vh - 5vw);
+    width: 93%;
+    max-width: 93%;
+    height: 86%;
+    max-height: 78%;
     overflow-y: auto;
     overflow-x: hidden;
-    left: 1.5vw;
+    left: 3.5%;
+    position: relative;
 }
 
 .entryContainer {
     display: flex;
-    margin-bottom: 3.275vh;
+    /*margin-bottom: 3.275vh;*/
+    /*
+    height: 9.1%;
+    margin-bottom: 4.8%;
+    */
 }
 
+/*
 .fullWidthLeft {
     width: 15.58vw;
     height: 6.5vh;
@@ -189,19 +331,36 @@
     font-size: 4.2vh;
     color: var(--form-focused-color) !important;
 }
+*/
+
+.fullWidthLeft {
+    width: 39%;
+    /*height: 6.5vh;*/
+    height: 100%;
+    font: 'Palatino, serif';
+    font-family: 'Palatino, serif';
+    /*font-size: 4.2vh;*/
+    color: var(--form-focused-color) !important;
+}
 
 .fullWidthRight {
-    width: 24.42vw;
-    height: 6.5vh;
+    width: 61%;
+    /*height: 6.5vh;*/
+    height: 100%;
     font-family: 'Courier, monospace';
     border: none;
 }
 
 .title-container {
-    width: calc(40vw - 37vh);
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.expandable-title-container
+{
+    margin-left: 4%;
 }
 
 .title {
@@ -216,11 +375,26 @@
     background-color: var(--container-color);
 }
 
+.title-mobile {
+    text-align: center;
+    width: 100%;
+    font-size: 9vw;
+    font-family: 'Courier, monospace';
+    height: 9.5vw;
+    max-height: 39.6vw;
+    border: none;
+    color: rgb(49, 152, 170);
+    background-color: var(--container-color);
+}
+
 /*33vh 2vw*/
 .title-required-container
 {
-    font-size: 3vh;
-    width: calc(38vw - 33vh);
+    /*font-size: 3vh;*/
+    margin-left: 4%;
+    width: 37%;
+    color: red;
+    text-align: bottom;
 }
 
 .title-required {
@@ -229,7 +403,18 @@
     font-size: 10vh;
     font-family: 'Courier, monospace';
     height: 10vh;
-    max-height: 33vh;
+    max-height: 44vh;
+    border: 4px solid red;
+    color: rgb(49, 152, 170);
+}
+
+.title-required-mobile {
+    text-align: center;
+    width: 100%;
+    font-size: 9vw;
+    font-family: 'Courier, monospace';
+    height: 9.5vw;
+    max-height: 39.6vw;
     border: 4px solid red;
     color: rgb(49, 152, 170);
 }
@@ -237,6 +422,21 @@
 .title-required:focus {
     background-color: var(--input-focused-background-color);
     color: var(--form-focused-color) !important;
+}
+
+.title-required-mobile:focus {
+    background-color: var(--input-focused-background-color);
+    color: var(--form-focused-color) !important;
+}
+
+.title-mobile:hover {
+    border: 5px solid var(--input-focused-background-color);
+}
+
+.title-mobile:focus {
+    background-color: var(--input-focused-background-color);
+    color: var(--form-focused-color) !important;
+    border-color: var(--form-focused-color);
 }
 
 .title:hover {
@@ -275,12 +475,13 @@ span
 .input {
     width: 100%;
     height: 100%;
+    max-height: 100%;
     font-family: 'Courier, monospace';
-    font-size: 3vh;
+    /*font-size: 3vh;*/
     border: 3px solid var(--form-border-color);
     color: var(--form-border-color);
     border-radius: 2vh;
-    max-height: 17vh;
+    max-height: 100%;
     background-color: var(--container-color);
 }
 
@@ -301,10 +502,10 @@ span
     width: 100%;
     height: 100%;
     font-family: 'Courier, monospace';
-    font-size: 3vh;
+    /*font-size: 3vh;*/
     color: var(--form-border-color);
     border-radius: 2vh;
-    max-height: 17vh;
+    max-height: 100%;
     background-color: var(--container-color);
 }
 
@@ -318,12 +519,13 @@ span
 .input-data {
     width: 100%;
     height: 100%;
+    max-height: 100%;
     font-family: 'Courier, monospace';
-    font-size: 3vh;
+    /*font-size: 3vh;*/
     border: 3px solid var(--form-border-color);
     color: var(--form-border-color);
     border-radius: 2vh;
-    max-height: 26vh;
+    max-height: 100%;
     background-color: var(--container-color);
 } 
 
@@ -358,6 +560,17 @@ span
     text-align: center;
     justify-content: center;
 }
+
+.dialog-delete-button
+{
+    width: 100%;
+    background-color: red;
+    height: 90%; 
+    max-height: 90%;
+    float: right;
+    justify-content: center;
+}
+
 .button:hover {
     background-color: var(--form-focused-color);
 }
@@ -401,10 +614,50 @@ textarea:focus
 
 }
 
+.empty-tree-message
+{
+    font-size: 5vh; 
+    color: #d68a16;
+    position: absolute;
+}
+
+.empty-tree-container
+{
+    position: absolute;
+}
+
+.button-root-empty
+{   
+    padding: 0 0 0 0; 
+    background-color: lightGrey;
+    color: #d68a16;
+    outline: none;
+    border: none;
+}
+
+.button-root-empty:hover
+{
+    outline: none;
+    border: none;
+}
+
+.button-root-empty:focus
+{
+    outline: none;
+    border: none;
+}
+
 button:focus
 {
     outline: none;
     border: none;
+}
+
+.flex-box-leftmost
+{
+    margin-right: auto;
+    display: flex;
+    height: 100%;
 }
 
 .save-bar
