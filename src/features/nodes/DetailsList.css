@@ -15,6 +15,12 @@
     cursor: pointer;
 }
 
+.save-position-changes
+{
+    font-size: 3vh;
+    height: 100%;
+}
+
 .tree-positions-container
 {
     height: 100%;
