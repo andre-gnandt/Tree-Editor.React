@@ -778,7 +778,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
     var result = [];
     if(updateNodesList.length > 0)
     {
-      var result = await updateManyNodes(updateNodesList[0].id, updateNodesList);
+      var result = await updateManyNodes(id, updateNodesList);
       if(!result) return;
       
       changeTracker = new Object();
