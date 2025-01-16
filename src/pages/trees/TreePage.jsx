@@ -12,8 +12,8 @@ const TreePage = () => {
   useEffect(() => {
       if(!countries && !treeFetch)
       {
-        SetCountries();
         SetFullTree();
+        SetCountries();
       }
   });
 
