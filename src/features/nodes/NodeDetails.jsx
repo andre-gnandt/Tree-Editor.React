@@ -415,7 +415,7 @@ const NodeDetails = ({
                             <InputTextarea unstyled className = "input" maxLength={1000} placeholder='Description...' autoResize style = {{fontSize: mobile ? '3vw' : '3vh'}} rows={5} onChange = {(e) => {CheckValueChange(inputNode.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
                         </div>
                     </div>
-                    <div className="entryContainer" style = {{height: mobile ? '24vw' : '26vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
+                    <div className="entryContainer" style = {{height: mobile ? '5.7vw' : '6.5vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
                         <div className = "fullWidthLeft" style = {{fontSize: mobile ? '3.9vw':'4.2vh'}}>
                             Country:  
                         </div> 
@@ -435,12 +435,13 @@ const NodeDetails = ({
                                 />
                         </div>
                     </div> 
-                    <div className="entryContainer">
-                        <div className = "fullWidthLeft">
+                    <div className="entryContainer" style = {{height: mobile ? '5.7vw' : '6.5vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
+                        <div className = "fullWidthLeft" style = {{fontSize: mobile ? '3.9vw':'4.2vh'}}>
                             Region:  
                         </div> 
                         <div className="fullWidthRight">
                             <Dropdown  
+                                emptyMessage="Select a Country first!"
                                 maxLength={1000}
                                 showClear
                                 className = "dropdown"

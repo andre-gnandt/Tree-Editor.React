@@ -459,6 +459,7 @@ li {
     height: 6.5vh;
     border-radius: 2vh;
     background-color: var(--input-focused-background-color);
+    color: grey;
 }
 
 li:hover {
@@ -471,6 +472,10 @@ li > span {
     height: 100%;
     width: 100%;
     margin-left: 2vw;
+}
+
+span.p-placeholder {
+    color: grey;
 }
 
 span 
