@@ -31,7 +31,7 @@ const TreePage = () => {
 
   return (
     <>
-    { (treeFetch && countries) &&
+    { (treeFetch) &&
         (
             <>
                 <Tree id = {id} treeFetch = {treeFetch} countries={countries}/>
