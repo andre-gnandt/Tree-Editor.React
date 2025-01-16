@@ -64,7 +64,10 @@ const Tree = ({id, treeFetch, countries = null}) => {
     }
 
     window.addEventListener('resize', ReRenderTree);
-    return () =>{ window.removeEventListener('resize', ReRenderTree);}
+    return () =>{ 
+      window.removeEventListener('resize', ReRenderTree);
+      RemoveLines(tree);
+    }
   });
 
   function PixelSizeInCentimetres() {
