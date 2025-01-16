@@ -50,7 +50,7 @@ const Tree = ({id, treeFetch}) => {
   var mouseOverNode = null;
   const minimumNodeSize = 1.15/pixelsToCentimetres; //1.4 cm in pixels
   var nodeDimension = 80;
-  const iconDimension = 0.08*window.innerHeight;
+  var iconDimension = 0.08*window.innerHeight;
   const horizontalBorder = 15; //in pixels
   var testRender = false;
 
@@ -113,6 +113,8 @@ const Tree = ({id, treeFetch}) => {
       
       RemoveLines(tree);
     }
+
+    iconDimension = 0.08*window.innerHeight;
 
     nodeList = [];
     nodeDictionary = [];
@@ -1029,7 +1031,7 @@ const Tree = ({id, treeFetch}) => {
             middleText={"Drag and drop nodes upon eachother in order to change the tree structure. Save or undo these changes using the 2 buttons located directly beneath this text."}
           />
           <div id = 'button-container-inner' className='button-container-inner' style = {{height: '8vh'}}>
-            <div className='flex-box-leftmost' style = {{width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",}}>   
+            <div className='flex-box-leftmost' style = {{width: '17vh',}}>   
                   <button 
                     onClick={(event) => { navigate("/");}}
                     className='button-header button-save tooltip' 
@@ -1051,7 +1053,7 @@ const Tree = ({id, treeFetch}) => {
                   (window.innerHeight < window.innerWidth ) 
                   &&
                   (
-                  <div style ={{height: '8vh'}} className='save-tree-positions' >
+                  <div className='save-position-changes'>
                     Save Position Changes
                   </div>
                   )
@@ -1059,7 +1061,7 @@ const Tree = ({id, treeFetch}) => {
                 <span class="tooltip-bottom">Save Tree Positions</span>
               </button>
             </div>
-            <div id = 'create-container' className='create-container' style = {{height: String(iconDimension)+'px', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px", marginRight: '2vw'}}>
+            <div id = 'create-container' className='create-container' style = {{width: '17vh', marginRight: '2vw'}}>
                 {CreationButtons()}
             </div>
           </div>
