@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { Dialog } from 'primereact/dialog';
 //import './DetailsList.css'
 import '../trees/tree.css';
@@ -10,7 +10,24 @@ import { cloneNode } from './nodeSlice';
 
 const CreateNode = ({nodeList, nodeDictionary, iconSize, rootNode, render, treeId}) => {
     const [createNode, setCreateNode] = useState(null);
+    const [mobile, setMobile] = useState(window.innerHeight > 0.85 * window.innerWidth ? true : false);
     const dispatch = useDispatch();
+
+    
+    useEffect(() => {
+        
+        if(createNode)
+        {
+            window.addEventListener('resize', isMobile);
+        }
+        else 
+        {
+            window.removeEventListener('resize', isMobile);
+        }
+        
+        return () => window.removeEventListener('resize', isMobile);
+    });
+    
 
     const newNode = 
     {
@@ -31,8 +48,23 @@ const CreateNode = ({nodeList, nodeDictionary, iconSize, rootNode, render, treeI
 
     const unMount = () => 
     {
+        window.removeEventListener('resize', isMobile);
         setCreateNode(false);
     }
+
+    
+    function isMobile()
+    {
+        if(window.innerHeight > 0.85 * window.innerWidth)
+        {
+            setMobile(true);
+        }
+        else
+        {
+        setMobile(false);
+        }
+    }
+    
 
     function CompareNodes(a, b)
     {
@@ -60,12 +92,30 @@ const CreateNode = ({nodeList, nodeDictionary, iconSize, rootNode, render, treeI
     return (
         <>  
             <button className = {(newNode.nodeId == null) ? 'button-header button-save tooltip' : 'button-header button-create tooltip'} disabled = {(newNode.nodeId == null )}>
-                <i className='pi pi-upload' style = {{fontSize: '7.2vh'}} onClick = {() => { OpenDialog();}} />
+                <i className='pi pi-upload diagram-header-icon'  onClick = {() => { OpenDialog();}} />
                 <span class="tooltip-left">New Node</span>
             </button>
             <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
-                <Dialog className={"dialogContent"} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}} visible = {createNode} onHide={() => {if (!createNode) return; setCreateNode(false);}} > 
-                        <NodeDetails unMount = {unMount} rootNode = {rootNode} files = {newNode.files} create = {true} render = {render} inputNode = {newNode} nodeList = {GetNodeList()} nodeDictionary = {nodeDictionary}/>
+                <Dialog 
+                    className={"dialogContent"} 
+                    draggable 
+                    showHeader = {false}  
+                    contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px',backgroundColor: '#E0E0E0'}} 
+                    visible = {createNode} 
+                    onHide={() => {if (!createNode) return; unMount();}} 
+                    style = {{width: mobile ? '88vw' : String(0.45*screen.width)+"px", height: mobile ? '73.9vw' : '86vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}} 
+                > 
+                        
+                        <NodeDetails 
+                            mobile = {mobile}
+                            unMount = {unMount} 
+                            rootNode = {rootNode} 
+                            files = {newNode.files} 
+                            create = {true} 
+                            render = {render} 
+                            inputNode = {newNode} 
+                            nodeList = {GetNodeList()} 
+                            nodeDictionary = {nodeDictionary}/>
                 </Dialog>
             </Draggable>
         </>

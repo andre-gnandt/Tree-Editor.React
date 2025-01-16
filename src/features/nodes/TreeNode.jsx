@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import { useDispatch} from 'react-redux'
 import { Dialog } from 'primereact/dialog';
 import './DetailsList.css';
@@ -12,12 +12,40 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
 
     const dispatch = useDispatch();
     const[manualReRender, setManualReRender] = useState(1); //used for callback re renders
+    const [mobile, setMobile] = useState(window.innerHeight > 0.85 * window.innerWidth ? true : false);
     
     //After file gallery is added, set this to an api call to get
     //all files by node id on click/open of node details
     const[files, setFiles] = useState(inputNode.files);    
     var buttonMouseDown = new Object();
     var buttonMouseUp = new Object();
+
+    
+    useEffect(() => {
+
+        if(dialog && inputNode['dialog'])
+        {
+            window.addEventListener('resize', isMobile);
+        }
+        else
+        {
+            window.removeEventListener('resize', isMobile);
+        }
+
+        return () => window.removeEventListener('resize', isMobile);
+    });    
+
+    function isMobile()
+    {
+        if(window.innerHeight > 0.85 * window.innerWidth)
+        {
+            setMobile(true);
+        }
+        else
+        {
+            setMobile(false);
+        }
+    }
 
     //used for callback re renders
     function RenderTreeNode()
@@ -28,6 +56,7 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
     const CloseDialog = () =>
     {
         inputNode['dialog'] = false;
+        window.removeEventListener('resize', isMobile);
         setDialog(false);
     }
 
@@ -97,31 +126,34 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
             <>  
                 { inputNode.thumbnailId ? 
                     <div style = {{height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
-                        <img className='image' style = {{cursor: 'pointer'}} onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {GetImageSource()}/>
+                        <img className='image pointer' onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {GetImageSource()}/>
                         <div
+                            className='image-text text-overflow pointer'
                             onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}}
-                            style = {{  fontSize: String(css.nodeSize*0.155)+'px',
-                                        position: 'absolute',
-                                        top: '50%',
-                                        left: '50%',
-                                        transform: 'translate(-50%, -50%)', cursor: 'pointer'
-                                        ,  color: 'white', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'
-                                    }}
+                            style = {{ fontSize: String(css.nodeSize*0.155)+'px'}}
                         >
                             {inputNode.title}
                         </div>                      
                     </div>
                     :
                     <button 
-                        className='tree-button'       
+                        className='tree-button text-overflow'       
                         onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} 
-                        style = {{ padding: '0 0 0 0 ', fontSize: String(css.nodeSize*0.155)+'px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'table-cell', maxHeight:String(css.nodeSize)+'px', maxWidth: String(css.nodeSize)+'px',  height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
+                        style = {{ fontSize: String(css.nodeSize*0.155)+'px', maxHeight:String(css.nodeSize)+'px', maxWidth: String(css.nodeSize)+'px',  height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
                         {inputNode.title}
                     </button> 
                 } 
                 <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>                              
-                    <Dialog className={"dialogContent"} draggable showHeader = {false}  contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '1vw solid #274df5', borderRadius: '5vw', backgroundColor: '#E0E0E0'}} visible = {dialog} onHide={() => {if (!dialog) return; inputNode["dialog"] = false; setDialog(false);}} > 
-                            <NodeDetails SetChangeTracker = {setChangeTracker} unMount = {CloseDialog} renderTreeNode = {RenderTreeNode} files = {files} rootNode = {rootNode} render = {render} inputNode = {inputNode} nodeList = {GetNodeList()} nodeDictionary = {nodeDictionary} countries = {countries}/>
+                    <Dialog 
+                        style = {{width: mobile ? '88vw' : String(0.45*screen.width)+"px", height: mobile ? '73.9vw' : '86vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}}
+                        className={"dialogContent"} 
+                        draggable 
+                        showHeader = {false}  
+                        contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}} 
+                        visible = {dialog} 
+                        onHide={() => {if (!dialog) return; CloseDialog();}}
+                    > 
+                            <NodeDetails mobile = {mobile} SetChangeTracker = {setChangeTracker} unMount = {CloseDialog} renderTreeNode = {RenderTreeNode} files = {files} rootNode = {rootNode} render = {render} inputNode = {inputNode} nodeList = {GetNodeList()} nodeDictionary = {nodeDictionary}/>
                     </Dialog>
                 </Draggable>      
             </> 

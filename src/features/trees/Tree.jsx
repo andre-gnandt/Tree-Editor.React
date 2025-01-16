@@ -50,7 +50,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
   var mouseOverNode = null;
   const minimumNodeSize = 1.15/pixelsToCentimetres; //1.4 cm in pixels
   var nodeDimension = 80;
-  const iconDimension = 0.08*window.innerHeight;
+  var iconDimension = 0.08*window.innerHeight;
   const horizontalBorder = 15; //in pixels
   var testRender = false;
 
@@ -117,6 +117,8 @@ const Tree = ({id, treeFetch, countries = null}) => {
       RemoveLines(tree);
     }
 
+    iconDimension = 0.08*window.innerHeight;
+
     nodeList = [];
     nodeDictionary = [];
     var inputTree = tree;
@@ -158,12 +160,21 @@ const Tree = ({id, treeFetch, countries = null}) => {
       else if(callback === "delete single")
       {
         node = AlterTreeStructureForDeleteSingle(inputTree, nodeId, oldParentId);
-        AlterTreeStructureForDeleteSingle(originalTree, nodeId, oldParentId);
+
+        const originalNode = FindNodeInTree(nodeId, originalTree);
+        const newParent = FindNodeInTree(oldParentId, originalTree);
+        AlterTreeStructureForDeleteCascade(originalTree, nodeId, originalNode.nodeId, originalNode);
+        originalNode.children.forEach(child => {
+          child.nodeId = oldParentId;
+          AddNodeToChildren(newParent, child);
+        });   
       }
       else if(callback === "delete cascade")
       {
         node = AlterTreeStructureForDeleteCascade(inputTree, nodeId, oldParentId);
-        AlterTreeStructureForDeleteCascade(originalTree, nodeId, oldParentId);
+        
+        const originalNode = FindNodeInTree(nodeId, originalTree);
+        AlterTreeStructureForDeleteCascade(originalTree, nodeId, originalNode.nodeId, originalNode);
       }
     }
 
@@ -431,10 +442,10 @@ const Tree = ({id, treeFetch, countries = null}) => {
         >
           <div 
             id = {child.id} 
-            className={child.id+" treenode-container"} 
+            className={child.id+" treenode-container text-overflow center-text"} 
             onMouseOver={() => {mouseOverNode = child.id;}}
             onMouseOut={() => {mouseOverNode = null;}} 
-            style = {{display: 'flex', justifyContent: 'center', alignItems: 'center',backgroundColor: '#F0F0F0', borderRadius: String(nodeSize*0.2)+'px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', zIndex: 4, position:'absolute',top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', display: 'table', border: '2px solid red',  height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
+            style = {{borderRadius: String(nodeSize*0.2)+'px', top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
           >
             <Provider store ={store}>
               <TreeNode 
@@ -993,12 +1004,12 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
     return (
       <>
-            <div style = {{position: 'absolute', left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String(maximumNodeSize/4+window.innerWidth*0.04)+'px', height: String(maximumNodeSize)+'px', width: String(maximumNodeSize)+'px'}}>
-              <button onClick={(event) => {document.getElementById('create-root-button').click();}} className='button-root-empty' style = {{padding: '0 0 0 0', backgroundColor: 'lightGrey', color: '#d68a16'}}>
+            <div className='empty-tree-container' style = {{left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String(maximumNodeSize/4+window.innerWidth*0.04)+'px', height: String(maximumNodeSize)+'px', width: String(maximumNodeSize)+'px'}}>
+              <button onClick={(event) => {document.getElementById('create-root-button').click();}} className='button-root-empty' >
                   <i className='pi pi-warehouse' style = {{fontSize: String(maximumNodeSize)+'px'}} onClick = {() => { setCreateNode(true);}} />
               </button> 
-            </div >
-              <span style = {{fontSize: '5vh', color: '#d68a16', position: 'absolute', left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String((5*maximumNodeSize/4)+20+window.innerWidth*0.04)+'px', width: String(maximumNodeSize)+'px'}}>
+            </div>
+              <span className='empty-tree-message' style = {{left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String((5*maximumNodeSize/4)+20+window.innerWidth*0.04)+'px', width: String(maximumNodeSize)+'px'}}>
                 This tree is empty, click the icon above to create the root node!
               </span>
           </>
@@ -1019,42 +1030,42 @@ const Tree = ({id, treeFetch, countries = null}) => {
     <>
       { (treeFetch && treeDetails) && (
         <>
-        <div id = 'button-container' style ={{position: 'fixed', backgroundColor: 'silver', zIndex: 100}}>
+        <div id = 'button-container' className='button-container'>
           <HeaderInfo 
             middleText={"Drag and drop nodes upon eachother in order to change the tree structure. Save or undo these changes using the 2 buttons located directly beneath this text."}
           />
-          <div id = 'button-container-inner' style = {{position: 'relative', display:'flex', top: '0px', width: '100vw', height: '8vh', justifyContent: 'center', alignItems: 'center'}}>
-            <div style = {{marginRight: 'auto', height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",}}>
-                {/*<Link to ="/">*/}
+          <div id = 'button-container-inner' className='button-container-inner' style = {{height: '8vh'}}>
+            <div className='flex-box-leftmost' style = {{width: '17vh',}}>   
                   <button 
                     onClick={(event) => { navigate("/");}}
                     className='button-header button-save tooltip' 
-                    style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}
+                    style = {{width: '8vh'}}
                   >
-                    <i className='pi pi-home save-icon' style = {{fontSize: '8vh'}} />
+                    <i className='pi pi-home save-icon diagram-header-icon' />
                     <span class="tooltip-right">Home</span>
                   </button>
-                {/*</Link>*/}
               <EditTree id = {id} tree = {treeDetails}/>
             </div>          
-            <div style = {{height: '100%', width: '41vh', display: 'flex',  marginRight: 'auto'}}>
-              <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{height: '100%', width: '8vh', padding: '0 0 0 0'}}>
-              { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
-                }
-                <i className='pi pi-replay save-icon' style = {{fontSize: '8vh'}} />
+            <div className='tree-positions-container'>
+              <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{width: '8vh'}}>
+                <i className='pi pi-replay save-icon diagram-header-icon' />
                 <span class="tooltip-bottom">Revert Tree Positions</span>
               </button>
-              <button onClick={() => { SaveTreePositions();}} id = 'save-tree-positions' className='button-header button-save tooltip' style = {{height: '100%', width: '100%', padding: '0 0 0 0'}}>
-              { //style = {{float: 'left', fontSize: iconSize, color: 'lightGrey'}}
-                }
+              <button onClick={() => { SaveTreePositions();}} id = 'save-tree-positions' className='button-header button-save tooltip'>
                 <i className='pi pi-save save-icon' style = {{fontSize: '8vh'}} />
-                <div style = {{fontSize: '3vh',height: '100%', width: '100%', padding: '0 0 0 0'}}>
-                  Save Position Changes
-                </div>
+                {
+                  (window.innerHeight < window.innerWidth ) 
+                  &&
+                  (
+                  <div className='save-position-changes'>
+                    Save Position Changes
+                  </div>
+                  )
+                }
                 <span class="tooltip-bottom">Save Tree Positions</span>
               </button>
             </div>
-            <div id = 'create-container' style = {{height: '100%', display:'flex', width: String((iconDimension*2)+(0.01*window.innerHeight))+"px",  marginRight: '2vw'}}>
+            <div id = 'create-container' className='create-container' style = {{width: '17vh', marginRight: '2vw'}}>
                 {CreationButtons()}
             </div>
           </div>
