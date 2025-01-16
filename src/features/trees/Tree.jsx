@@ -66,7 +66,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
     window.addEventListener('resize', ReRenderTree);
     return () =>{ 
       window.removeEventListener('resize', ReRenderTree);
-      RemoveLines(tree);
+      if(tree) RemoveLines(tree);
     }
   });
 
