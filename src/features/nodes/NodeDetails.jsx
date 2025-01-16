@@ -21,6 +21,7 @@ const NodeDetails = ({
     countries
     })  =>     
     {
+    console.log(countries);
     const dispatch = useDispatch();
     const node = useSelector(state => state.node);
     const [regions, setRegions] = useState(GetRegions(node.country));
@@ -425,6 +426,7 @@ const NodeDetails = ({
                                 className = "dropdown"
                                 placeholder='Select Country...'
                                 panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
+                                style = {{fontSize: mobile ? '2.8vw' : '3vh'}}
                                 filter
                                 onChange = {(e) => {CountrySelected(inputNode.country, node.country, e.target.value ? e.target.value.countryName : null)}} 
                                 value = {node.country ? countries.find((object) => object.countryName === node.country) : null}
@@ -444,6 +446,7 @@ const NodeDetails = ({
                                 className = "dropdown"
                                 placeholder='Select Region...'
                                 panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
+                                style = {{fontSize: mobile ? '2.8vw' : '3vh'}}
                                 filter
                                 onChange = {(e) => {RegionSelected(inputNode.region, node.region, e.target.value ? e.target.value.name : null)}} 
                                 value = {node.region ? regions.find((object) => object.name === node.region) : null}

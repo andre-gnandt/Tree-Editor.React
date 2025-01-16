@@ -8,7 +8,7 @@ import 'primeicons/primeicons.css';
 import Draggable from 'react-draggable';
 import { cloneNode } from './nodeSlice';
 
-const CreateNode = ({nodeList, nodeDictionary, iconSize, rootNode, render, treeId}) => {
+const CreateNode = ({nodeList, nodeDictionary, countries, iconSize, rootNode, render, treeId}) => {
     const [createNode, setCreateNode] = useState(null);
     const [mobile, setMobile] = useState(window.innerHeight > 0.85 * window.innerWidth ? true : false);
     const dispatch = useDispatch();
@@ -107,6 +107,7 @@ const CreateNode = ({nodeList, nodeDictionary, iconSize, rootNode, render, treeI
                 > 
                         
                         <NodeDetails 
+                            countries = {countries}
                             mobile = {mobile}
                             unMount = {unMount} 
                             rootNode = {rootNode} 

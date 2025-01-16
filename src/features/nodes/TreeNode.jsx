@@ -153,7 +153,7 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
                         visible = {dialog} 
                         onHide={() => {if (!dialog) return; CloseDialog();}}
                     > 
-                            <NodeDetails mobile = {mobile} SetChangeTracker = {setChangeTracker} unMount = {CloseDialog} renderTreeNode = {RenderTreeNode} files = {files} rootNode = {rootNode} render = {render} inputNode = {inputNode} nodeList = {GetNodeList()} nodeDictionary = {nodeDictionary}/>
+                            <NodeDetails mobile = {mobile} countries = {countries} SetChangeTracker = {setChangeTracker} unMount = {CloseDialog} renderTreeNode = {RenderTreeNode} files = {files} rootNode = {rootNode} render = {render} inputNode = {inputNode} nodeList = {GetNodeList()} nodeDictionary = {nodeDictionary}/>
                     </Dialog>
                 </Draggable>      
             </> 

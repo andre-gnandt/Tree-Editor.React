@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import 'primeicons/primeicons.css';
 import Draggable from 'react-draggable';
 
-const CreateRoot = ({nodeList, nodeDictionary, iconSize, rootNode, render, treeId}) => {
+const CreateRoot = ({nodeList, nodeDictionary, countries, iconSize, rootNode, render, treeId}) => {
     const [createNode, setCreateNode] = useState(null);
     const [mobile, setMobile] = useState(window.innerHeight > 0.85 * window.innerWidth ? true : false);
     const dispatch = useDispatch();
@@ -81,7 +81,7 @@ const CreateRoot = ({nodeList, nodeDictionary, iconSize, rootNode, render, treeI
                     contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}} 
                     visible = {createNode} 
                     onHide={() => {if (!createNode) return; unMount();}} >                  
-                        <NodeDetails mobile = {mobile} unMount = {unMount} rootNode = {rootNode} files = {newRoot.files} root = {true} render = {render} inputNode = {newRoot} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
+                        <NodeDetails countries = {countries} mobile = {mobile} unMount = {unMount} rootNode = {rootNode} files = {newRoot.files} root = {true} render = {render} inputNode = {newRoot} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
                 </Dialog>
             </Draggable>
         </>

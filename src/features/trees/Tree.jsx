@@ -962,10 +962,10 @@ const Tree = ({id, treeFetch, countries = null}) => {
     return (
       <>
         <Provider store ={store}>
-          <CreateRoot treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+          <CreateRoot countries = {countries} treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
         </Provider>
         <Provider store ={store}>
-          <CreateNode  treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+          <CreateNode countries = {countries}  treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
         </Provider>
       </> 
     );
