@@ -1033,10 +1033,10 @@ const Tree = ({id, treeFetch, countries = null}) => {
     <>
       { (treeFetch && treeDetails) && (
         <>
-        <div id = 'button-container' className='button-container'>
-          <HeaderInfo 
+        <HeaderInfo 
             middleText={"Drag and drop nodes upon eachother in order to change the tree structure. Save or undo these changes using the 2 buttons located directly beneath this text."}
           />
+        <div id = 'button-container' className='button-container'>
           <div id = 'button-container-inner' className='button-container-inner' style = {{height: '8vh'}}>
             <div className='flex-box-leftmost' style = {{width: '17vh',}}>   
                   <button 

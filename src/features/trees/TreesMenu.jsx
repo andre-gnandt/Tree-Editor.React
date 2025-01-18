@@ -170,7 +170,7 @@ const TreesMenu = ({trees}) => {
 
   return (
     <>
-      <div>
+      <div style = {{height: '100%', width: '100%'}}>
         <div id = 'button-container' className='button-container'>
           <HeaderInfo/>
           <div id = 'button-container-inner' className = 'button-container-inner'>

@@ -5,7 +5,7 @@ const HeaderInfo = ({middleText = null}) => {
     
     return (
         <div className='header-container'>
-            <div>
+            <div className='header-creator'>
                 Creator: Andre Gnandt
             </div>
 

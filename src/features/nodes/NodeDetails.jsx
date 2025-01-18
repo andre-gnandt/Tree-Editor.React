@@ -21,7 +21,6 @@ const NodeDetails = ({
     countries
     })  =>     
     {
-    console.log(countries);
     const dispatch = useDispatch();
     const node = useSelector(state => state.node);
     const [regions, setRegions] = useState(GetRegions(node.country));
