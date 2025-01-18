@@ -1,17 +1,22 @@
 import '../trees/tree.css';
+import '../nodes/DetailsList.css';
 
-const HeaderInfo = ({middleText = null}) => {
+const HeaderInfo = ({creator = true, middleText = null}) => {
     
     
     return (
-        <div className='header-container'>
-            <div className='header-creator'>
-                Creator: Andre Gnandt
-            </div>
+        <div id = 'header-container' className='header-container'>
+            { (creator) && 
+                ( 
+                <div className='header-creator'>
+                    Creator: Andre Gnandt
+                </div>
+                )
+            }
 
             { (middleText) && 
                 (
-                    <div className='header-middle-text'>
+                    <div className='center-text header-middle-text'>
                         {middleText}
                     
                     </div>

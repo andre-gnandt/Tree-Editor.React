@@ -30,13 +30,15 @@
   color: white;
 }
 
+/*
 .save-position-changes 
 {
-  font-size: 3vh;
+  font-size: 1.2rem;
   height: 100%;
   width: 100%;
   padding: 0 0 0 0;
 }
+  */
 
 .empty-list-container
 {
@@ -127,8 +129,6 @@
 
 .header-container
 {
-  display: flex;
-  flex-wrap: wrap;
   /*height: 4vw;*/
   height: 3.2rem;
   width: 100%;
@@ -136,33 +136,31 @@
   font-size: 1.55rem;
   color: white;
   background-color: black;
-}
-
-@media only screen and (max-width: 60rem) {
-  .header-middle-text {
-    display: none;
-  }
+  position: fixed;
+  z-index: 100;
 }
 
 .header-creator
 {
   height: 100%;
-  width: 15rem;
-  font-size: 1.5rem;
+  width: 100%;
+  font-size: 2.2rem;
 }
-
-
 
 .header-middle-text
 {
-  text-align: center;
-  justify-content: center;
-  left: 25vw;
   /*font-size: 1.2vw;*/
-  font-size: 1rem;
-  width: 50vw;
-  max-width:max-content;
-  position: absolute;
+  font-size: 1.1rem;
+  width: 98%;
+  left: 1%;
+  height: 100%;
+  position: relative;
+}
+
+@media only screen and (max-width: 33.5rem) {
+  .header-container {
+    display: none;
+  }
 }
 
 .empty-list-message
@@ -305,7 +303,7 @@
 
 .diagram-header-icon
 {
-  font-size: 7.8vh;
+  font-size: 3.2rem;
 }
 
 .button-header

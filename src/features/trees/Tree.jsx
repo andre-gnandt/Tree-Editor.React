@@ -50,7 +50,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
   var mouseOverNode = null;
   const minimumNodeSize = 1.15/pixelsToCentimetres; //1.4 cm in pixels
   var nodeDimension = 80;
-  var iconDimension = 0.08*window.innerHeight;
+  var iconDimension = 3.2; //rem;
   const horizontalBorder = 15; //in pixels
   var testRender = false;
 
@@ -120,7 +120,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
       RemoveLines(tree);
     }
 
-    iconDimension = 0.08*window.innerHeight;
+    //iconDimension = 0.08*window.innerHeight;
 
     nodeList = [];
     nodeDictionary = [];
@@ -471,8 +471,9 @@ const Tree = ({id, treeFetch, countries = null}) => {
   //units used are pixels
   function GetNodeDimensions()
   {
+    const verticalOffset = GetVerticalOffset();
     const maximumNodeSize = window.innerHeight*0.5
-    const verticalSpace = 0.92*window.innerHeight-0.04*window.innerWidth;
+    const verticalSpace = 0.96*window.innerHeight - verticalOffset;
     const horizontalSpace = window.innerWidth -  (2*horizontalBorder);
 
     const maxHeight = verticalSpace/treeHeight;
@@ -556,9 +557,20 @@ const Tree = ({id, treeFetch, countries = null}) => {
     }
   }
 
+  function GetVerticalOffset() 
+  {
+    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const headerPresent = (window.innerWidth/rootFontSize) >= 33.5;
+    const totalRems = headerPresent ? 3.2+iconDimension : iconDimension;
+    const totalPixels = rootFontSize*totalRems;
+
+    return totalPixels+(0.03*window.innerHeight);
+  }
+
+  
   function RenderChildren(tree, node, row = 1, offset = 0)
   {  
-      const verticalOffset = 0.11*window.innerHeight+0.04*window.innerWidth;
+      const verticalOffset = GetVerticalOffset();
       const elements = [];
       elements.push((AppendChildNode(tree, node, node["left"]+offset, row, nodeDimension, verticalOffset)));
       
@@ -965,10 +977,10 @@ const Tree = ({id, treeFetch, countries = null}) => {
     return (
       <>
         <Provider store ={store}>
-          <CreateRoot countries = {countries} treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+          <CreateRoot countries = {countries} treeId = {id} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
         </Provider>
         <Provider store ={store}>
-          <CreateNode countries = {countries}  treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+          <CreateNode countries = {countries}  treeId = {id} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
         </Provider>
       </> 
     );
@@ -1034,15 +1046,16 @@ const Tree = ({id, treeFetch, countries = null}) => {
       { (treeFetch && treeDetails) && (
         <>
         <HeaderInfo 
-            middleText={"Drag and drop nodes upon eachother in order to change the tree structure. Save or undo these changes using the 2 buttons located directly beneath this text."}
+            creator = {false}
+            middleText={"Drag and drop nodes upon eachother to change the tree structure. Save or undo these changes using the 2 central buttons."}
           />
         <div id = 'button-container' className='button-container'>
-          <div id = 'button-container-inner' className='button-container-inner' style = {{height: '8vh'}}>
-            <div className='flex-box-leftmost' style = {{width: '17vh',}}>   
+          <div id = 'button-container-inner' className='button-container-inner' style = {{height: String(iconDimension)+'rem'}}>
+            <div className='flex-box-leftmost' style = {{width: String(iconDimension*2+0.1)+'rem',}}>   
                   <button 
                     onClick={(event) => { navigate("/");}}
                     className='button-header button-save tooltip' 
-                    style = {{width: '8vh'}}
+                    style = {{width: String(iconDimension)+'rem'}}
                   >
                     <i className='pi pi-home save-icon diagram-header-icon' />
                     <span class="tooltip-right">Home</span>
@@ -1050,25 +1063,19 @@ const Tree = ({id, treeFetch, countries = null}) => {
               <EditTree id = {id} tree = {treeDetails}/>
             </div>          
             <div className='tree-positions-container'>
-              <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{width: '8vh'}}>
+              <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{width: String(iconDimension)+'rem'}}>
                 <i className='pi pi-replay save-icon diagram-header-icon' />
                 <span class="tooltip-bottom">Revert Tree Positions</span>
               </button>
               <button onClick={() => { SaveTreePositions();}} id = 'save-tree-positions' className='button-header button-save tooltip'>
-                <i className='pi pi-save save-icon' style = {{fontSize: '8vh'}} />
-                {
-                  (window.innerHeight < window.innerWidth ) 
-                  &&
-                  (
+                <i className='pi pi-save save-icon' style = {{fontSize: String(iconDimension)+'rem'}} />
                   <div className='save-position-changes'>
                     Save Position Changes
                   </div>
-                  )
-                }
                 <span class="tooltip-bottom">Save Tree Positions</span>
               </button>
             </div>
-            <div id = 'create-container' className='create-container' style = {{width: '17vh', marginRight: '2vw'}}>
+            <div id = 'create-container' className='create-container' style = {{width: String(iconDimension*2+0.1)+'rem', marginRight: '1.5rem'}}>
                 {CreationButtons()}
             </div>
           </div>

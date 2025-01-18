@@ -17,16 +17,27 @@
 
 .save-position-changes
 {
-    font-size: 3vh;
+    font-size: 1.2rem;
     height: 100%;
+    width: 100%;
+    padding: 0 0 0 0;
 }
 
 .tree-positions-container
 {
     height: 100%;
-    width: 41vh;
+    width: 15rem;
     display: flex;
     margin-right: auto;
+}
+
+@media only screen and (max-width: 30rem) {
+    .tree-positions-container {
+      width: 6.5rem;
+    }
+    .save-position-changes{
+        display: none;
+    }
 }
 
 .dialog-save-button-left
@@ -98,6 +109,7 @@
     position: fixed;
     background-color: silver;
     z-index: 100;
+    top: 3.2rem;
 }
 
 .button-container-inner
@@ -107,6 +119,12 @@
     width: 100vw;
     height: 100%;
 }
+
+@media only screen and (max-width: 33.5rem) {
+    .button-container {
+      top: 0;
+    }
+  }
 
 .center-text
 {
