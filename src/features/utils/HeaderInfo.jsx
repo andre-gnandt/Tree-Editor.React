@@ -5,7 +5,7 @@ const HeaderInfo = ({creator = true, middleText = null}) => {
     
     
     return (
-        <div id = 'header-container' className='header-container'>
+        <div id = 'header-container' className={middleText ? 'header-container middle-text': 'header-container'}>
             { (creator) && 
                 ( 
                 <div className='header-creator'>

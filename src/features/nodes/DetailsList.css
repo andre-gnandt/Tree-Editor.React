@@ -87,7 +87,7 @@
 {
   top: 28%;
   position: relative;
-  height: 78%;
+  height: 2rem;
   display: flex;
 }
 
@@ -121,7 +121,7 @@
 }
 
 @media only screen and (max-width: 33.5rem) {
-    .button-container {
+    .button-container-diagram {
       top: 0;
     }
   }
@@ -133,23 +133,6 @@
     justify-content: center;
     text-align: center;
     vertical-align: middle;
-}
-
-.tree-menu-header
-{
-    color: var(--form-focused-color);
-}
-
-.tree-menu-item
-{
-    color: var(--form-focused-color);
-    margin-top:2vh;
-    padding: 0 0 0 0; 
-    background-color: #DCDCDC;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    display: table-cell;
 }
 
 .dialog-root 
@@ -200,8 +183,7 @@
     /*height: 90vh; */
     max-height: 86vh;
     background-color: var(--container-outline-color);
-    overflow: hidden;
-    overflow-y: hidden;
+    overflow-y: auto;
 }
 
 .thumbnail-container-outer
@@ -257,7 +239,7 @@
 .fixed-header
 {
     background-color: var(--container-outline-color);
-    height: 10%;
+    height: calc(2.8% + 2rem);
     width: 93%;
     left: 3.5%;
     position: relative;
@@ -300,15 +282,6 @@
 {
     outline: none;
     border: none;
-}
-
-.data-table
-{
-  overflow-y: auto;
-  scrollbar-gutter: none;
-  scrollbar-color: var(--form-focused-color) rgb(253, 240, 240) ;
-  height: calc(62vh - 4vw);
-  max-height: calc(62vh - 4vw);
 }
 
 .container-2{

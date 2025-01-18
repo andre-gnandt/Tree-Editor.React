@@ -19,7 +19,7 @@ const TreesMenu = ({trees}) => {
   const [deleteOptions, setDeleteOptions] = useState(null);
   const [treeList, setTreeList] = useState(trees);
   const [mobile, setMobile] = useState(window.innerHeight > 0.85 * window.innerWidth ? true : false);
-  const iconDimension = 0.16*window.innerHeight;
+  const iconDimension = 5;//0.16*window.innerHeight;
 
   
   useEffect(() => {
@@ -51,7 +51,7 @@ const TreesMenu = ({trees}) => {
   {
     if(window.innerHeight > 0.85 * window.innerWidth)
     {
-       setMobile(true);
+       //setMobile(true);
     }
     else
     {
@@ -140,8 +140,11 @@ const TreesMenu = ({trees}) => {
 
         return (
           <div className= {mobile ? 'col-6' : 'col-3'} key = {tree.id} >
-              <i className='pi pi-times menu-item-icon' onClick={() => {setDeleteOptions(tree.id)}}/>
-              {/*<Link to={{ pathname: '/tree/'+tree.id, state: 'flushDeal' }}>*/}     
+              {/*<Link to={{ pathname: '/tree/'+tree.id, state: 'flushDeal' }}>*/}   
+              <div>
+              <i className='pi pi-times menu-item-icon' onClick={() => {setDeleteOptions(tree.id)}}/> 
+              </div> 
+                <div>
                 <button 
                     className='menu-button tree-menu-item'
                     style = {{fontSize: mobile ? FitFontSize(18, 70, tree.name) : FitFontSize(10, 35, tree.name), 
@@ -151,8 +154,8 @@ const TreesMenu = ({trees}) => {
                     onClick={(event) => {navigate('/tree/'+tree.id);}} 
                 >
                     {tree.name}
-                    
                 </button>
+                </div>
               {/*</Link>*/}
           </div>
       );
@@ -170,17 +173,16 @@ const TreesMenu = ({trees}) => {
 
   return (
     <>
-      <div style = {{height: '100%', width: '100%'}}>
-        <div id = 'button-container' className='button-container'>
-          <HeaderInfo/>
+        <HeaderInfo/>
+        <div id = 'button-container' className='button-container' style = {{height: String(iconDimension)+"rem"}}>
           <div id = 'button-container-inner' className = 'button-container-inner'>
-            <div id = 'create-container' className='create-container' style = {{width: String((iconDimension))+"px"}}>
+            <div id = 'create-container' className='create-container' style = {{width: String(iconDimension)+"rem"}}>
                 <button className = 'button-header button-create tooltip'>
-                    <i id = 'create-tree-button' className='pi pi-upload' style = {{fontSize: '16vh'}} onClick = {() => { setCreateTree(true);}} />
+                    <i id = 'create-tree-button' className='pi pi-upload' style = {{fontSize: String(iconDimension)+"rem"}} onClick = {() => { setCreateTree(true);}} />
                     <span class="tooltip-right">New Tree</span>
                 </button>
             </div>
-            <div className='tree-menu-header'>
+            <div className='tree-menu-header center-text'>
                     Trees
             </div>
           </div>
@@ -202,16 +204,16 @@ const TreesMenu = ({trees}) => {
             )
         }
         </div>
-      </div>
         <Draggable  onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
             <Dialog 
-              style = {{width: mobile ? '88vw' : String(0.45*screen.width)+"px", height: mobile ? '73.9vw' : '86vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}} 
+            resizable = {false}
+              style = {{minWidth: mobile ? '88vw' : String(0.45*screen.width)+"px", width: mobile ? '88vw' : String(0.45*screen.width)+"px", height: mobile ? '73.9vw' : '86vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}} 
               className={"dialogContent2"} 
               onHide = {() => {setCreateTree(false);}} 
               visible = {createTree} 
               draggable 
               showHeader = {false}  
-              contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}}
+              contentStyle={{minWidth: mobile ? '88vw' : String(0.45*screen.width)+"px", width: mobile ? '88vw' : String(0.45*screen.width)+"px", overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}}
             >
                 <TreeDetails 
                     mobile = {mobile}

@@ -1049,7 +1049,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
             creator = {false}
             middleText={"Drag and drop nodes upon eachother to change the tree structure. Save or undo these changes using the 2 central buttons."}
           />
-        <div id = 'button-container' className='button-container'>
+        <div id = 'button-container' className='button-container button-container-diagram'>
           <div id = 'button-container-inner' className='button-container-inner' style = {{height: String(iconDimension)+'rem'}}>
             <div className='flex-box-leftmost' style = {{width: String(iconDimension*2+0.1)+'rem',}}>   
                   <button 

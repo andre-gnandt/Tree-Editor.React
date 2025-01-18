@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { deleteTree, updateTree, createTree } from '../../api/trees/treesApi';
 
 const TreeDetails = ({mobile = false, reRenderList = null, unMount = null, id = null, inputTree, creation  = false}) => {
+    mobile = false;
     const navigate = useNavigate();
     const[hideButtons, setHideButtons] = useState(0);
     const changeCount = useRef(0);
