@@ -7,6 +7,7 @@ import { InputText } from 'primereact/inputtext';
 import { DataView} from 'primereact/dataview';
 import HeaderInfo from '../utils/HeaderInfo';
 import { deleteTree } from '../../api/trees/treesApi';
+import { GetDialogHeight, GetDialogWidth, IsDesktop } from '../utils/UtilityFunctions';
 import '/node_modules/primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
@@ -18,13 +19,12 @@ const TreesMenu = ({trees}) => {
   const [search, setSearch] = useState(null);
   const [deleteOptions, setDeleteOptions] = useState(null);
   const [treeList, setTreeList] = useState(trees);
-  const [mobile, setMobile] = useState(window.innerHeight > 0.85 * window.innerWidth ? true : false);
+  const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
   const iconDimension = 5;//0.16*window.innerHeight;
 
-  
   useEffect(() => {
-      window.addEventListener('resize', isMobile);
-      return () => window.removeEventListener('resize', isMobile);
+      window.addEventListener('resize', isPortrait);
+      return () => window.removeEventListener('resize', isPortrait);
     });
   
 
@@ -47,15 +47,15 @@ const TreesMenu = ({trees}) => {
     return 0;
   }
 
-  function isMobile()
+  function isPortrait()
   {
-    if(window.innerHeight > 0.85 * window.innerWidth)
+    if(window.innerHeight > window.innerWidth)
     {
-       //setMobile(true);
+       setPortrait(true);
     }
     else
     {
-      setMobile(false);
+      setPortrait(false);
     }
   }
 
@@ -139,7 +139,7 @@ const TreesMenu = ({trees}) => {
     {   
 
         return (
-          <div className= {mobile ? 'col-6' : 'col-3'} key = {tree.id} >
+          <div className= {portrait ? 'col-6' : 'col-3'} key = {tree.id} >
               {/*<Link to={{ pathname: '/tree/'+tree.id, state: 'flushDeal' }}>*/}   
               <div>
               <i className='pi pi-times menu-item-icon' onClick={() => {setDeleteOptions(tree.id)}}/> 
@@ -147,9 +147,9 @@ const TreesMenu = ({trees}) => {
                 <div>
                 <button 
                     className='menu-button tree-menu-item'
-                    style = {{fontSize: mobile ? FitFontSize(18, 70, tree.name) : FitFontSize(10, 35, tree.name), 
-                              height: mobile ? '23.19vw' : '11.9vw',
-                              width: mobile ? '38vw' : '19.5vw'
+                    style = {{fontSize: portrait ? FitFontSize(18, 70, tree.name) : FitFontSize(10, 35, tree.name), 
+                              height: portrait ? '23.19vw' : '11.9vw',
+                              width: portrait ? '38vw' : '19.5vw'
                             }}
                     onClick={(event) => {navigate('/tree/'+tree.id);}} 
                 >
@@ -192,7 +192,7 @@ const TreesMenu = ({trees}) => {
             (treeList != null && treeList.length > 0) ? 
             (
             <>
-                <InputText placeholder='Search...' className='search-bar' style = {{left: mobile ? '0vw' : '20.5vw', width: mobile ? '80vw' : '40vw'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
+                <InputText placeholder='Search...' className='search-bar' style = {{left: portrait ? '0vw' : '20.5vw', width: portrait ? '80vw' : '40vw'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
                 <DataView className='data-table' rows={4} value = {FilterTree(treeList)} listTemplate={listTemplate} layout = {"grid"} />
             </>
             )
@@ -207,16 +207,15 @@ const TreesMenu = ({trees}) => {
         <Draggable  onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
             <Dialog 
             resizable = {false}
-              style = {{minWidth: mobile ? '88vw' : String(0.45*screen.width)+"px", width: mobile ? '88vw' : String(0.45*screen.width)+"px", height: mobile ? '73.9vw' : '86vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}} 
+              style = {{maxHeight: '100vh', maxWidth: '100vw', width: GetDialogWidth(portrait), height: GetDialogHeight(portrait), borderRadius: portrait ? '5vw' : String(0.05*screen.width)+'px'}} 
               className={"dialogContent2"} 
               onHide = {() => {setCreateTree(false);}} 
               visible = {createTree} 
               draggable 
               showHeader = {false}  
-              contentStyle={{minWidth: mobile ? '88vw' : String(0.45*screen.width)+"px", width: mobile ? '88vw' : String(0.45*screen.width)+"px", overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}}
+              contentStyle={{maxHeight: '100vh', maxWidth: '100vw', width: GetDialogWidth(portrait), overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: portrait ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}}
             >
                 <TreeDetails 
-                    mobile = {mobile}
                     inputTree={{name: null, description: null}}
                     creation = {true}
                     unMount={closeDialog}

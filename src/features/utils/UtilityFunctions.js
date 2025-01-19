@@ -42,4 +42,37 @@ function error()
     const myTimeout = setTimeout(ClearError, 2000);
 }
 
-export{error, Success,  Saving, Loading, DoneLoading, DoneSaving}
+function IsTouchDevice() {  return 'ontouchstart' in window || 'onmsgesturechange' in window; };
+
+function IsDesktop(){ return !IsTouchDevice();}
+
+function GetDialogWidth(portrait)
+  {
+    if(portrait)
+    {
+      return  '100vw';
+    }
+    else if(!IsDesktop())
+    {
+      return '110vh';
+    }
+
+    return String(0.45*screen.width)+"px";
+  }
+
+  function GetDialogHeight(portrait)
+  {
+    console.log("desktop "+IsDesktop());
+    if(IsDesktop()) 
+    {
+      return '86vh';
+    }
+    else if(portrait)
+    {
+      return '110vw';
+    }
+
+    return '100vh';
+  }
+
+export{error, Success,  Saving, Loading, DoneLoading, DoneSaving, GetDialogHeight, GetDialogWidth, IsDesktop}

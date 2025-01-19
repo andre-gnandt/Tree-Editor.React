@@ -7,8 +7,7 @@ import Draggable from 'react-draggable';
 import { useNavigate } from 'react-router-dom';
 import { deleteTree, updateTree, createTree } from '../../api/trees/treesApi';
 
-const TreeDetails = ({mobile = false, reRenderList = null, unMount = null, id = null, inputTree, creation  = false}) => {
-    mobile = false;
+const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree, creation  = false}) => {
     const navigate = useNavigate();
     const[hideButtons, setHideButtons] = useState(0);
     const changeCount = useRef(0);
@@ -136,9 +135,9 @@ const TreeDetails = ({mobile = false, reRenderList = null, unMount = null, id = 
     }
 
     const GetHeader = () => {
-        if(create)return <>Create New Tree</>;
+        if(create)return <>New Tree</>;
         
-        return <>Tree Details</>;
+        return <>Tree</>;
     }
 
 
@@ -147,13 +146,14 @@ const TreeDetails = ({mobile = false, reRenderList = null, unMount = null, id = 
             <div className='dialog-root'>
                 <div id = 'fixed-header' className='fixed-header'>
                     <div className='dialog-header-inner'>
-                        <i onClick={() => {unMount()}} className='pi pi-times dialog-close-button' style = {{fontSize: mobile ? '6vw' : '6.5vh'}}/>
-                        <div className='dialog-header center-text' style = {{fontSize: mobile ? '4vw' : '4.8vh'}}>{GetHeader()}</div>                   
-                        <div className='dialog-delete'>
+                        <div className='dialog-close-container'>
+                            <i onClick={() => {unMount()}} className='pi pi-times dialog-close-button'/>
+                        </div>
+                        <div className='dialog-header center-text text-overflow'>{GetHeader()}</div>                   
+                        <div className={!create ? 'dialog-delete' : 'dialog-delete-skeleton'}>
                         { (!create) && (
                             <> 
                                 <button className='text-overflow dialog-delete-button button' 
-                                    style = {{fontSize: mobile ? '2.5vw' : '3vh'}} 
                                     onClick={() => {setDeleteOptions("confirm")}}                       
                                 >
                                 Delete</button>                   
@@ -174,12 +174,11 @@ const TreeDetails = ({mobile = false, reRenderList = null, unMount = null, id = 
                     <div className='tree-title-outer'>
                         <div className='tree-title-container center-text'>
                             <InputTextarea 
-                                maxLength={50}
+                                maxLength={100}
                                 autoResize 
                                 rows = {1} 
                                 placeholder="Title..." 
                                 className= {(titleRequired) ? "tree-title center-text" : "tree-title-required center-text"}
-                                style = {{fontSize: mobile ? '8vw': '10vh'}}
                                 spellCheck = {false}
                                 onChange = {(e) => {CheckValueChange(inputTree.name, name, e.target.value); setName(e.target.value);}} value = {name ? name : ""} />
                         </div>
@@ -191,7 +190,6 @@ const TreeDetails = ({mobile = false, reRenderList = null, unMount = null, id = 
                                 autoResize  
                                 rows={6} 
                                 className = 'tree-description center-text' 
-                                style = {{fontSize: mobile ? '3.2vw' : '4vh'}}
                                 onChange = {(e) => {CheckValueChange(inputTree.description, description, e.target.value); setDescription(e.target.value);}} value = {description ? description : ""} />
                         </div>
                   
@@ -199,10 +197,10 @@ const TreeDetails = ({mobile = false, reRenderList = null, unMount = null, id = 
                 {
                 <div className = 'dialog-save-banner' style = {{backgroundColor: (hideButtons === 0 && titleRequired) ? '#F0F0F0' : '#DCDCDC'}}>
                     <div className = 'dialog-save-container' hidden = {hideButtons === 0}  id = 'node-details-button-container'>
-                        <button className = 'dialog-save-button dialog-save-button-left button text-overflow' hidden = {hideButtons === 0} style = {{fontSize: mobile ? '3.4vw': '3.8vh'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
-                        <button className = 'dialog-save-button button text-overflow' hidden = {hideButtons === 0} style = {{fontSize: mobile ? '3.4vw': '3.8vh'}} onClick = {() => { ResetForm(); }} > Reset </button>
-                    </div>
-                    <div className='text-overflow title-required-container'  hidden = {(titleRequired)} style = {{ fontSize: mobile ? '2.8vw' : '3vh'}}>Title is required!</div>
+                        <button className = 'dialog-save-button dialog-save-button-left button text-overflow' hidden = {hideButtons === 0} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                        <button className = 'dialog-save-button button text-overflow' hidden = {hideButtons === 0} onClick = {() => { ResetForm(); }} > Reset </button>
+                    </div>                      {/*font size 1.3rem for a big screen, 12px for small screen */}
+                    <div className='title-required-container'  hidden = {(titleRequired)}>Title is required!</div>
                 </div>
                 }
             </div>
