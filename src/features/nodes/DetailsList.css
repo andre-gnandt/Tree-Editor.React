@@ -129,7 +129,6 @@
     position: fixed;
     background-color: silver;
     z-index: 100;
-    top: 3.2rem;
 }
 
 .button-container-inner

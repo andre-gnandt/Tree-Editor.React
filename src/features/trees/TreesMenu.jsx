@@ -173,8 +173,8 @@ const TreesMenu = ({trees}) => {
 
   return (
     <>
-        <HeaderInfo/>
-        <div id = 'button-container' className='button-container' style = {{height: String(iconDimension)+"rem"}}>
+        <HeaderInfo fixed = {false}/>
+        <div id = 'button-container' className='button-container' style = {{position: 'relative', height: String(iconDimension)+"rem"}}>
           <div id = 'button-container-inner' className = 'button-container-inner'>
             <div id = 'create-container' className='create-container' style = {{width: String(iconDimension)+"rem"}}>
                 <button className = 'button-header button-create tooltip'>

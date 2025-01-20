@@ -5,9 +5,12 @@ const HeaderInfo = ({fixed = true, creator = true, middleText = null}) => {
     
     
     return (
-        <div style ={{position: ''}} 
+        <div
             id = 'header-container' 
-            className={middleText ? 'header-container middle-text': 'header-container'}>
+            className={ fixed ? 
+                        (middleText ? 'header-container middle-text fixed': 'header-container fixed') : 
+                        (middleText ? 'header-container middle-text': 'header-container')}
+        >
             { (creator) && 
                 ( 
                 <div className='header-creator'>

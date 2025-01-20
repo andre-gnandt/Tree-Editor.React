@@ -70,7 +70,7 @@
 {
   /*11.2rem+12%*/
   position: relative;
-  top: calc(8.2rem + 7vh);
+  top: 7vh;
   height: calc(91vh - 11.2rem);
   width: 82vw;
   left: 9vw;
@@ -165,8 +165,12 @@
   font-size: 1.55rem;
   color: white;
   background-color: black;
-  position: fixed;
   z-index: 100;
+}
+
+.fixed
+{
+  position: fixed;
 }
 
 .header-creator
