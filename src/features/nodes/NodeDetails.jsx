@@ -21,6 +21,7 @@ const NodeDetails = ({
     countries
     })  =>     
     {
+    mobile = false;
     const dispatch = useDispatch();
     const node = useSelector(state => state.node);
     const [regions, setRegions] = useState(GetRegions(node.country));
@@ -320,10 +321,10 @@ const NodeDetails = ({
     }
 
     const GetHeader = () => {
-        if(Create)return <>Create New Node</>;
-        if(Root)return <>Create New Root</>;
+        if(Create)return <>New Node</>;
+        if(Root)return <>New Root</>;
         
-        return <>Node Content</>;
+        return <>Node</>;
     }
 
         //approx container height = 81.95vh
@@ -332,14 +333,14 @@ const NodeDetails = ({
             <div className='dialog-root'>
                 <div id = 'fixed-header' className='fixed-header'>
                     <div className='dialog-header-inner'>
-                        <i onClick={() => {unMount()}} className='pi pi-times dialog-close-button' style = {{fontSize: mobile ? '6vw' : '6.5vh'}}/>
-                        <div className='dialog-header center-text' style = {{fontSize: mobile ? '4vw' : '4.8vh'}}>{GetHeader()}</div>                   
-                        <div className='dialog-delete'>
+                         <div className='dialog-close-container'>
+                            <i onClick={() => {unMount()}} className='pi pi-times dialog-close-button'/>
+                        </div>
+                        <div className='dialog-header center-text text-overflow'>{GetHeader()}</div>                   
+                        <div className={!Create && !Root && node.nodeId ? 'dialog-delete' : 'dialog-delete-skeleton'}>
                         { (node.nodeId && !Root && !Create) && (
                             <>
-                                
                                 <button className='dialog-delete-button button text-overflow' 
-                                    style = {{fontSize: mobile ? '2.5vw' : '3vh'}} 
                                     onClick={() => {setDeleteOptions("options")}}                       
                                 >
                                 Delete</button>                   
@@ -364,35 +365,34 @@ const NodeDetails = ({
                     </div> 
                 </div>
                 <div className={(hideButtons === 0 && titleRequired) ? 'container': 'container-shrunk'}> 
-                    <div className='thumbnail-container-outer' style = {{height: mobile ? '39.6vw' : '44vh', marginBottom: mobile ? '5vw': '5.275vh'}}>
-                        <div className="thumbnail-container" style = {{height: mobile ? '39.6vw' : '44vh', width: mobile ? '29.7vw' : '33vh'}}>                         
+                    <div className='thumbnail-container-outer' style = {{marginBottom: mobile ? '5vw': '5.275vh'}}>
+                        <div className="thumbnail-container" style = {{width: '50%'}}>                         
                             <UploadThumbnail /* reset = {resetFiles} */ mobile = {mobile} reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
                         </div>
                         {
-                        <div className='title-container expandable-title-container' style = {{width: mobile ? 'calc(92% - 27.75vw)' : 'calc(92% - 33vh)'}}>
+                        <div className='title-container expandable-title-container' style = {{width: '50%'}}>
                             <InputTextarea 
                                 maxLength={50}
                                 autoResize 
                                 rows = {1} 
                                 placeholder="Title" 
-                                className= {mobile ? ( (titleRequired) ? "title-mobile" : "title-required-mobile" ) : (titleRequired ? "title" : "title-required")}
+                                className= {(titleRequired ? "title center-text" : "title-required center-text")}
                                 spellCheck = {false}
                                 onChange = {(e) => {CheckValueChange(inputNode.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title ? node.title : ""} />
                         </div>
                         }
                     </div>
                     { (!Root && inputNode.nodeId) && (
-                        <div className="entryContainer" style = {{height: mobile ? '5.7vw' : '6.5vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
-                            <div className = "fullWidthLeft" style = {{fontSize: mobile ? '3.9vw':'4.2vh'}}>
+                        <div className="entryContainer">
+                            <div className = "fullWidthLeft vertical-center">
                                 Parent:  
                             </div> 
                             <div className="fullWidthRight">
                                 <Dropdown  
                                     maxLength={1000}
-                                    className = "dropdown"
+                                    className = "dropdown text-overflow vertical-center"
                                     placeholder='Select Parent...'
                                     panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
-                                    style = {{fontSize: mobile ? '2.8vw' : '3vh'}}
                                     onFocus={(event) => {}}
                                     //className='input'
                                     disabled = {node.nodeId ? false : true}
@@ -406,36 +406,35 @@ const NodeDetails = ({
                         </div> 
                     )
                     }
-                    <div className="entryContainer" style = {{height: mobile ? '15vw' : '17vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
-                        <div className = "fullWidthLeft" style = {{fontSize: mobile ? '3.9vw':'4.2vh'}}>
+                    <div className="entryContainer" style = {{height: '11rem'}}>
+                        <div className = "fullWidthLeft">
                             Description:  
                         </div> 
                         <div className="fullWidthRight">
-                            <InputTextarea unstyled className = "input" maxLength={1000} placeholder='Description...' autoResize style = {{fontSize: mobile ? '3vw' : '3vh'}} rows={5} onChange = {(e) => {CheckValueChange(inputNode.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />
+                            {<InputTextarea className = "input vertical-center" maxLength={10000} placeholder='Description...' autoResize rows={5} onChange = {(e) => {CheckValueChange(inputNode.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />}
                         </div>
                     </div>
-                    <div className="entryContainer" style = {{height: mobile ? '5.7vw' : '6.5vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
-                        <div className = "fullWidthLeft" style = {{fontSize: mobile ? '3.9vw':'4.2vh'}}>
+                    <div className="entryContainer">
+                        <div className = "fullWidthLeft vertical-center">
                             Country:  
                         </div> 
                         <div className="fullWidthRight">
                             <Dropdown  
                                 maxLength={1000}
                                 showClear
-                                className = "dropdown"
+                                className = "dropdown text-overflow vertical-center"
                                 placeholder='Select Country...'
                                 panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
-                                style = {{fontSize: mobile ? '2.8vw' : '3vh'}}
                                 filter
                                 onChange = {(e) => {CountrySelected(inputNode.country, node.country, e.target.value ? e.target.value.countryName : null)}} 
                                 value = {node.country ? countries.find((object) => object.countryName === node.country) : null}
                                 options = {countries}
                                 optionLabel='countryName'
-                                />
+                            />
                         </div>
                     </div> 
-                    <div className="entryContainer" style = {{height: mobile ? '5.7vw' : '6.5vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
-                        <div className = "fullWidthLeft" style = {{fontSize: mobile ? '3.9vw':'4.2vh'}}>
+                    <div className="entryContainer" >
+                        <div className = "fullWidthLeft vertical-center">
                             Region:  
                         </div> 
                         <div className="fullWidthRight">
@@ -443,10 +442,9 @@ const NodeDetails = ({
                                 emptyMessage="Select a Country first!"
                                 maxLength={1000}
                                 showClear
-                                className = "dropdown"
+                                className = "dropdown text-overflow vertical-center"
                                 placeholder='Select Region...'
                                 panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
-                                style = {{fontSize: mobile ? '2.8vw' : '3vh'}}
                                 filter
                                 onChange = {(e) => {RegionSelected(inputNode.region, node.region, e.target.value ? e.target.value.name : null)}} 
                                 value = {node.region ? regions.find((object) => object.name === node.region) : null}
@@ -455,20 +453,20 @@ const NodeDetails = ({
                                 />
                         </div>
                     </div> 
-                    <div className="entryContainer" style = {{height: mobile ? '24vw' : '26vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
-                        <div className = "fullWidthLeft" style = {{fontSize: mobile ? '3.9vw':'4.2vh'}}>
+                    <div className="entryContainer" style = {{height: '13rem'}}>
+                        <div className = "fullWidthLeft">
                             Data: 
                         </div>
                         <div className="fullWidthRight">
-                            <InputTextarea className = "input-data" maxLength={1000} placeholder='Data...' autoResize rows={7} style = {{fontSize: mobile ? '3vw' : '3vh'}} onChange = {(e) => {CheckValueChange(inputNode.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
+                            <InputTextarea className = "input vertical-center" maxLength={20000} placeholder='Data...' autoResize rows={7} onChange = {(e) => {CheckValueChange(inputNode.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
                         </div>
                     </div>
-                    <div className="entryContainer" style = {{height: mobile ? '5.7vw' : '6.5vh', marginBottom: mobile ? '3.9vw' : '4.3vh'}}>
-                        <div className = "fullWidthLeft" style = {{fontSize: mobile ? '3.9vw':'4.2vh'}}>
+                    <div className="entryContainer">
+                        <div className = "fullWidthLeft vertical-center" >
                             Number:  
                         </div> 
                         <div className="fullWidthRight">
-                            <InputText style = {{fontSize: mobile ? '3vw': '3vh'}} maxLength={1000} placeholder='Number...' className = "input" type = 'number' keyfilter='int' onChange = {(e) => {CheckValueChange(inputNode.number, node.number, e.target.value); handleChange(e.target.value, updateNodeNumber);}} value = {node.number ? node.number : ""} />
+                            <InputText maxLength={1000} placeholder='Number...' className = "input text-overflow vertical-center" type = 'number' keyfilter='int' onChange = {(e) => {CheckValueChange(inputNode.number, node.number, e.target.value); handleChange(e.target.value, updateNodeNumber);}} value = {node.number ? node.number : ""} />
                         </div>
                     </div>
                     {/*
@@ -483,12 +481,12 @@ const NodeDetails = ({
                     */}
                 </div> 
                 {
-                <div className = 'dialog-save-banner' hidden = {hideButtons === 0 && titleRequired} style = {{height: (hideButtons === 0 && titleRequired)? '0%':'7.2%'}}>
-                    <div className = 'dialog-save-container' hidden = {hideButtons === 0}  id = 'node-details-button-container' style = {{ fontSize: mobile ? '' : '4vh'}}>
-                        <button hidden = {hideButtons === 0} className = 'dialog-save-button dialog-save-button-left button text-overflow' style = {{fontSize: mobile ? '3.4vw': '3.8vh'}} onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
-                        <button hidden = {hideButtons === 0} className = 'dialog-save-button button text-overflow'  style = {{fontSize: mobile ? '3.4vw': '3.8vh'}} onClick = {() => { ResetForm();}} > Reset </button>
+                <div className = 'dialog-save-banner' hidden = {hideButtons === 0 && titleRequired} style = {{height: (hideButtons === 0 && titleRequired)? '0%':'2rem'}}>
+                    <div className = 'dialog-save-container' hidden = {hideButtons === 0}  id = 'node-details-button-container'>
+                        <button hidden = {hideButtons === 0} className = 'dialog-save-button dialog-save-button-left button text-overflow' onClick = {() => { HandleSaveOrCreate(); }}> {RenderCreateOrSaveButton()} </button>
+                        <button hidden = {hideButtons === 0} className = 'dialog-save-button button text-overflow' onClick = {() => { ResetForm();}} > Reset </button>
                     </div>
-                    <div className='text-overflow title-required-container'  hidden = {(titleRequired)} style = {{fontSize: mobile ? '2.8vw' : '3vh'}}>Title is required!</div>
+                    <div className='text-overflow title-required-container'  hidden = {(titleRequired)}>Title is required!</div>
                 </div>
                 }
             </div>

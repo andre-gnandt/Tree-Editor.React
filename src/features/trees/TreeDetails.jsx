@@ -139,8 +139,7 @@ const TreeDetails = ({reRenderList = null, unMount = null, id = null, inputTree,
         
         return <>Tree</>;
     }
-
-
+    
         return(
         <>  
             <div className='dialog-root'>

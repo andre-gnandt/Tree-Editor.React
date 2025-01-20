@@ -265,6 +265,7 @@
     color: var(--form-focused-color) !important;
 }
 
+
 .tree-description-container
 {
   /*
@@ -274,8 +275,8 @@
   height: 35.9%;
   max-height: 35.9%;
   */
-  height: 8rem;
-  max-height: 8rem;
+  height: calc(91% - 10.5rem);
+  min-height: 1.9rem;
   width: 92%; 
   position: relative;
   left: 4%;
