@@ -71,7 +71,7 @@
   /*11.2rem+12%*/
   position: relative;
   top: 7vh;
-  height: calc(91vh - 11.2rem);
+  height: max(calc(21.5rem + 5vh), calc(93vh - 8.2rem));
   width: 82vw;
   left: 9vw;
 }
@@ -86,8 +86,8 @@
   max-height: calc(62vh - 4vw);*/
   /*height: calc(86vh - 11.2rem);
   max-height: calc(86vh - 11.2rem);*/
-  height: max(17rem, calc(82vh - 11.2rem)) !important;
-  max-height: max(17rem, calc(82vh - 11.2rem)) !important;
+  height: max(17rem, calc(83vh - 11.2rem)) !important;
+  max-height: max(17rem, calc(83vh - 11.2rem)) !important;
 }
 
 .tree-menu-item
@@ -279,7 +279,7 @@
   height: 35.9%;
   max-height: 35.9%;
   */
-  height: calc(91% - 10.5rem);
+  height: calc(88% - 10.5rem);
   min-height: 1.9rem;
   width: 92%; 
   position: relative;
