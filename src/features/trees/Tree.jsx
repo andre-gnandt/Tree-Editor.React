@@ -109,7 +109,6 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
   function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
   {
-    console.log("re render tree!");
     const treeContainer = createRoot(document.getElementById('tree-root'));
     if(!tree && !newNode)
     {
@@ -448,8 +447,8 @@ const Tree = ({id, treeFetch, countries = null}) => {
           <div 
             id = {child.id} 
             className={child.id+" treenode-container text-overflow center-text"} 
-            onMouseOver={() => {mouseOverNode = child.id;}}
-            onMouseOut={() => {mouseOverNode = null;}} 
+            onPointerOver={() => {mouseOverNode = child.id;}}
+            onPointerOut={() => {mouseOverNode = null;}} 
             style = {{borderRadius: String(nodeSize*0.2)+'px', top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
           >
             <Provider store ={store}>
@@ -473,10 +472,9 @@ const Tree = ({id, treeFetch, countries = null}) => {
   //units used are pixels
   function GetNodeDimensions()
   {
-    const width = IsDesktop() ? window.innerWidth : screen.width;
-    const height = IsDesktop() ? window.innerHeight : screen.height;
+    const width = IsDesktop() ? window.innerWidth : screen.availWidth;
+    const height = IsDesktop() ? window.innerHeight : screen.availHeight;
     const horizontalBorder = IsDesktop()? 15 : width/20;
-    console.log("width: "+width);
 
     const verticalOffset = GetVerticalOffset();
     const maximumNodeSize = height > width ? height*0.5 : width * 0.65;
@@ -497,7 +495,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
   {
     if(tree)
     {
-      const width = IsDesktop() ? window.innerWidth : screen.width;
+      const width = IsDesktop() ? window.innerWidth : screen.availWidth;
       const horizontalBorder = IsDesktop() ? 15 : width/20;
 
       testRender = false;
@@ -568,8 +566,8 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
   function GetVerticalOffset() 
   {
-    const width = IsDesktop()? window.innerWidth : screen.width;
-    const height = IsDesktop()? window.innerHeight : screen.height;
+    const width = IsDesktop()? window.innerWidth : screen.availWidth;
+    const height = IsDesktop()? window.innerHeight : screen.availHeight;
 
     const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
     const headerPresent = (width/rootFontSize) >= 33.5;
