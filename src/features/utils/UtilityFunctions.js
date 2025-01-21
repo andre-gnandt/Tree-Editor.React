@@ -62,7 +62,6 @@ function GetDialogWidth(portrait)
 
   function GetDialogHeight(portrait)
   {
-    console.log("desktop "+IsDesktop());
     if(IsDesktop()) 
     {
       return '86vh';
@@ -72,7 +71,7 @@ function GetDialogWidth(portrait)
       return '110vw';
     }
 
-    return '100vh';
+    return '94vh';
   }
 
 export{error, Success,  Saving, Loading, DoneLoading, DoneSaving, GetDialogHeight, GetDialogWidth, IsDesktop}

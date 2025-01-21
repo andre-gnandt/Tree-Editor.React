@@ -13,6 +13,7 @@ import HeaderInfo from '../utils/HeaderInfo';
 import { updateManyNodes } from '../../api/nodes/nodesApi';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
+import { IsDesktop } from '../utils/UtilityFunctions';
 
 /*extra node properties include:
 'position'
@@ -48,7 +49,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
   var nodeList = [];
   var dragging = false;
   var mouseOverNode = null;
-  const minimumNodeSize = 1.15/pixelsToCentimetres; //1.4 cm in pixels
+  const minimumNodeSize = IsDesktop() ? 1.15/pixelsToCentimetres : 0.5/pixelsToCentimetres; //1.4 cm in pixels
   var nodeDimension = 80;
   var iconDimension = 3.2; //rem;
   const horizontalBorder = 15; //in pixels
@@ -63,10 +64,13 @@ const Tree = ({id, treeFetch, countries = null}) => {
       document.getElementById('revert-tree-positions').disabled = true;
     }
 
+    //window.addEventListener('resize', () => {console.log("width: "+screen.width)});
     window.addEventListener('resize', ReRenderTree);
-    
+    //window.addEventListener('orientationchange', ReRenderTree);
+    //screen.orientation.addEventListener("change", ReRenderTree);
     return () =>{ 
       window.removeEventListener('resize', ReRenderTree);
+      //window.removeEventListener('orientationchange', ReRenderTree);
       if(tree) RemoveLines(tree);
     }
   });
@@ -109,6 +113,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
   function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
   {
+    console.log("re render tree!");
     const treeContainer = createRoot(document.getElementById('tree-root'));
     if(!tree && !newNode)
     {
@@ -472,10 +477,15 @@ const Tree = ({id, treeFetch, countries = null}) => {
   //units used are pixels
   function GetNodeDimensions()
   {
+    const width = IsDesktop() ? window.innerWidth : screen.width;
+    const height = IsDesktop() ? window.innerHeight : screen.height;
+    const horizontalBorder = IsDesktop()? 15 : width/20;
+    console.log("width: "+width);
+
     const verticalOffset = GetVerticalOffset();
-    const maximumNodeSize = window.innerHeight*0.5
-    const verticalSpace = 0.96*window.innerHeight - verticalOffset;
-    const horizontalSpace = window.innerWidth -  (2*horizontalBorder);
+    const maximumNodeSize = height > width ? height*0.5 : width * 0.65;
+    const verticalSpace = 0.96*height - verticalOffset;
+    const horizontalSpace = width -  (2*horizontalBorder);
 
     const maxHeight = verticalSpace/treeHeight;
     const maxWidth = horizontalSpace/treeWidth;
@@ -491,6 +501,9 @@ const Tree = ({id, treeFetch, countries = null}) => {
   {
     if(tree)
     {
+      const width = IsDesktop() ? window.innerWidth : screen.width;
+      const horizontalBorder = IsDesktop() ? 15 : width/20;
+
       testRender = false;
       maxLevels = new Object();
       childPositions = new Object();
@@ -506,7 +519,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
       testRender = false;
 
       const newTreeWidth = treeWidth*nodeDimension;
-      const horizontalSpace = window.innerWidth -  (2*horizontalBorder);
+      const horizontalSpace = width -  (2*horizontalBorder);
       var offSet = 0;
 
       if(newTreeWidth > horizontalSpace)
@@ -519,7 +532,6 @@ const Tree = ({id, treeFetch, countries = null}) => {
         const leftMost = bufferSpace/2+horizontalBorder;
         offSet = leftMost-treeWidthMin;
       }
-
       return RenderChildren(tree, tree, 0, offSet);
     }
     else if(treeDetails)
@@ -560,12 +572,15 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
   function GetVerticalOffset() 
   {
+    const width = IsDesktop()? window.innerWidth : screen.width;
+    const height = IsDesktop()? window.innerHeight : screen.height;
+
     const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    const headerPresent = (window.innerWidth/rootFontSize) >= 33.5;
+    const headerPresent = (width/rootFontSize) >= 33.5;
     const totalRems = headerPresent ? 3.2+iconDimension : iconDimension;
     const totalPixels = rootFontSize*totalRems;
 
-    return totalPixels+(0.03*window.innerHeight);
+    return totalPixels+(0.03*height);
   }
 
   

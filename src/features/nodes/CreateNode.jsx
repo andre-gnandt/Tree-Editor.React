@@ -53,7 +53,7 @@ const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, tree
     
     function isPortrait()
     {
-        if(window.innerHeight > 0.85 * window.innerWidth)
+        if(window.innerHeight > window.innerWidth)
         {
             setPortrait(true);
         }

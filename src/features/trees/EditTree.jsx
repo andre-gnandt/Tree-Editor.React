@@ -1,10 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import { Dialog } from 'primereact/dialog';
-import TreeDetails from './TreeDetails';
 import '../nodes/DetailsList.css';
 import '../trees/tree.css';
 import 'primeicons/primeicons.css';
-import Draggable from 'react-draggable';
 import TreeDialog from './TreeDialog';
 
 const EditTree = ({id, tree}) => {
@@ -27,7 +24,7 @@ const EditTree = ({id, tree}) => {
 
     function isPortrait()
     {
-        if(window.innerHeight > 0.85 * window.innerWidth)
+        if(window.innerHeight > window.innerWidth)
         {
             setPortrait(true);
         }

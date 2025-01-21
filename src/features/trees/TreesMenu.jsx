@@ -2,13 +2,11 @@ import { useState, useEffect} from 'react'
 import Draggable from 'react-draggable';
 import { Dialog } from 'primereact/dialog';
 import { useNavigate } from "react-router-dom";
-import TreeDetails from './TreeDetails';
 import { InputText } from 'primereact/inputtext';
 import { DataView} from 'primereact/dataview';
 import HeaderInfo from '../utils/HeaderInfo';
 import TreeDialog from './TreeDialog';
 import { deleteTree } from '../../api/trees/treesApi';
-import { GetDialogHeight, GetDialogWidth, IsDesktop } from '../utils/UtilityFunctions';
 import '/node_modules/primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
