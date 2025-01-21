@@ -13,6 +13,7 @@ import HeaderInfo from '../utils/HeaderInfo';
 import { updateManyNodes } from '../../api/nodes/nodesApi';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
+import { IsDesktop } from '../utils/UtilityFunctions';
 
 /*extra node properties include:
 'position'
@@ -26,7 +27,7 @@ import '../trees/tree.css';
 //Due to strange issues and positioning with the CSS transform 
 //property of tree nodes on re renders, this component will NEVER Re render
 //Re renders of the tree diagram must be done manually
-const Tree = ({id, treeFetch}) => {
+const Tree = ({id, treeFetch, countries = null}) => {
   const navigate = useNavigate();
   const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
   var originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
@@ -48,9 +49,9 @@ const Tree = ({id, treeFetch}) => {
   var nodeList = [];
   var dragging = false;
   var mouseOverNode = null;
-  const minimumNodeSize = 1.15/pixelsToCentimetres; //1.4 cm in pixels
+  const minimumNodeSize = IsDesktop() ? 1.15/pixelsToCentimetres : 0.7/pixelsToCentimetres; //1.4 cm in pixels
   var nodeDimension = 80;
-  var iconDimension = 0.08*window.innerHeight;
+  var iconDimension = 3.2; //rem;
   const horizontalBorder = 15; //in pixels
   var testRender = false;
 
@@ -62,9 +63,12 @@ const Tree = ({id, treeFetch}) => {
       document.getElementById('save-tree-positions').disabled = true;
       document.getElementById('revert-tree-positions').disabled = true;
     }
-
     window.addEventListener('resize', ReRenderTree);
-    return () => window.removeEventListener('resize', ReRenderTree);
+
+    return () =>{ 
+      window.removeEventListener('resize', ReRenderTree);
+      if(tree) RemoveLines(tree);
+    }
   });
 
   function PixelSizeInCentimetres() {
@@ -96,6 +100,9 @@ const Tree = ({id, treeFetch}) => {
     dest.data = src.data;
     dest.rankId = src.rankId;
     dest.thumbnailId = src.thumbnailId;
+    dest.description = src.description;
+    dest.country = src.country;
+    dest.region = src.region;
     dest.level = src.level;
     dest.treeId = src.treeId;
   }
@@ -114,7 +121,7 @@ const Tree = ({id, treeFetch}) => {
       RemoveLines(tree);
     }
 
-    iconDimension = 0.08*window.innerHeight;
+    //iconDimension = 0.08*window.innerHeight;
 
     nodeList = [];
     nodeDictionary = [];
@@ -440,8 +447,8 @@ const Tree = ({id, treeFetch}) => {
           <div 
             id = {child.id} 
             className={child.id+" treenode-container text-overflow center-text"} 
-            onMouseOver={() => {mouseOverNode = child.id;}}
-            onMouseOut={() => {mouseOverNode = null;}} 
+            onPointerOver={() => {mouseOverNode = child.id;}}
+            onPointerOut={() => {mouseOverNode = null;}} 
             style = {{borderRadius: String(nodeSize*0.2)+'px', top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
           >
             <Provider store ={store}>
@@ -453,6 +460,7 @@ const Tree = ({id, treeFetch}) => {
                 css = {{nodeSize: nodeSize}} 
                 nodeList = {nodeList} 
                 nodeDictionary = {nodeDictionary}
+                countries = {countries}
               />
             </Provider> 
           </div>
@@ -464,15 +472,20 @@ const Tree = ({id, treeFetch}) => {
   //units used are pixels
   function GetNodeDimensions()
   {
-    const maximumNodeSize = window.innerHeight*0.5
-    const verticalSpace = 0.92*window.innerHeight-0.04*window.innerWidth;
-    const horizontalSpace = window.innerWidth -  (2*horizontalBorder);
+    const width = IsDesktop() ? window.innerWidth : screen.availWidth;
+    const height = IsDesktop() ? window.innerHeight : screen.availHeight;
+    const horizontalBorder = IsDesktop()? 15 : width/20;
+
+    const verticalOffset = GetVerticalOffset();
+    const maximumNodeSize = height > width ? height*0.5 : width * 0.65;
+    const verticalSpace = 0.96*height - verticalOffset;
+    const horizontalSpace = width -  (2*horizontalBorder);
 
     const maxHeight = verticalSpace/treeHeight;
     const maxWidth = horizontalSpace/treeWidth;
 
     const maxDimension = (maxHeight < maxWidth ? maxHeight : maxWidth);
-    const minimumCheck = maxDimension < minimumNodeSize ? minimumNodeSize : maxDimension;
+    const minimumCheck = maxDimension < minimumNodeSize ? (IsDesktop() ? minimumNodeSize : maxWidth) : maxDimension;
     const maximumCheck = minimumCheck > maximumNodeSize ? maximumNodeSize  : minimumCheck;
 
     return maximumCheck;
@@ -482,6 +495,9 @@ const Tree = ({id, treeFetch}) => {
   {
     if(tree)
     {
+      const width = IsDesktop() ? window.innerWidth : screen.availWidth;
+      const horizontalBorder = IsDesktop() ? 15 : width/20;
+
       testRender = false;
       maxLevels = new Object();
       childPositions = new Object();
@@ -497,7 +513,7 @@ const Tree = ({id, treeFetch}) => {
       testRender = false;
 
       const newTreeWidth = treeWidth*nodeDimension;
-      const horizontalSpace = window.innerWidth -  (2*horizontalBorder);
+      const horizontalSpace = width -  (2*horizontalBorder);
       var offSet = 0;
 
       if(newTreeWidth > horizontalSpace)
@@ -510,7 +526,6 @@ const Tree = ({id, treeFetch}) => {
         const leftMost = bufferSpace/2+horizontalBorder;
         offSet = leftMost-treeWidthMin;
       }
-
       return RenderChildren(tree, tree, 0, offSet);
     }
     else if(treeDetails)
@@ -549,9 +564,23 @@ const Tree = ({id, treeFetch}) => {
     }
   }
 
+  function GetVerticalOffset() 
+  {
+    const width = IsDesktop()? window.innerWidth : screen.availWidth;
+    const height = IsDesktop()? window.innerHeight : screen.availHeight;
+
+    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const headerPresent = (width/rootFontSize) >= 33.5;
+    const totalRems = headerPresent ? 3.2+iconDimension : iconDimension;
+    const totalPixels = rootFontSize*totalRems;
+
+    return totalPixels+(0.03*height);
+  }
+
+  
   function RenderChildren(tree, node, row = 1, offset = 0)
   {  
-      const verticalOffset = 0.11*window.innerHeight+0.04*window.innerWidth;
+      const verticalOffset = GetVerticalOffset();
       const elements = [];
       elements.push((AppendChildNode(tree, node, node["left"]+offset, row, nodeDimension, verticalOffset)));
       
@@ -785,7 +814,7 @@ const Tree = ({id, treeFetch}) => {
     var result = [];
     if(updateNodesList.length > 0)
     {
-      var result = await updateManyNodes(updateNodesList[0].id, updateNodesList);
+      var result = await updateManyNodes(id, updateNodesList);
       if(!result) return;
       
       changeTracker = new Object();
@@ -958,10 +987,10 @@ const Tree = ({id, treeFetch}) => {
     return (
       <>
         <Provider store ={store}>
-          <CreateRoot treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+          <CreateRoot countries = {countries} treeId = {id} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
         </Provider>
         <Provider store ={store}>
-          <CreateNode  treeId = {id} iconSize = {iconDimension} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+          <CreateNode countries = {countries}  treeId = {id} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
         </Provider>
       </> 
     );
@@ -1026,16 +1055,17 @@ const Tree = ({id, treeFetch}) => {
     <>
       { (treeFetch && treeDetails) && (
         <>
-        <div id = 'button-container' className='button-container'>
-          <HeaderInfo 
-            middleText={"Drag and drop nodes upon eachother in order to change the tree structure. Save or undo these changes using the 2 buttons located directly beneath this text."}
+        <HeaderInfo 
+            creator = {false}
+            middleText={"Drag and drop nodes upon eachother to change the tree structure. Save or undo these changes using the 2 central buttons."}
           />
-          <div id = 'button-container-inner' className='button-container-inner' style = {{height: '8vh'}}>
-            <div className='flex-box-leftmost' style = {{width: '17vh',}}>   
+        <div id = 'button-container' className='button-container button-container-diagram'>
+          <div id = 'button-container-inner' className='button-container-inner' style = {{height: String(iconDimension)+'rem'}}>
+            <div className='flex-box-leftmost' style = {{width: String(iconDimension*2+0.1)+'rem',}}>   
                   <button 
                     onClick={(event) => { navigate("/");}}
                     className='button-header button-save tooltip' 
-                    style = {{width: '8vh'}}
+                    style = {{width: String(iconDimension)+'rem'}}
                   >
                     <i className='pi pi-home save-icon diagram-header-icon' />
                     <span class="tooltip-right">Home</span>
@@ -1043,25 +1073,19 @@ const Tree = ({id, treeFetch}) => {
               <EditTree id = {id} tree = {treeDetails}/>
             </div>          
             <div className='tree-positions-container'>
-              <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{width: '8vh'}}>
+              <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{width: String(iconDimension)+'rem'}}>
                 <i className='pi pi-replay save-icon diagram-header-icon' />
                 <span class="tooltip-bottom">Revert Tree Positions</span>
               </button>
               <button onClick={() => { SaveTreePositions();}} id = 'save-tree-positions' className='button-header button-save tooltip'>
-                <i className='pi pi-save save-icon' style = {{fontSize: '8vh'}} />
-                {
-                  (window.innerHeight < window.innerWidth ) 
-                  &&
-                  (
+                <i className='pi pi-save save-icon' style = {{fontSize: String(iconDimension)+'rem'}} />
                   <div className='save-position-changes'>
                     Save Position Changes
                   </div>
-                  )
-                }
                 <span class="tooltip-bottom">Save Tree Positions</span>
               </button>
             </div>
-            <div id = 'create-container' className='create-container' style = {{width: '17vh', marginRight: '2vw'}}>
+            <div id = 'create-container' className='create-container' style = {{width: String(iconDimension*2+0.1)+'rem', marginRight: '1.5rem'}}>
                 {CreationButtons()}
             </div>
           </div>

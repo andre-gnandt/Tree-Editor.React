@@ -1,18 +1,16 @@
-import React, {useEffect, useState, useRef} from 'react'
-import { useDispatch} from 'react-redux'
-import { Dialog } from 'primereact/dialog';
+import React, {useEffect, useState} from 'react'
+import { useDispatch} from 'react-redux';
 import './DetailsList.css';
-import NodeDetails from './NodeDetails';
-import Draggable from 'react-draggable';
 import { cloneNode } from './nodeSlice';
+import NodeDialog from './NodeDialog';
 
 
-const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList, nodeDictionary}) => {
+const TreeNode = ({rootNode, render, inputNode, css, nodeList, nodeDictionary, countries}) => {
     const[dialog, setDialog] = useState(false);
 
     const dispatch = useDispatch();
     const[manualReRender, setManualReRender] = useState(1); //used for callback re renders
-    const [mobile, setMobile] = useState(window.innerHeight > 0.85 * window.innerWidth ? true : false);
+    const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
     
     //After file gallery is added, set this to an api call to get
     //all files by node id on click/open of node details
@@ -25,25 +23,25 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
 
         if(dialog && inputNode['dialog'])
         {
-            window.addEventListener('resize', isMobile);
+            window.addEventListener('resize', isPortrait);
         }
         else
         {
-            window.removeEventListener('resize', isMobile);
+            window.removeEventListener('resize', isPortrait);
         }
 
-        return () => window.removeEventListener('resize', isMobile);
+        return () => window.removeEventListener('resize', isPortrait);
     });    
 
-    function isMobile()
+    function isPortrait()
     {
-        if(window.innerHeight > 0.85 * window.innerWidth)
+        if(window.innerHeight > window.innerWidth)
         {
-            setMobile(true);
+            setPortrait(true);
         }
         else
         {
-            setMobile(false);
+            setPortrait(false);
         }
     }
 
@@ -56,7 +54,7 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
     const CloseDialog = () =>
     {
         inputNode['dialog'] = false;
-        window.removeEventListener('resize', isMobile);
+        window.removeEventListener('resize', isPortrait);
         setDialog(false);
     }
 
@@ -143,19 +141,18 @@ const TreeNode = ({setChangeTracker, rootNode, render, inputNode, css, nodeList,
                         {inputNode.title}
                     </button> 
                 } 
-                <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>                              
-                    <Dialog 
-                        style = {{width: mobile ? '88vw' : String(0.45*screen.width)+"px", height: mobile ? '73.9vw' : '86vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}}
-                        className={"dialogContent"} 
-                        draggable 
-                        showHeader = {false}  
-                        contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}} 
-                        visible = {dialog} 
-                        onHide={() => {if (!dialog) return; CloseDialog();}}
-                    > 
-                            <NodeDetails mobile = {mobile} SetChangeTracker = {setChangeTracker} unMount = {CloseDialog} renderTreeNode = {RenderTreeNode} files = {files} rootNode = {rootNode} render = {render} inputNode = {inputNode} nodeList = {GetNodeList()} nodeDictionary = {nodeDictionary}/>
-                    </Dialog>
-                </Draggable>      
+                <NodeDialog
+                    unMount = {CloseDialog}
+                    countries = {countries}
+                    portrait = {portrait}
+                    open = {dialog}
+                    files = {inputNode.files} 
+                    render = {render}
+                    inputNode = {inputNode}
+                    nodeList = {GetNodeList()}
+                    nodeDictionary = {nodeDictionary}
+                    rootNode={rootNode}
+                /> 
             </> 
         );
 }

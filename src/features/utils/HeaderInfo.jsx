@@ -1,17 +1,27 @@
 import '../trees/tree.css';
+import '../nodes/DetailsList.css';
 
-const HeaderInfo = ({middleText = null}) => {
+const HeaderInfo = ({fixed = true, creator = true, middleText = null}) => {
     
     
     return (
-        <div className='header-container'>
-            <div>
-                Creator: Andre Gnandt
-            </div>
+        <div
+            id = 'header-container' 
+            className={ fixed ? 
+                        (middleText ? 'header-container middle-text fixed': 'header-container fixed') : 
+                        (middleText ? 'header-container middle-text': 'header-container')}
+        >
+            { (creator) && 
+                ( 
+                <div className='header-creator'>
+                    Creator: Andre Gnandt
+                </div>
+                )
+            }
 
             { (middleText) && 
                 (
-                    <div className='header-middle-text'>
+                    <div className='center-text header-middle-text'>
                         {middleText}
                     
                     </div>

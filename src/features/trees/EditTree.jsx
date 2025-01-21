@@ -1,51 +1,48 @@
 import React, {useEffect, useState} from 'react'
-import { Dialog } from 'primereact/dialog';
-import TreeDetails from './TreeDetails';
 import '../nodes/DetailsList.css';
 import '../trees/tree.css';
 import 'primeicons/primeicons.css';
-import Draggable from 'react-draggable';
+import TreeDialog from './TreeDialog';
 
 const EditTree = ({id, tree}) => {
     const [editTree, setEditTree] = useState(null);
-    const [mobile, setMobile] = useState(window.innerHeight > 0.85 * window.innerWidth ? true : false);
+    const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
 
-    
     useEffect(() => {
 
         if(editTree)
         {   
-            window.addEventListener('resize', isMobile);
+            window.addEventListener('resize', isPortrait);
         }
         else
         {
-            window.removeEventListener('resize', isMobile);
+            window.removeEventListener('resize', isPortrait);
         }     
-          return () => window.removeEventListener('resize', isMobile);
+          return () => window.removeEventListener('resize', isPortrait);
         });
     
 
-    function isMobile()
+    function isPortrait()
     {
-        if(window.innerHeight > 0.85 * window.innerWidth)
+        if(window.innerHeight > window.innerWidth)
         {
-            setMobile(true);
+            setPortrait(true);
         }
         else
         {
-            setMobile(false);
+            setPortrait(false);
         }
     }
 
     const closeDialog = () => 
     {
-        window.removeEventListener('resize', isMobile);
+        window.removeEventListener('resize', isPortrait);
         setEditTree(false);
     }
 
     const openDialog = () =>
     {
-        isMobile();
+        isPortrait();
         setEditTree(true);
     }
 
@@ -55,25 +52,15 @@ const EditTree = ({id, tree}) => {
                 <i className='pi pi-file-edit diagram-header-icon' onClick = {() => { openDialog();}} />
                 <span class="tooltip-right">Edit Tree Details</span>
             </button>
-            <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
-                <Dialog 
-                    style = {{width: mobile ? '88vw' : String(0.45*screen.width)+"px", height: mobile ? '73.9vw' : '86vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}} 
-                    className={"dialogContent2"} 
-                    onHide = {() => {closeDialog();}} 
-                    visible = {editTree} 
-                    draggable 
-                    showHeader = {false}  
-                    contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}}
-                >
-                    <TreeDetails 
-                        mobile = {mobile}
-                        inputTree={tree}
-                        creation = {false}
-                        unMount={closeDialog}
-                        id = {id}
-                    />
-                </Dialog>
-            </Draggable>
+            <TreeDialog 
+                id = {id}
+                setCreateTree = {setEditTree} 
+                createTree = {false} 
+                portrait = {portrait} 
+                inputTree = {tree} 
+                openDialog = {editTree} 
+                closeDialog = {closeDialog} 
+            />
         </>
     );
 }

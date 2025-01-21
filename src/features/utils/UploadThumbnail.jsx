@@ -4,7 +4,7 @@ import { setStateProperty } from "../nodes/nodeSlice";
 import '../nodes/DetailsList.css';
 import 'primeicons/primeicons.css';
 
-const UploadThumbnail = ({mobile = false, reset, fileChangeCallBack, inputNode}) => {
+const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
   const dispatch = useDispatch();
   const uploadName = useRef(null);
   const node = {...inputNode};
@@ -104,7 +104,7 @@ const UploadThumbnail = ({mobile = false, reset, fileChangeCallBack, inputNode})
   return (
   <>
     <div id = 'thumbnail-uploader' style = {{height: '100%', width: '100%'}}>
-        <div style = {{height: mobile ? '29.7vw' : '33vh', width: '100%'}} className="title-container" onMouseOver={() => {FitThumbnailImage(false);}} onMouseOut = {() => {FitThumbnailImage(true);}}>
+        <div style = {{height: '75%', width: '100%'}} className="title-container" onMouseOver={() => {FitThumbnailImage(false);}} onMouseOut = {() => {FitThumbnailImage(true);}}>
           { (selectedImage || defaultFile ) ? (
                 <>
                   <div id = 'thumbnail-expander' className="thumbnail-expanded">
@@ -119,32 +119,33 @@ const UploadThumbnail = ({mobile = false, reset, fileChangeCallBack, inputNode})
             :
             (
               <>
-                <div className = 'thumbnail-placeholder' style = {{fontSize: mobile ? '3vw' : '3vh'}}  onClick = {() => {document.getElementById('file-upload-button').click();}}>
-                  <i className='pi pi-upload' style = {{position: 'relative', top: mobile ? '8vw' : '8vh', fontSize: mobile ? '9.9vw' : '11vh', height: mobile? '9.9vw' : '11vh', width: mobile ? '9.9vw' : '11vh'}}/>
-                  <div style = {{position: 'relative', top: mobile ? '8vw' : '10vh'}}>
-                    Upload Image!
+                <div className = 'thumbnail-placeholder' /*style = {{fontSize: mobile ? '3vw' : '3vh'}}*/  onClick = {() => {document.getElementById('file-upload-button').click();}}>           
+                  <div className="empty-thumbnail-container" >
+                    <i className='pi pi-upload thumbnail-icon' /*style = {{ position: 'relative',  fontSize: 'min(5rem, 14vw)'}} /*style = {{position: 'relative', top: '50%', fontSize: '5rem', height: '11vh', width: '11vh'}} *//>   
                   </div>
+                  <div className="upload-thumbnail">
+                    Upload Image!
+                  </div> 
                 </div>
               </>
             )          
           }
         </div>
-        <div >
+        <div style = {{height: '25%', width: '100%'}}>
             {/*9.9vw under image, width is 29.7 vw*/}
             {(selectedImage || defaultFile) ? (
-              <>
-                
-                <div className="text-overflow dialog-header" style = {{fontSize: mobile ? '3vw' :  '3vh', height: mobile ? '4.7vw' :  '5vh', width: '100%'}}>{selectedImage ? selectedImage.name : defaultFile.name}</div>
-                <div style = {{height: mobile ? '5.2vw' : '6vh', display: 'flex'}}>
-                  <button className="button text-overflow" style = {{fontSize:mobile ? '2.9vw' :  '3vh', width: mobile ? '14.6vw' :  '16vh', height: mobile ? '100%' :  '6vh', marginRight: mobile ? '0.5vw' : '1vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
-                  <button className="button text-overflow" style = {{fontSize:mobile ? '2.9vw' :  '3vh', width: mobile ? '14.6vw' :  '16vh', height: mobile ? '100%' :  '6vh'}} onClick={() => {RemoveImage();}}>Remove</button>
+              <>              
+                <div className="text-overflow dialog-header thumbnail-title">{selectedImage ? selectedImage.name : defaultFile.name}</div>
+                <div className="thumbnail-buttons-container" >
+                  <button className="button thumbnail-button" style = {{marginRight: '4%'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
+                  <button className="button thumbnail-button" onClick={() => {RemoveImage();}}>Remove</button>
                 </div>
               </>
             ) : 
             (
               <>
-                <div className="text-overflow dialog-header" style = {{fontSize: mobile ? '3vw' :  '3vh', height: mobile ? '4.7vw' :  '5vh', width: '100%'}}>No Thumbnail</div>
-                <button className="button text-overflow" style = {{fontSize: mobile ? '2.9vw' :  '3vh', width: mobile ? '14.6vw' :  '16vh', height: mobile ? '5.2vw' :  '6vh'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
+                <div className="text-overflow dialog-header thumbnail-title">No Thumbnail</div>
+                <button className="button thumbnail-button" style = {{height: '50%'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
               </>
             )}  
 

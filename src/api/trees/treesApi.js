@@ -21,8 +21,9 @@ async function deleteTree(id){
 };
 
 async function createTree(tree){
-    postOptions.body = JSON.stringify(tree);
-    return await fetch(baseURL+"/api/Trees/", postOptions)
+    const options = {...postOptions};
+    options.body = JSON.stringify(tree);
+    return await fetch(baseURL+"/api/Trees/", options)
     .then((response)=>response.json())
     .then((responseJson)=>{return responseJson});;
 };
@@ -31,8 +32,9 @@ async function updateTree(id, input){
     const tree = {...input};
     delete tree['rootId'];
     
-    putOptions.body = JSON.stringify(tree);
-    return await fetch(baseURL+"/api/Trees/"+id, putOptions)
+    const options = {...putOptions};
+    options.body = JSON.stringify(tree);
+    return await fetch(baseURL+"/api/Trees/"+id, options)
     .then((response)=>response.json())
     .then((responseJson)=>{return responseJson});
 };
