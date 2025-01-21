@@ -365,7 +365,7 @@ const NodeDetails = ({
                 <div className={(hideButtons === 0 && titleRequired) ? 'container': 'container-shrunk'}> 
                     <div className='thumbnail-container-outer' /*style = {{marginBottom: mobile ? '5vw': '5.275vh'}} */>
                         <div className="thumbnail-container" style = {{width: '50%'}}>                         
-                            <UploadThumbnail /* reset = {resetFiles} */ mobile = {false} reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
+                            <UploadThumbnail /* reset = {resetFiles} */  reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
                         </div>
                         {
                         <div className='title-container expandable-title-container' style = {{width: '50%'}}>

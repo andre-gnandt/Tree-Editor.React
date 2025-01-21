@@ -4,7 +4,7 @@ import { setStateProperty } from "../nodes/nodeSlice";
 import '../nodes/DetailsList.css';
 import 'primeicons/primeicons.css';
 
-const UploadThumbnail = ({mobile = false, reset, fileChangeCallBack, inputNode}) => {
+const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
   const dispatch = useDispatch();
   const uploadName = useRef(null);
   const node = {...inputNode};
