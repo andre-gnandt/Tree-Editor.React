@@ -10,6 +10,58 @@
     --container-outline-color: #DCDCDC;
 }
 
+.thumbnail-title
+{
+    font-size: min(3vw, 1.4rem) !important;
+    height: 50%;
+    max-height: 50%;
+    width: 100%;
+}
+
+.thumbnail-buttons-container
+{
+    height: 50%;
+    display: flex;
+}
+
+.thumbnail-button
+{
+    font-size: min(3vw, 1.4rem) !important;
+    width: 48%; 
+    height: 100%;
+}
+
+@media (orientation: landscape) and (max-height: 500px)
+{
+    .thumbnail-title
+    {
+        font-size: min(4.2vh, 1.4rem) !important;
+    }
+    .thumbnail-button
+    {
+        font-size: min(4vh, 1.4rem) !important;
+    }
+}
+
+.empty-thumbnail-container
+{
+    position: relative;
+    top: min(4rem, 8vw);
+}
+
+.thumbnail-icon
+{
+    position: relative;
+    font-size: min(5rem, 14vw);
+}
+
+.upload-thumbnail
+{
+    position: relative;
+    font-size: min(1.2rem, 4vw);
+    top: min(4rem, 8vw);
+}
+
 .pointer 
 {
     cursor: pointer;
@@ -374,45 +426,7 @@
     font-family: 'Palatino, serif';
     /*font-size: 4.2vh;*/
     color: var(--form-focused-color) !important;
-    /*
-    display: flex;
-    align-items: center;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 2rem;
-    
-    font-size: 2rem;*/
     font-size: min(2rem, 6.3vw);
-}
-
-@media (orientation: landscape)
-{
-    .fullWidthLeft
-    {
-        font-size: min(2rem, 6.3vh);
-    }
-    .input
-    {
-        font-size: min(2rem, 6vh);
-    }
-    .dropdown
-    {
-        font-size: min(2rem, 6vh);
-    }
-    .input-data
-    {
-        font-size: min(2rem, 6vh);
-    }
-    .title
-    {
-        font-size: 2.8rem !important;
-        height: 3.3rem !important;
-    }
-    .title-required
-    {
-        font-size: 2.8rem !important;
-        height: 3.3rem !important;
-    }
 }
 
 
@@ -813,4 +827,34 @@ button:focus
 .save-bar
 {
     height: 6.5vh;
+}
+
+@media (orientation: landscape) and (max-height: 500px)
+{
+    .fullWidthLeft
+    {
+        font-size: min(2rem, 6.3vh);
+    }
+    .input
+    {
+        font-size: min(2rem, 6vh);
+    }
+    .dropdown
+    {
+        font-size: min(2rem, 6vh);
+    }
+    .input-data
+    {
+        font-size: min(2rem, 6vh);
+    }
+    .title
+    {
+        font-size: 2.8rem !important;
+        height: 3.3rem !important;
+    }
+    .title-required
+    {
+        font-size: 2.8rem !important;
+        height: 3.3rem !important;
+    }
 }
