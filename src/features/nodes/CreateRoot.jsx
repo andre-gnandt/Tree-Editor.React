@@ -1,40 +1,38 @@
 import React, {useEffect, useState} from 'react'
-import { Dialog } from 'primereact/dialog';
 import { cloneNode } from './nodeSlice';
 import './DetailsList.css'
-import NodeDetails from './NodeDetails';
 import { useDispatch } from 'react-redux';
+import NodeDialog from './NodeDialog';
 import 'primeicons/primeicons.css';
-import Draggable from 'react-draggable';
 
 const CreateRoot = ({nodeList, nodeDictionary, countries, rootNode, render, treeId}) => {
     const [createNode, setCreateNode] = useState(null);
-    const [mobile, setMobile] = useState(window.innerHeight > 0.85 * window.innerWidth ? true : false);
+    const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
     const dispatch = useDispatch();
 
     useEffect(() => {
             
         if(createNode)
         {
-            window.addEventListener('resize', isMobile);
+            window.addEventListener('resize', isPortrait);
         }
         else 
         {
-            window.removeEventListener('resize', isMobile);
+            window.removeEventListener('resize', isPortrait);
         }
         
-        return () => window.removeEventListener('resize', isMobile);
+        return () => window.removeEventListener('resize', isPortrait);
     });
 
-    function isMobile()
+    function isPortrait()
     {
-        if(window.innerHeight > 0.85 * window.innerWidth)
+        if(window.innerHeight > window.innerWidth)
         {
-            setMobile(true);
+            setPortrait(true);
         }
         else
         {
-            setMobile(false);
+            setPortrait(false);
         }
     }
 
@@ -57,12 +55,13 @@ const CreateRoot = ({nodeList, nodeDictionary, countries, rootNode, render, tree
 
     const unMount = () => 
     {
-        window.removeEventListener('resize', isMobile);
+        window.removeEventListener('resize', isPortrait);
         setCreateNode(false);
     }
 
     const OpenDialog = () => 
     {
+        isPortrait();
         dispatch(cloneNode(newRoot));
         setCreateNode(true);
     }
@@ -73,17 +72,19 @@ const CreateRoot = ({nodeList, nodeDictionary, countries, rootNode, render, tree
                 <i id = 'create-root-button' className='pi pi-warehouse diagram-header-icon' onClick = {() => { OpenDialog();}} />
                 <span class="tooltip-left">New Root Node</span>
             </button> 
-            <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
-                <Dialog 
-                    className={"dialogContent"} 
-                    draggable showHeader = {false}  
-                    style = {{width: mobile ? '88vw' : String(0.45*screen.width)+"px", height: mobile ? '73.9vw' : '86vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}} 
-                    contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}} 
-                    visible = {createNode} 
-                    onHide={() => {if (!createNode) return; unMount();}} >                  
-                        <NodeDetails countries = {countries} mobile = {mobile} unMount = {unMount} rootNode = {rootNode} files = {newRoot.files} root = {true} render = {render} inputNode = {newRoot} nodeList = {nodeList} nodeDictionary = {nodeDictionary}/>
-                </Dialog>
-            </Draggable>
+            <NodeDialog
+                root = {true}
+                unMount = {unMount}
+                countries = {countries}
+                portrait = {portrait}
+                open = {createNode}
+                rootNode = {rootNode}
+                files = {newRoot.files} 
+                render = {render}
+                inputNode = {newRoot}
+                nodeList = {nodeList}
+                nodeDictionary = {nodeDictionary}
+            />
         </>
     );
 }

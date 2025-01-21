@@ -11,7 +11,6 @@ import UploadThumbnail from '../utils/UploadThumbnail';
 import Draggable from 'react-draggable';
 
 const NodeDetails = ({
-    mobile = false,
     unMount,
     render, 
     inputNode, 
@@ -21,7 +20,6 @@ const NodeDetails = ({
     countries
     })  =>     
     {
-    mobile = false;
     const dispatch = useDispatch();
     const node = useSelector(state => state.node);
     const [regions, setRegions] = useState(GetRegions(node.country));
@@ -365,9 +363,9 @@ const NodeDetails = ({
                     </div> 
                 </div>
                 <div className={(hideButtons === 0 && titleRequired) ? 'container': 'container-shrunk'}> 
-                    <div className='thumbnail-container-outer' style = {{marginBottom: mobile ? '5vw': '5.275vh'}}>
+                    <div className='thumbnail-container-outer' /*style = {{marginBottom: mobile ? '5vw': '5.275vh'}} */>
                         <div className="thumbnail-container" style = {{width: '50%'}}>                         
-                            <UploadThumbnail /* reset = {resetFiles} */ mobile = {mobile} reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
+                            <UploadThumbnail /* reset = {resetFiles} */ mobile = {false} reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
                         </div>
                         {
                         <div className='title-container expandable-title-container' style = {{width: '50%'}}>
@@ -392,7 +390,7 @@ const NodeDetails = ({
                                     maxLength={1000}
                                     className = "dropdown text-overflow vertical-center"
                                     placeholder='Select Parent...'
-                                    panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
+                                    panelStyle={{maxWidth: '95vw',borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
                                     onFocus={(event) => {}}
                                     //className='input'
                                     disabled = {node.nodeId ? false : true}
@@ -411,7 +409,7 @@ const NodeDetails = ({
                             Description:  
                         </div> 
                         <div className="fullWidthRight">
-                            {<InputTextarea className = "input vertical-center" maxLength={10000} placeholder='Description...' autoResize rows={5} onChange = {(e) => {CheckValueChange(inputNode.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />}
+                            {<InputTextarea style = {{fontSize: 'min(1.8rem, 6vw)'}} className = "input vertical-center" maxLength={10000} placeholder='Description...' autoResize rows={5} onChange = {(e) => {CheckValueChange(inputNode.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />}
                         </div>
                     </div>
                     <div className="entryContainer">
@@ -424,7 +422,7 @@ const NodeDetails = ({
                                 showClear
                                 className = "dropdown text-overflow vertical-center"
                                 placeholder='Select Country...'
-                                panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
+                                panelStyle={{maxWidth: '95vw', borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
                                 filter
                                 onChange = {(e) => {CountrySelected(inputNode.country, node.country, e.target.value ? e.target.value.countryName : null)}} 
                                 value = {node.country ? countries.find((object) => object.countryName === node.country) : null}
@@ -444,7 +442,7 @@ const NodeDetails = ({
                                 showClear
                                 className = "dropdown text-overflow vertical-center"
                                 placeholder='Select Region...'
-                                panelStyle={{borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
+                                panelStyle={{maxWidth: '95vw',borderRadius: '2vh', color: 'rgba(204, 223, 255, 0.9)', backgroundColor: '#ccffffe6'}}
                                 filter
                                 onChange = {(e) => {RegionSelected(inputNode.region, node.region, e.target.value ? e.target.value.name : null)}} 
                                 value = {node.region ? regions.find((object) => object.name === node.region) : null}

@@ -6,6 +6,7 @@ import TreeDetails from './TreeDetails';
 import { InputText } from 'primereact/inputtext';
 import { DataView} from 'primereact/dataview';
 import HeaderInfo from '../utils/HeaderInfo';
+import TreeDialog from './TreeDialog';
 import { deleteTree } from '../../api/trees/treesApi';
 import { GetDialogHeight, GetDialogWidth, IsDesktop } from '../utils/UtilityFunctions';
 import '/node_modules/primeflex/primeflex.css';
@@ -204,25 +205,15 @@ const TreesMenu = ({trees}) => {
             )
         }
         </div>
-        <Draggable  onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
-            <Dialog 
-            resizable = {false}
-              style = {{maxHeight: '100vh', maxWidth: '100vw', width: GetDialogWidth(portrait), height: GetDialogHeight(portrait), borderRadius: portrait ? '5vw' : String(0.05*screen.width)+'px'}} 
-              className={"dialogContent2"} 
-              onHide = {() => {setCreateTree(false);}} 
-              visible = {createTree} 
-              draggable 
-              showHeader = {false}  
-              contentStyle={{maxHeight: '100vh', maxWidth: '100vw', width: GetDialogWidth(portrait), overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: portrait ? '5vw' : String(0.05*screen.width)+'px', backgroundColor: '#E0E0E0'}}
-            >
-                <TreeDetails 
-                    inputTree={{name: null, description: null}}
-                    creation = {true}
-                    unMount={closeDialog}
-                    reRenderList={reRenderList}
-                />
-            </Dialog>
-        </Draggable>
+        <TreeDialog 
+          setCreateTree = {setCreateTree} 
+          createTree = {true} 
+          portrait = {portrait} 
+          inputTree = {{name: null, description: null}} 
+          openDialog = {createTree} 
+          closeDialog = {closeDialog} 
+          reRenderList = {reRenderList}
+        />
         {GetConfirmDelete()}
     </>  
   );

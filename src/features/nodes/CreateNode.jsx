@@ -1,16 +1,14 @@
-import React, {useEffect, useState} from 'react'
-import { Dialog } from 'primereact/dialog';
+import React, {useEffect, useState} from 'react';
 //import './DetailsList.css'
 import '../trees/tree.css';
-import NodeDetails from './NodeDetails';
 import { useDispatch } from 'react-redux';
 import 'primeicons/primeicons.css';
-import Draggable from 'react-draggable';
 import { cloneNode } from './nodeSlice';
+import NodeDialog from './NodeDialog';
 
 const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, treeId}) => {
     const [createNode, setCreateNode] = useState(null);
-    const [mobile, setMobile] = useState(window.innerHeight > 0.85 * window.innerWidth ? true : false);
+    const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
     const dispatch = useDispatch();
 
     
@@ -18,14 +16,14 @@ const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, tree
         
         if(createNode)
         {
-            window.addEventListener('resize', isMobile);
+            window.addEventListener('resize', isPortrait);
         }
         else 
         {
-            window.removeEventListener('resize', isMobile);
+            window.removeEventListener('resize', isPortrait);
         }
         
-        return () => window.removeEventListener('resize', isMobile);
+        return () => window.removeEventListener('resize', isPortrait);
     });
     
 
@@ -48,20 +46,20 @@ const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, tree
 
     const unMount = () => 
     {
-        window.removeEventListener('resize', isMobile);
+        window.removeEventListener('resize', isPortrait);
         setCreateNode(false);
     }
 
     
-    function isMobile()
+    function isPortrait()
     {
         if(window.innerHeight > 0.85 * window.innerWidth)
         {
-            setMobile(true);
+            setPortrait(true);
         }
         else
         {
-        setMobile(false);
+            setPortrait(false);
         }
     }
     
@@ -95,30 +93,18 @@ const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, tree
                 <i className='pi pi-upload diagram-header-icon'  onClick = {() => { OpenDialog();}} />
                 <span class="tooltip-left">New Node</span>
             </button>
-            <Draggable onStart={(event) => {const header = document.getElementById('fixed-header'); if(!header.contains(event.target)) return false;}}>
-                <Dialog 
-                    className={"dialogContent"} 
-                    draggable 
-                    showHeader = {false}  
-                    contentStyle={{overflowY: 'hidden', overflow: 'hidden', zIndex: 5, border: '16px solid #274df5', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px',backgroundColor: '#E0E0E0'}} 
-                    visible = {createNode} 
-                    onHide={() => {if (!createNode) return; unMount();}} 
-                    style = {{width: mobile ? '88vw' : String(0.45*screen.width)+"px", height: mobile ? '73.9vw' : '86vh', borderRadius: mobile ? '5vw' : String(0.05*screen.width)+'px'}} 
-                > 
-                        
-                        <NodeDetails 
-                            countries = {countries}
-                            mobile = {mobile}
-                            unMount = {unMount} 
-                            rootNode = {rootNode} 
-                            files = {newNode.files} 
-                            create = {true} 
-                            render = {render} 
-                            inputNode = {newNode} 
-                            nodeList = {GetNodeList()} 
-                            nodeDictionary = {nodeDictionary}/>
-                </Dialog>
-            </Draggable>
+            <NodeDialog
+                create = {true}
+                unMount = {unMount}
+                countries = {countries}
+                portrait = {portrait}
+                open = {createNode}
+                files = {newNode.files} 
+                render = {render}
+                inputNode = {newNode}
+                nodeList = {GetNodeList()}
+                nodeDictionary = {nodeDictionary}
+            />  
         </>
     );
 }
