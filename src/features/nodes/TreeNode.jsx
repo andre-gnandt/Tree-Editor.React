@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import { useDispatch} from 'react-redux';
 import './DetailsList.css';
 import { cloneNode } from './nodeSlice';
@@ -7,14 +7,24 @@ import NodeDialog from './NodeDialog';
 
 const TreeNode = ({rootNode, render, inputNode, css, nodeList, nodeDictionary, countries}) => {
     const[dialog, setDialog] = useState(false);
+    const req = new XMLHttpRequest();
+    const[files, setFiles] = useState(inputNode.files); 
+    const getThumbnail = useRef(false);  
+    req.addEventListener("load", ThumbnailLoaded);
+
+    if(!getThumbnail.current && inputNode.thumbnailId && (!files || files.length < 1))
+    {
+        getThumbnail.current = true;
+        req.open("GET", "http://localhost:11727/api/files/"+inputNode.thumbnailId);
+        req.send();
+    }
 
     const dispatch = useDispatch();
     const[manualReRender, setManualReRender] = useState(1); //used for callback re renders
     const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
     
     //After file gallery is added, set this to an api call to get
-    //all files by node id on click/open of node details
-    const[files, setFiles] = useState(inputNode.files);    
+    //all files by node id on click/open of node details   
     var buttonMouseDown = new Object();
     var buttonMouseUp = new Object();
 
@@ -43,6 +53,18 @@ const TreeNode = ({rootNode, render, inputNode, css, nodeList, nodeDictionary, c
         {
             setPortrait(false);
         }
+    }
+
+    function ThumbnailLoaded(event)
+    {
+        //console.log("THumbnail Loaded!");
+        const file = JSON.parse(event.target.responseText);
+        
+        inputNode.files = [file];
+        console.log(inputNode.files);
+        const filestmp = [...files];
+        filestmp.push(file);
+        setFiles(filestmp);
     }
 
     //used for callback re renders
@@ -110,19 +132,21 @@ const TreeNode = ({rootNode, render, inputNode, css, nodeList, nodeDictionary, c
 
     function GetImageSource()
     {
-        var index = inputNode.files.findIndex((object) => object.id.toLowerCase() === inputNode.thumbnailId.toLowerCase());
+        console.log(files);
+        var index = files.findIndex((object) => object.id.toLowerCase() === inputNode.thumbnailId.toLowerCase());
         if(index != -1)
         {
-            return inputNode.files[index].base64;
+            return files[index].base64;
         }
 
-        var file = inputNode.files.find((object) => object.name === inputNode.thumbnailId);
+        var file = files.find((object) => object.name === inputNode.thumbnailId);
         return file.base64;
     }
 
         return(
             <>  
-                { inputNode.thumbnailId ? 
+                { inputNode.thumbnailId && files && files.length > 0 ? 
+                (
                     <div style = {{height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
                         <img className='image pointer' onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {GetImageSource()}/>
                         <div
@@ -133,13 +157,27 @@ const TreeNode = ({rootNode, render, inputNode, css, nodeList, nodeDictionary, c
                             {inputNode.title}
                         </div>                      
                     </div>
+                )
                     :
-                    <button 
-                        className='tree-button text-overflow'       
-                        onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} 
-                        style = {{ fontSize: String(css.nodeSize*0.155)+'px', maxHeight:String(css.nodeSize)+'px', maxWidth: String(css.nodeSize)+'px',  height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
-                        {inputNode.title}
-                    </button> 
+                (
+                
+                    inputNode.thumbnailId ? 
+                    (
+                        <>
+
+                        </>
+                    )
+                    :
+                    (
+                        <button 
+                            className='tree-button text-overflow'       
+                            onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} 
+                            style = {{ fontSize: String(css.nodeSize*0.155)+'px', maxHeight:String(css.nodeSize)+'px', maxWidth: String(css.nodeSize)+'px',  height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
+                            {inputNode.title}
+                        </button> 
+                    )
+                    
+                ) 
                 } 
                 <NodeDialog
                     unMount = {CloseDialog}
