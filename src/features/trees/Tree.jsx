@@ -49,7 +49,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
   var nodeList = [];
   var dragging = false;
   var mouseOverNode = null;
-  const minimumNodeSize = IsDesktop() ? 1.15/pixelsToCentimetres : 0.5/pixelsToCentimetres; //1.4 cm in pixels
+  const minimumNodeSize = IsDesktop() ? 1.15/pixelsToCentimetres : 0.7/pixelsToCentimetres; //1.4 cm in pixels
   var nodeDimension = 80;
   var iconDimension = 3.2; //rem;
   const horizontalBorder = 15; //in pixels
@@ -63,14 +63,10 @@ const Tree = ({id, treeFetch, countries = null}) => {
       document.getElementById('save-tree-positions').disabled = true;
       document.getElementById('revert-tree-positions').disabled = true;
     }
-
-    //window.addEventListener('resize', () => {console.log("width: "+screen.width)});
     window.addEventListener('resize', ReRenderTree);
-    //window.addEventListener('orientationchange', ReRenderTree);
-    //screen.orientation.addEventListener("change", ReRenderTree);
+
     return () =>{ 
       window.removeEventListener('resize', ReRenderTree);
-      //window.removeEventListener('orientationchange', ReRenderTree);
       if(tree) RemoveLines(tree);
     }
   });
@@ -491,7 +487,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
     const maxWidth = horizontalSpace/treeWidth;
 
     const maxDimension = (maxHeight < maxWidth ? maxHeight : maxWidth);
-    const minimumCheck = maxDimension < minimumNodeSize ? minimumNodeSize : maxDimension;
+    const minimumCheck = maxDimension < minimumNodeSize ? (IsDesktop() ? minimumNodeSize : maxWidth) : maxDimension;
     const maximumCheck = minimumCheck > maximumNodeSize ? maximumNodeSize  : minimumCheck;
 
     return maximumCheck;
