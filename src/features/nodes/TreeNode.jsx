@@ -5,29 +5,20 @@ import { cloneNode } from './nodeSlice';
 import NodeDialog from './NodeDialog';
 
 
-const TreeNode = ({rootNode, render, inputNode, css, nodeList, nodeDictionary, countries}) => {
+const TreeNode = ({thumbnailXHRDoneCallBack, thumbnailXHRSentCallBack, rootNode, render, inputNode, css, nodeList, nodeDictionary, countries}) => {
     const[dialog, setDialog] = useState(false);
+    const[thumbnail, setThumbnail] = useState(null);
     const req = new XMLHttpRequest();
-    const[files, setFiles] = useState(inputNode.files); 
-    const getThumbnail = useRef(false);  
-    req.addEventListener("load", ThumbnailLoaded);
-
-    if(!getThumbnail.current && inputNode.thumbnailId && (!files || files.length < 1))
-    {
-        getThumbnail.current = true;
-        req.open("GET", "http://localhost:11727/api/files/"+inputNode.thumbnailId);
-        req.send();
-    }
-
+    req.addEventListener("load", ThumbnailLoaded); 
     const dispatch = useDispatch();
     const[manualReRender, setManualReRender] = useState(1); //used for callback re renders
     const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
     
     //After file gallery is added, set this to an api call to get
     //all files by node id on click/open of node details   
+    const[files, setFiles] = useState(inputNode.files); 
     var buttonMouseDown = new Object();
     var buttonMouseUp = new Object();
-
     
     useEffect(() => {
 
@@ -40,7 +31,24 @@ const TreeNode = ({rootNode, render, inputNode, css, nodeList, nodeDictionary, c
             window.removeEventListener('resize', isPortrait);
         }
 
-        return () => window.removeEventListener('resize', isPortrait);
+        
+        if(!XHRSent() && inputNode.thumbnailId && inputNode.files.length < 1 && thumbnail == null)
+        {
+            inputNode['thumbnailReq'] = true;
+            thumbnailXHRSentCallBack(inputNode);
+            req.open("GET", "http://localhost:11727/api/files/"+inputNode.thumbnailId);
+            req.send();
+        } 
+        else if(thumbnail != null && inputNode.files.length < 1)
+        {
+            inputNode.files.push({...thumbnail});
+            thumbnailXHRDoneCallBack(inputNode);
+        }
+
+        return () => 
+            {   
+                window.removeEventListener('resize', isPortrait);
+            }
     });    
 
     function isPortrait()
@@ -55,16 +63,13 @@ const TreeNode = ({rootNode, render, inputNode, css, nodeList, nodeDictionary, c
         }
     }
 
+    function XHRSent(){ return (('thumbnailReq' in inputNode) && inputNode['thumbnailReq']);}
+
+    
     function ThumbnailLoaded(event)
     {
-        //console.log("THumbnail Loaded!");
         const file = JSON.parse(event.target.responseText);
-        
-        inputNode.files = [file];
-        console.log(inputNode.files);
-        const filestmp = [...files];
-        filestmp.push(file);
-        setFiles(filestmp);
+        setThumbnail(file);
     }
 
     //used for callback re renders
@@ -132,23 +137,22 @@ const TreeNode = ({rootNode, render, inputNode, css, nodeList, nodeDictionary, c
 
     function GetImageSource()
     {
-        console.log(files);
-        var index = files.findIndex((object) => object.id.toLowerCase() === inputNode.thumbnailId.toLowerCase());
+        var index = inputNode.files.findIndex((object) => object.id.toLowerCase() === inputNode.thumbnailId.toLowerCase());
         if(index != -1)
         {
-            return files[index].base64;
+            return inputNode.files[index].base64;
         }
 
-        var file = files.find((object) => object.name === inputNode.thumbnailId);
+        var file = inputNode.files.find((object) => object.name === inputNode.thumbnailId);
         return file.base64;
     }
 
         return(
             <>  
-                { inputNode.thumbnailId && files && files.length > 0 ? 
+                { inputNode.thumbnailId && (thumbnail || inputNode.files.length > 0 ) ? 
                 (
                     <div style = {{height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
-                        <img className='image pointer' onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {GetImageSource()}/>
+                        <img className='image pointer' onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {thumbnail ? thumbnail.base64 : GetImageSource()}/>
                         <div
                             className='image-text text-overflow pointer'
                             onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}}
@@ -159,12 +163,11 @@ const TreeNode = ({rootNode, render, inputNode, css, nodeList, nodeDictionary, c
                     </div>
                 )
                     :
-                (
-                
+                (              
                     inputNode.thumbnailId ? 
                     (
                         <>
-
+                        
                         </>
                     )
                     :
@@ -175,8 +178,7 @@ const TreeNode = ({rootNode, render, inputNode, css, nodeList, nodeDictionary, c
                             style = {{ fontSize: String(css.nodeSize*0.155)+'px', maxHeight:String(css.nodeSize)+'px', maxWidth: String(css.nodeSize)+'px',  height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
                             {inputNode.title}
                         </button> 
-                    )
-                    
+                    )                   
                 ) 
                 } 
                 <NodeDialog

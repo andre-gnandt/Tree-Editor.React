@@ -22,6 +22,7 @@ import { IsDesktop } from '../utils/UtilityFunctions';
 'line'
 'dialog'
 'path'
+'thumbnailReq'
 */
 
 //Due to strange issues and positioning with the CSS transform 
@@ -433,6 +434,18 @@ const Tree = ({id, treeFetch, countries = null}) => {
     }
   }
 
+  const ThumbnailXHRSentCallBack = (node) =>
+  {
+    const originalNode = FindNodeInTree(node.id, originalTree);
+    originalNode['thumbnailReq'] = true;
+  }
+
+  const ThumbnailXHRDoneCallBack = (node) => 
+  {
+    const originalNode = FindNodeInTree(node.id, originalTree);
+    originalNode.files = [...node.files];
+  }
+
   function AppendChildNode(tree, child, left, row, nodeSize, verticalOffset)
   {
     
@@ -453,6 +466,8 @@ const Tree = ({id, treeFetch, countries = null}) => {
           >
             <Provider store ={store}>
               <TreeNode 
+                thumbnailXHRSentCallBack = {ThumbnailXHRSentCallBack}
+                thumbnailXHRDoneCallBack = {ThumbnailXHRDoneCallBack}
                 setChangeTracker = {UpdateChangeTrackerCallback}
                 rootNode = {tree} 
                 render = {ReRenderTree} 
