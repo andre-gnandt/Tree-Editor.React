@@ -55,10 +55,19 @@ const Tree = ({id, treeFetch, countries = null}) => {
   var iconDimension = 3.2; //rem;
   const horizontalBorder = 15; //in pixels
   var testRender = false;
+  var rendering = false;
+  var resetting = false;
+
+  useEffect(() => {
+    //if(tree) RemoveLines(tree);
+  }, [countries])
 
   useEffect(() => {
     
-    if(tree) AddLines(tree);
+    if(tree){ 
+      RemoveLines(tree); 
+      AddLines(tree);
+    }
     if(treeDetails)
     {
       document.getElementById('save-tree-positions').disabled = true;
@@ -108,8 +117,19 @@ const Tree = ({id, treeFetch, countries = null}) => {
     dest.treeId = src.treeId;
   }
 
+  function RenderTreeMutex() {
+    if(rendering || dragging || resetting) {
+        setTimeout(RenderTreeMutex, 50);
+        return;
+    }
+  }
+
   function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
   {
+    RenderTreeMutex();
+    if(rendering || dragging || resetting) return;
+    rendering = true;
+
     const treeContainer = createRoot(document.getElementById('tree-root'));
     if(!tree && !newNode)
     {
@@ -225,6 +245,8 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
     document.getElementById('save-tree-positions').disabled = !(treeUnsaved);
     document.getElementById('revert-tree-positions').disabled = !(treeUnsaved);
+
+    rendering = false;
   }
 
   function CompareNodes(a, b)
@@ -374,7 +396,6 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
   function OnDropNode(mouse, node)
   {
-    dragging = false;
     SetZIndices(node, 4, 0, 'auto');
     
     if(mouseOverNode && mouseOverNode !== node.id)
@@ -394,13 +415,15 @@ const Tree = ({id, treeFetch, countries = null}) => {
       }
 
       mouseOverNode = null;
+      dragging = false;
       ReRenderTree();
     }
     else
     {
       ResetSubtree(node);
       AddLine(node);
-    }
+    } 
+    dragging = false;
   }
 
   function SetZIndices(node, nodeIndex, lineIndex, pointerEvents)
@@ -453,7 +476,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
       <>
         <Draggable 
             position={{x: 0, y: 0}} 
-            onStart = {() => { if(child["dialog"])return false; scrollXBefore = window.scrollX; scrollYBefore = window.scrollY;}} 
+            onStart = {() => { if(child["dialog"] || resetting || rendering) return false; scrollXBefore = window.scrollX; scrollYBefore = window.scrollY;}} 
             onStop = {(drag) => {if(dragging){OnDropNode(drag, child);} }} 
             onDrag = {(drag) =>{if(!dragging){StartDrag(child);} RepositionSubTree(drag, child);}}
         >
@@ -465,7 +488,8 @@ const Tree = ({id, treeFetch, countries = null}) => {
             style = {{borderRadius: String(nodeSize*0.2)+'px', top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
           >
             <Provider store ={store}>
-              <TreeNode 
+              <TreeNode
+                reRenderTreeNode = {ReRenderTreeNode} 
                 thumbnailXHRSentCallBack = {ThumbnailXHRSentCallBack}
                 thumbnailXHRDoneCallBack = {ThumbnailXHRDoneCallBack}
                 setChangeTracker = {UpdateChangeTrackerCallback}
@@ -481,6 +505,37 @@ const Tree = ({id, treeFetch, countries = null}) => {
           </div>
         </Draggable>
       </>
+    );
+  }
+
+  function ReRenderTreeNodeMutex() {
+    if(rendering || resetting) {
+        setTimeout(ReRenderTreeNodeMutex, 50);
+        return;
+    }
+  }
+
+  function ReRenderTreeNode(node)
+  {
+    ReRenderTreeNodeMutex();
+    if(rendering || resetting) return;
+
+    createRoot(document.getElementById(node.id)).render
+    (
+      <Provider store ={store}>
+          <TreeNode 
+            thumbnailXHRSentCallBack = {ThumbnailXHRSentCallBack}
+            thumbnailXHRDoneCallBack = {ThumbnailXHRDoneCallBack}
+            setChangeTracker = {UpdateChangeTrackerCallback}
+            rootNode = {tree} 
+            render = {ReRenderTree} 
+            inputNode = {node} 
+            css = {{nodeSize: nodeDimension}} 
+            nodeList = {nodeList} 
+            nodeDictionary = {nodeDictionary}
+            countries = {countries}
+          />
+      </Provider> 
     );
   }
 
@@ -504,6 +559,15 @@ const Tree = ({id, treeFetch, countries = null}) => {
     const maximumCheck = minimumCheck > maximumNodeSize ? maximumNodeSize  : minimumCheck;
 
     return maximumCheck;
+  }
+
+  function InitialTreeRender(tree)
+  {
+    rendering = true;
+    const Jsx = RenderTree(tree);
+    rendering = false;
+
+    return Jsx;
   }
 
   function RenderTree(tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
@@ -815,13 +879,13 @@ const Tree = ({id, treeFetch, countries = null}) => {
       const updateNode = {...nodeDictionary[key]};
       updateNode.nodeId = parentId;
       updateNode['children'] = [];
-
       delete updateNode['position'];
       delete updateNode['line'];
       delete updateNode['left'];
       delete updateNode['top'];
       delete updateNode['dialog'];
       delete updateNode['path'];
+      delete updateNode['thumbnailReq'];
       
       updateNodesList.push(updateNode);
     });
@@ -941,6 +1005,9 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
   function RemoveLines(node)
   {
+
+    //createRoot(document.getElementById('line-container-insert')).render(<></>);
+    //createRoot(document.getElementById('line-container')).render(<></>);
     //DepthFirstMethod(RemoveLine, tree, null, false);
     RemoveLine(node);
     node.children?.forEach(child => {
@@ -1058,12 +1125,22 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
   function RevertTreePositions()
   {
+    RenderTreeMutex();
+    if(dragging || resetting || rendering) return;
+    resetting = true;
+
     RemoveLines(tree);
     tree = structuredClone(originalTree);
+    
+    resetting = false;
     ReRenderTree();
+    resetting = true;
+    
     changeTracker = new Object();
     document.getElementById('save-tree-positions').disabled = true;
     document.getElementById('revert-tree-positions').disabled = true;
+
+    resetting = false;
   }
 
   return (
@@ -1111,7 +1188,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
         </div>
         <div id = 'tree-root'>
         
-              {RenderTree(tree)}            
+              {InitialTreeRender(tree)}            
       
         </div>
         <div id = 'dialog-container'>

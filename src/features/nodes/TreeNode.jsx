@@ -3,13 +3,14 @@ import { useDispatch} from 'react-redux';
 import './DetailsList.css';
 import { cloneNode } from './nodeSlice';
 import NodeDialog from './NodeDialog';
+import { Audio } from 'react-loader-spinner';
 
 
-const TreeNode = ({thumbnailXHRDoneCallBack, thumbnailXHRSentCallBack, rootNode, render, inputNode, css, nodeList, nodeDictionary, countries}) => {
+const TreeNode = ({reRenderTreeNode, thumbnailXHRDoneCallBack, thumbnailXHRSentCallBack, rootNode, render, inputNode, css, nodeList, nodeDictionary, countries}) => {
     const[dialog, setDialog] = useState(false);
     const[thumbnail, setThumbnail] = useState(null);
     const req = new XMLHttpRequest();
-    req.addEventListener("load", ThumbnailLoaded); 
+    req.addEventListener("loadend", ThumbnailLoaded); 
     const dispatch = useDispatch();
     const[manualReRender, setManualReRender] = useState(1); //used for callback re renders
     const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
@@ -19,6 +20,8 @@ const TreeNode = ({thumbnailXHRDoneCallBack, thumbnailXHRSentCallBack, rootNode,
     const[files, setFiles] = useState(inputNode.files); 
     var buttonMouseDown = new Object();
     var buttonMouseUp = new Object();
+
+
     
     useEffect(() => {
 
@@ -36,13 +39,14 @@ const TreeNode = ({thumbnailXHRDoneCallBack, thumbnailXHRSentCallBack, rootNode,
         {
             inputNode['thumbnailReq'] = true;
             thumbnailXHRSentCallBack(inputNode);
-            req.open("GET", "http://localhost:11727/api/files/"+inputNode.thumbnailId);
+            req.open("GET", "https://treeeditor-private-old-hill-8065.fly.dev/api/Files/"+inputNode.thumbnailId);
             req.send();
         } 
         else if(thumbnail != null && inputNode.files.length < 1)
         {
             inputNode.files.push({...thumbnail});
             thumbnailXHRDoneCallBack(inputNode);
+            reRenderTreeNode(inputNode);
         }
 
         return () => 
@@ -166,8 +170,16 @@ const TreeNode = ({thumbnailXHRDoneCallBack, thumbnailXHRSentCallBack, rootNode,
                 (              
                     inputNode.thumbnailId ? 
                     (
-                        <>
-                        
+                        <>{
+                            <Audio
+                                height="100&"
+                                width="100%"
+                                radius="30%"
+                                color="grey"
+                                wrapperStyle
+                                wrapperClass
+                            />
+                            }
                         </>
                     )
                     :
