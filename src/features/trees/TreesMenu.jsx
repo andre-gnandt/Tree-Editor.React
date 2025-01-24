@@ -7,6 +7,7 @@ import { DataView} from 'primereact/dataview';
 import HeaderInfo from '../utils/HeaderInfo';
 import TreeDialog from './TreeDialog';
 import { deleteTree } from '../../api/trees/treesApi';
+import { Paginator } from 'primereact/paginator';
 import '/node_modules/primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
@@ -19,7 +20,7 @@ const TreesMenu = ({trees}) => {
   const [deleteOptions, setDeleteOptions] = useState(null);
   const [treeList, setTreeList] = useState(trees);
   const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
-  const iconDimension = 5;//0.16*window.innerHeight;
+  const iconDimension = 3.2;//0.16*window.innerHeight;
 
   useEffect(() => {
       window.addEventListener('resize', isPortrait);
@@ -140,16 +141,17 @@ const TreesMenu = ({trees}) => {
         return (
           <div className= {portrait ? 'col-6' : 'col-3'} key = {tree.id} >
               {/*<Link to={{ pathname: '/tree/'+tree.id, state: 'flushDeal' }}>*/}   
-              <div>
-              <i className='pi pi-times menu-item-icon' onClick={() => {setDeleteOptions(tree.id)}}/> 
+              <div className='vertical-center' style = {{height: '14px'}}>
+                <i className='pi pi-times menu-item-icon' onClick={() => {setDeleteOptions(tree.id)}}/> 
               </div> 
                 <div>
                 <button 
-                    className='menu-button tree-menu-item'
+                    className='menu-button'
                     style = {{fontSize: portrait ? FitFontSize(18, 70, tree.name) : FitFontSize(10, 35, tree.name), 
                               height: portrait ? '23.19vw' : '11.9vw',
-                              width: portrait ? '38vw' : '19.5vw'
-                            }}
+                              width: portrait ? '38vw' : '19.5vw',
+                              marginLeft: portrait ? '1vw' : '0.5vw'
+                            }} //width: 82vw;
                     onClick={(event) => {navigate('/tree/'+tree.id);}} 
                 >
                     {tree.name}
@@ -178,7 +180,7 @@ const TreesMenu = ({trees}) => {
             <div id = 'create-container' className='create-container' style = {{width: String(iconDimension)+"rem"}}>
                 <button className = 'button-header button-create tooltip'>
                     <i id = 'create-tree-button' className='pi pi-upload' style = {{fontSize: String(iconDimension)+"rem"}} onClick = {() => { setCreateTree(true);}} />
-                    <span class="tooltip-right">New Tree</span>
+                    <span className="tooltip-right">New Tree</span>
                 </button>
             </div>
             <div className='tree-menu-header center-text'>
@@ -192,7 +194,15 @@ const TreesMenu = ({trees}) => {
             (
             <>
                 <InputText placeholder='Search...' className='search-bar' style = {{left: portrait ? '0vw' : '20.5vw', width: portrait ? '80vw' : '40vw'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
-                <DataView paginator rows = {16} /*className='data-table'*/ value = {FilterTree(treeList)} listTemplate={listTemplate} layout = {"list"} />
+                <DataView 
+                  paginatorClassName='menu-paginator'
+                  paginatorTemplate={{ layout: 'PrevPageLink CurrentPageReport NextPageLink' }}
+                  paginator  
+                  rows = {16} 
+                  value = {FilterTree(treeList)}
+                   listTemplate={listTemplate} 
+                   layout = {"grid"} 
+                />
             </>
             )
             :

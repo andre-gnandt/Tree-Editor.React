@@ -50,17 +50,18 @@
 {
   cursor: pointer; 
   z-index: 20;
-  top: 2vh;
+  /*top: 2vh;*/
   position: relative;
   height: 14px;
   width: 14px;
   font-size: 14px;
+  margin-left: 0.5vw;
 }
 
 .search-bar
 {
   position: relative;
-  margin-bottom: 5vh !important;
+  margin-bottom: 3.5vh !important;
   height: 3rem;
   border-radius: 3rem;
   font-size: 2rem !important;
@@ -70,7 +71,7 @@
 {
   /*11.2rem+12%*/
   position: relative;
-  top: 7vh;
+  top: 3.5vh;
   height: max(calc(21.5rem + 5vh), calc(93vh - 8.2rem));
   width: 82vw;
   left: 9vw;
@@ -80,26 +81,54 @@
 {
     /*11.2rem+12%*/
   overflow-y: auto;
+  overflow-x: hidden;
   scrollbar-gutter: none !important;
   scrollbar-color: var(--form-focused-color) rgb(253, 240, 240) ;
+  border: 3px solid var(--form-focused-color);
   /*height: calc(62vh - 4vw);
   max-height: calc(62vh - 4vw);*/
   /*height: calc(86vh - 11.2rem);
-  max-height: calc(86vh - 11.2rem);*/
-  height: max(17rem, calc(83vh - 11.2rem)) !important;
-  max-height: max(17rem, calc(83vh - 11.2rem)) !important;
+  max-height: calc(86vh - 11.2rem);
+  height: max(17rem, calc(83vh - 11.2rem)) !important; */
+  /*max-height: max(17rem, calc(83vh - 11.2rem)) !important; */
+  height: max(9rem, calc(88vh - 12.4rem)) !important;
+  max-height: max(9rem, calc(88vh - 12.4rem)) !important;
+  background-color: var(--container-color);
 }
 
-.tree-menu-item
+.menu-paginator
+{
+  margin-top: 2vh;
+  color: var(--form-focused-color);
+}
+
+span.p-paginator-current 
+{
+  font-size: 2rem;
+}
+
+.menu-button
 {
     color: var(--form-focused-color);
-    margin-top:2vh;
+    /*margin-top:2vh;*/
     padding: 0 0 0 0; 
     background-color: #DCDCDC;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     display: table-cell;
+    margin-bottom: 1vh;
+}
+
+.menu-button:hover
+{
+    border: 3px solid var(--form-focused-color);
+}
+
+.menu-button:focus
+{
+    outline: none;
+    border: none;
 }
 
 .tree-menu-header
@@ -107,10 +136,10 @@
   color: var(--form-focused-color);
   left: 0;
   text-align: center;
-  font-size: 5.4rem;
+  font-size: 3.2rem;
   height: 100%;
   position: relative;
-  width: calc(100vw - 10rem);
+  width: calc(100vw - 6.4rem);
 }
 
 /*
