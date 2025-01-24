@@ -1,13 +1,11 @@
 import { useState, useEffect} from 'react'
-import Draggable from 'react-draggable';
-import { Dialog } from 'primereact/dialog';
 import { useNavigate } from "react-router-dom";
 import { InputText } from 'primereact/inputtext';
 import { DataView} from 'primereact/dataview';
 import HeaderInfo from '../utils/HeaderInfo';
 import TreeDialog from './TreeDialog';
 import { deleteTree } from '../../api/trees/treesApi';
-import { Paginator } from 'primereact/paginator';
+import { GetConfirmDelete } from '../utils/Functions';
 import '/node_modules/primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
@@ -20,7 +18,7 @@ const TreesMenu = ({trees}) => {
   const [deleteOptions, setDeleteOptions] = useState(null);
   const [treeList, setTreeList] = useState(trees);
   const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
-  const iconDimension = 3.2;//0.16*window.innerHeight;
+  const iconDimension = 3.2; //rem
 
   useEffect(() => {
       window.addEventListener('resize', isPortrait);
@@ -68,33 +66,6 @@ const TreesMenu = ({trees}) => {
     setDeleteOptions(null);
   }
 
-  const GetConfirmDelete = () =>
-    {
-        return (
-        <>  <Draggable>
-                <Dialog className='alert' showHeader = {false}  style = {{height: '45vh', width: '40vw'}} headerStyle={{backgroundColor: 'coral'}} contentStyle={{backgroundColor: 'coral', overflow: 'hidden'}}  visible = {deleteOptions} onHide = {() => {setDeleteOptions("")}}>
-                    <>  
-                    <i onClick={() => {setDeleteOptions(null)}} className='pi pi-times' style = {{ marginRight: 'auto', cursor: 'pointer', fontSize: '4.8vh'}}/>                   
-                        <div className='alert' style = {{marginLeft: '2.5vw', width: '40vw', height: '45vh'}}>
-                            <div className='' style = {{position: 'relative', top: '0vh',  width: '35vw', height: '8vh', textAlign: 'center', fontSize: '3vh' }}>Please confirm that you would like to delete this Tree.</div>
-                            <div style = {{position: 'relative', top: '10vh', marginTop: '1vh', display: 'flex', width: '35vw', height: '24vh'}}>
-                                <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
-                                    <button className='text-overflow button' onClick={() => {HandleDeleteTree();}} style = {{height: '12vh', width: '15.5vw', fontSize: '4vh'}}>Yes</button>
-                                </div>
-                                <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
-                                    <button 
-                                         onClick={() => {setDeleteOptions(null); }}
-                                         className='button text-overflow' style = {{height: '12vh',  width: '15.5vw', fontSize: '4vh'}}>No</button>
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                </Dialog>
-            </Draggable>
-        </>
-        );
-    }
-
   function FilterTree()
   {
     if(!search || !treeList || treeList.length == 0 || search.length == 0) return treeList;
@@ -115,7 +86,7 @@ const TreesMenu = ({trees}) => {
 
   const EmptyListJSX = () => 
     {
-      const maximumNodeSize = 50; //50vh
+      const maximumNodeSize = 50; 
   
       return (
         <>
@@ -222,7 +193,7 @@ const TreesMenu = ({trees}) => {
           closeDialog = {closeDialog} 
           reRenderList = {reRenderList}
         />
-        {GetConfirmDelete()}
+        {GetConfirmDelete("tree", setDeleteOptions, null, HandleDeleteTree, null, setDeleteOptions, null, deleteOptions)}
     </>  
   );
 }
