@@ -162,7 +162,7 @@ const TreesMenu = ({trees}) => {
     }
 
   const listTemplate = (trees) => {
-    return <div className='grid grid-nogutter'>{trees.map((tree) => gridItem(tree))}</div>;
+    return <div className='grid grid-nogutter data-table'>{trees.map((tree) => gridItem(tree))}</div>;
   };
 
   const closeDialog = () => 
@@ -192,7 +192,7 @@ const TreesMenu = ({trees}) => {
             (
             <>
                 <InputText placeholder='Search...' className='search-bar' style = {{left: portrait ? '0vw' : '20.5vw', width: portrait ? '80vw' : '40vw'}} onChange={(event) => {setSearch(event.target.value);}} value = {search ? search : ""}/>
-                <DataView className='data-table' rows={4} value = {FilterTree(treeList)} listTemplate={listTemplate} layout = {"grid"} />
+                <DataView paginator rows = {16} /*className='data-table'*/ value = {FilterTree(treeList)} listTemplate={listTemplate} layout = {"list"} />
             </>
             )
             :

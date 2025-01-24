@@ -27,7 +27,7 @@ function Success()
         }
 
     document.getElementById('success').hidden = false;
-    const myTimeout = setTimeout(ClearSuccess, 1600);
+    const myTimeout = setTimeout(ClearSuccess, 3000);
 }
 
 function error() 
@@ -39,7 +39,7 @@ function error()
     }
 
     document.getElementById('error').hidden = false;
-    const myTimeout = setTimeout(ClearError, 2000);
+    const myTimeout = setTimeout(ClearError, 3000);
 }
 
 function IsTouchDevice() {  return 'ontouchstart' in window || 'onmsgesturechange' in window; };

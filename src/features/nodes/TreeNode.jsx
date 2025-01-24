@@ -39,7 +39,7 @@ const TreeNode = ({reRenderTreeNode, thumbnailXHRDoneCallBack, thumbnailXHRSentC
         {
             inputNode['thumbnailReq'] = true;
             thumbnailXHRSentCallBack(inputNode);
-            req.open("GET", "https://treeeditor-private-old-hill-8065.fly.dev/api/Files/"+inputNode.thumbnailId);
+            req.open("GET", "http://localhost:11727/api/Files/"+inputNode.thumbnailId);
             req.send();
         } 
         else if(thumbnail != null && inputNode.files.length < 1)
@@ -172,7 +172,7 @@ const TreeNode = ({reRenderTreeNode, thumbnailXHRDoneCallBack, thumbnailXHRSentC
                     (
                         <>{
                             <Audio
-                                height="100&"
+                                height="100%"
                                 width="100%"
                                 radius="30%"
                                 color="grey"

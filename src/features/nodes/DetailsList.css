@@ -211,6 +211,57 @@
     vertical-align: middle;
 }
 
+.alert-load
+{   
+    position: absolute;
+    z-index: 2000;
+    left: calc(50vw - 8rem);
+    top: calc(50vh - 4rem);
+    height: 8rem;
+    width: 16rem;
+    max-height: 100vh;
+    max-width: 100vw;
+    font-size: 2rem;
+    border: 3px solid black;
+    color: black;
+}
+
+.transparent
+{
+    background-color: rgba(204, 255, 255, 0);
+    border: none;
+}
+
+.red 
+{
+    background-color: red;
+}
+
+.green
+{
+    background-color: lightgreen;
+}
+
+.alert-load-spinner
+{
+    position: relative;
+    height: 6rem;
+    width: 6rem;
+    left: 5rem;
+}
+
+.alert-load-text
+{
+    width: 100%;
+    height: 100%;
+}
+
+.loading-graphic
+{
+    height: 100%;
+}
+
+
 .dialog-root 
 {
     background-color: #DCDCDC;
