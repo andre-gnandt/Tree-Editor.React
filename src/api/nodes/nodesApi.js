@@ -1,4 +1,4 @@
-import { Saving, DoneSaving, error, Success } from "../../features/utils/UtilityFunctions";
+import { Saving, DoneSaving, error, Success } from "../../features/utils/Functions";
 
 const putOptions = {
     method: 'PUT',

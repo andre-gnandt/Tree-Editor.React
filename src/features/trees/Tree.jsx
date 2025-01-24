@@ -13,7 +13,7 @@ import HeaderInfo from '../utils/HeaderInfo';
 import { updateManyNodes } from '../../api/nodes/nodesApi';
 import 'primeicons/primeicons.css';
 import '../trees/tree.css';
-import { IsDesktop } from '../utils/UtilityFunctions';
+import { IsDesktop } from '../utils/Functions';
 
 /*extra node properties include:
 'position'
@@ -27,7 +27,7 @@ import { IsDesktop } from '../utils/UtilityFunctions';
 
 //Due to strange issues and positioning with the CSS transform 
 //property of tree nodes on re renders, this component will NEVER Re render
-//Re renders of the tree diagram must be done manually
+//Re renders of the tree diagram must be done with plain JavaScript
 const Tree = ({id, treeFetch, countries = null}) => {
   const navigate = useNavigate();
   const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
@@ -53,14 +53,9 @@ const Tree = ({id, treeFetch, countries = null}) => {
   const minimumNodeSize = IsDesktop() ? 1.15/pixelsToCentimetres : 0.7/pixelsToCentimetres; //1.4 cm in pixels
   var nodeDimension = 80;
   var iconDimension = 3.2; //rem;
-  const horizontalBorder = 15; //in pixels
   var testRender = false;
   var rendering = false;
   var resetting = false;
-
-  useEffect(() => {
-    //if(tree) RemoveLines(tree);
-  }, [countries])
 
   useEffect(() => {
     
@@ -1186,10 +1181,8 @@ const Tree = ({id, treeFetch, countries = null}) => {
           <div id = 'line-container-insert' className='line-container-insert'>
           </div>
         </div>
-        <div id = 'tree-root'>
-        
-              {InitialTreeRender(tree)}            
-      
+        <div id = 'tree-root'>       
+              {InitialTreeRender(tree)}                 
         </div>
         <div id = 'dialog-container'>
         </div>

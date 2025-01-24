@@ -1,4 +1,4 @@
-import { Loading, DoneLoading, error } from "../../features/utils/UtilityFunctions";
+import { Loading, DoneLoading, error } from "../../features/utils/Functions";
 
 const postOptions =  {
     method: 'POST',
