@@ -1016,13 +1016,13 @@ const Tree = ({id, treeFetch, countries = null}) => {
   */
 
   
-  function RemoveLines(node)
+  async function RemoveLines(node)
   {
 
     //createRoot(document.getElementById('line-container-insert')).render(<></>);
     //createRoot(document.getElementById('line-container')).render(<></>);
     //DepthFirstMethod(RemoveLine, tree, null, false);
-    //linesContainer.render(<></>);
+    await linesContainer.render(<></>);
     
     RemoveLine(node);
     node.children?.forEach(child => {
@@ -1127,14 +1127,12 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
     return (
       <>
-            <div className='empty-tree-container' style = {{left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String(maximumNodeSize/4+window.innerWidth*0.04)+'px', height: String(maximumNodeSize)+'px', width: String(maximumNodeSize)+'px'}}>
-              <button onClick={(event) => {document.getElementById('create-root-button').click();}} className='button-root-empty' >
-                  <i className='pi pi-warehouse' style = {{fontSize: String(maximumNodeSize)+'px'}} onClick = {() => { setCreateNode(true);}} />
-              </button> 
-            </div>
-              <span className='empty-tree-message' style = {{left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String((5*maximumNodeSize/4)+20+window.innerWidth*0.04)+'px', width: String(maximumNodeSize)+'px'}}>
-                This tree is empty, click the icon above to create the root node!
-              </span>
+           {/* <div className='empty-tree-container' style = {{height: 'fit', width: String(maximumNodeSize)+'px'}}> 
+              <button onClick={(event) => {document.getElementById('create-root-button').click();}} className='button-root-empty' >*/}
+              <i className='pi pi-warehouse button-root-empty pointer' onClick = {() => { document.getElementById('create-root-button').click();}} />
+              <div className='empty-tree-message center-text pointer' onClick = {() => { document.getElementById('create-root-button').click();}}>
+                Click to create a node.
+              </div>
           </>
     );
   }
