@@ -4,9 +4,10 @@ import './DetailsList.css'
 import NodeDetails from './NodeDetails';
 import 'primeicons/primeicons.css';
 import Draggable from 'react-draggable';
-import { GetDialogHeight, GetDialogWidth } from '../utils/UtilityFunctions';
+import { GetDialogHeight, GetDialogWidth } from '../utils/Functions';
 
 const NodeDialog = ({
+        unsavedTreePositions = null,
         create = false, 
         root = false, 
         unMount, 
@@ -33,6 +34,7 @@ const NodeDialog = ({
                     visible = {open} 
                     onHide={() => {if (!open) return; unMount();}} >                  
                         <NodeDetails 
+                            unsavedTreePositions = {unsavedTreePositions}
                             countries = {countries} 
                             unMount = {unMount} 
                             rootNode = {rootNode} 

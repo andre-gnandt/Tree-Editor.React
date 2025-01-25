@@ -4,7 +4,7 @@ import '../nodes/DetailsList.css';
 import TreeDetails from './TreeDetails';
 import 'primeicons/primeicons.css';
 import Draggable from 'react-draggable';
-import { GetDialogHeight, GetDialogWidth } from '../utils/UtilityFunctions';
+import { GetDialogHeight, GetDialogWidth } from '../utils/Functions';
 
 const TreeDialog = ({id = null, setCreateTree, createTree,  portrait, inputTree, openDialog, closeDialog, reRenderList = null}) => {
     

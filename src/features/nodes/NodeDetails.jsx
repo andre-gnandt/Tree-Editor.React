@@ -5,12 +5,12 @@ import { DeleteCascade,  DeleteSingle, updateNode, createNode, createRoot } from
 import { InputText} from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
-import { Dialog } from 'primereact/dialog';
+import { GetConfirmDelete, GetDeleteOptions } from '../utils/Functions';
 import './DetailsList.css';
 import UploadThumbnail from '../utils/UploadThumbnail';
-import Draggable from 'react-draggable';
 
 const NodeDetails = ({
+    unsavedTreePositions = null,
     unMount,
     render, 
     inputNode, 
@@ -26,13 +26,13 @@ const NodeDetails = ({
     const[hideButtons, setHideButtons] = useState(0);
     const changeCount = useRef(0);
     const[titleRequired, setTitleRequired] = useState(true);
-    //const[resetFiles, setResetFiles] = useState({reset: false});
     const resetThumbnail = useRef(1);
     const [deleteOptions, setDeleteOptions] = useState("");
     const deleteType = useRef("cascade"); //single | cascade
     const fileChangeCount = useRef(0);
     const [Create, setCreate] = useState(create);
     const [Root, setRoot] = useState(root);
+    const disableDeleteButton = unsavedTreePositions ? unsavedTreePositions() : false;;
 
     const handleChange = (value, method) => {
         dispatch(method(value));
@@ -128,66 +128,6 @@ const NodeDetails = ({
         }
     }
 
-    const GetConfirmDelete = () =>
-        {
-            return (
-            <>  <Draggable>
-                    <Dialog className='alert' showHeader = {false}  style = {{height: '45vh', width: '40vw'}} headerStyle={{backgroundColor: 'coral'}} contentStyle={{backgroundColor: 'coral', overflow: 'hidden'}}  visible = {(deleteOptions === "confirm")} onHide = {() => {setDeleteOptions("")}}>
-                        <>  
-                        <i onClick={() => {setDeleteOptions("")}} className='pi pi-times' style = {{ marginRight: 'auto', cursor: 'pointer', fontSize: '4.8vh'}}/>                   
-                            <div className='alert' style = {{marginLeft: '2.5vw', width: '40vw', height: '45vh'}}>
-                                <div className='' style = {{position: 'relative', top: '0vh',  width: '35vw', height: '8vh', textAlign: 'center', fontSize: '3vh' }}>Please confirm that you would like to delete the node(s).</div>
-                                <div style = {{position: 'relative', top: '10vh', marginTop: '1vh', display: 'flex', width: '35vw', height: '24vh'}}>
-                                    <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
-                                        <button className='text-overflow button' onClick={() => {HandleDeleteNode();}} style = {{height: '12vh', width: '15.5vw', fontSize: '4vh'}}>Yes</button>
-                                    </div>
-                                    <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
-                                        <button 
-                                             onClick={() => {setDeleteOptions(""); }}
-                                             className='button text-overflow' style = {{height: '12vh',  width: '15.5vw', fontSize: '4vh'}}>No</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </>
-                    </Dialog>
-                </Draggable>
-            </>
-            );
-        }
-
-    const GetDeleteOptions = () =>
-    {
-        return (
-        <>  <Draggable>
-                <Dialog className='alert' showHeader = {false}  style = {{height: '45vh', width: '40vw'}} headerStyle={{backgroundColor: 'coral'}} contentStyle={{backgroundColor: 'coral', overflow: 'hidden'}}  visible = {(deleteOptions === "options")} onHide = {() => {setDeleteOptions("")}}>
-                    <>  
-                    <i onClick={() => {setDeleteOptions("")}} className='pi pi-times' style = {{ marginRight: 'auto', cursor: 'pointer', fontSize: '4.8vh'}}/>                   
-                        <div className='alert' style = {{marginLeft: '2.5vw', width: '40vw', height: '45vh'}}>
-                            <div className='' style = {{position: 'relative', top: '0vh',  width: '35vw', height: '8vh', textAlign: 'center', fontSize: '3vh' }}>What type of Deletion would you like to make?</div>
-                            <div style = {{position: 'relative', top: '3vh', marginTop: '1vh', display: 'flex', width: '35vw', height: '24vh'}}>
-                                <div style = {{backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
-                                    <button className='text-overflow button' onClick={() => {deleteType.current = "cascade"; setDeleteOptions("confirm");}} style = {{height: '12vh', width: '15.5vw', fontSize: '4vh'}}>Delete Cascade</button>
-                                    <div style = {{fontSize: '3vh'}}>
-                                        (Delete this node and all descendants )
-                                    </div>
-                                </div>
-                                <div style = {{borderLeft: '3px dotted black', backgroundColor: 'coral', width: '17.5vw', height: '100%', textAlign: 'center'}}>
-                                    <button 
-                                         onClick={() => {deleteType.current = "single"; setDeleteOptions("confirm"); }}
-                                         className='button text-overflow' style = {{height: '12vh',  width: '15.5vw', fontSize: '4vh'}}>Delete Single</button>
-                                    <div style = {{fontSize: '3vh'}}>
-                                        (Delete only this Node)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                </Dialog>
-            </Draggable>
-        </>
-        );
-    }
-
     function RenderCreateOrSaveButton()
     {
         if(Create || Root)
@@ -247,7 +187,7 @@ const NodeDetails = ({
             }
             else{
                 SetNodeVar(updatedNode);
-                render("update", inputNode, node.id);
+                render("update", inputNode, node.id, node.nodeId, node.nodeId);
             }
 
             dispatch(cloneNode(inputNode));
@@ -338,21 +278,24 @@ const NodeDetails = ({
                         <div className={!Create && !Root && node.nodeId ? 'dialog-delete' : 'dialog-delete-skeleton'}>
                         { (node.nodeId && !Root && !Create) && (
                             <>
-                                <button className='dialog-delete-button button text-overflow' 
+                                <button disabled = {disableDeleteButton} className='tooltip dialog-delete-button button text-overflow' 
+                                    style = {{color: (disableDeleteButton) ? 'blue' : 'white'}}
                                     onClick={() => {setDeleteOptions("options")}}                       
                                 >
-                                Delete</button>                   
+                                    <span class="tooltip-bottom">Unable delete with unsaved tree positions.</span>
+                                    Delete
+                                </button>                   
                                 { (deleteOptions === "options") && 
                                     (
                                     <>
-                                        {GetDeleteOptions()}
+                                        {GetDeleteOptions("node", setDeleteOptions, "", setDeleteOptions, "confirm", setDeleteOptions, "confirm", true, deleteType)}
                                     </>
                                     )
                                 }
                                 { (deleteOptions === "confirm") && 
                                     (
                                     <>
-                                        {GetConfirmDelete()}
+                                        {GetConfirmDelete("node", setDeleteOptions, "", HandleDeleteNode, null, setDeleteOptions, "", true)}
                                     </>
                                     )
                                 }
@@ -365,7 +308,7 @@ const NodeDetails = ({
                 <div className={(hideButtons === 0 && titleRequired) ? 'container': 'container-shrunk'}> 
                     <div className='thumbnail-container-outer' /*style = {{marginBottom: mobile ? '5vw': '5.275vh'}} */>
                         <div className="thumbnail-container" style = {{width: '50%'}}>                         
-                            <UploadThumbnail /* reset = {resetFiles} */  reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
+                            <UploadThumbnail reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
                         </div>
                         {
                         <div className='title-container expandable-title-container' style = {{width: '50%'}}>
