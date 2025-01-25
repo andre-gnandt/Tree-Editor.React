@@ -6,13 +6,13 @@ import NodeDialog from './NodeDialog';
 import { Audio } from 'react-loader-spinner';
 
 
-const TreeNode = ({reRenderTreeNode, thumbnailXHRDoneCallBack, thumbnailXHRSentCallBack, rootNode, render, inputNode, css, nodeList, nodeDictionary, countries}) => {
+const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallBack, thumbnailXHRSentCallBack, rootNode, render, inputNode, css, nodeList, nodeDictionary, countries}) => {
     const[dialog, setDialog] = useState(false);
     const[thumbnail, setThumbnail] = useState(null);
     const req = new XMLHttpRequest();
     req.addEventListener("loadend", ThumbnailLoaded); 
     const dispatch = useDispatch();
-    const[manualReRender, setManualReRender] = useState(1); //used for callback re renders
+    const [manualReRender, setManualReRender] = useState(1); //used for callback re renders
     const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
     
     //After file gallery is added, set this to an api call to get
@@ -194,6 +194,7 @@ const TreeNode = ({reRenderTreeNode, thumbnailXHRDoneCallBack, thumbnailXHRSentC
                 ) 
                 } 
                 <NodeDialog
+                    unsavedTreePositions = {unsavedTreePositions}
                     unMount = {CloseDialog}
                     countries = {countries}
                     portrait = {portrait}

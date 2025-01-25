@@ -544,7 +544,7 @@ button:focus{
     width: 200px;
     /* Position the tooltip */
     position: absolute;
-    z-index: 300;
+    z-index: 10000;
 
     top: 100%;
     left: 50%;

@@ -119,6 +119,11 @@ const Tree = ({id, treeFetch, countries = null}) => {
     }
   }
 
+  function UnsavedTreePositions()
+  {
+    return (changeTracker && Object.keys(changeTracker).length > 0);
+  }
+
   function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
   {
     RenderTreeMutex();
@@ -155,7 +160,9 @@ const Tree = ({id, treeFetch, countries = null}) => {
       {
         RemoveLine({id: nodeId, nodeId: oldParentId});
         node = AlterTreeStructureForParentNodeChange(inputTree, nodeId, newParentId, oldParentId);
-        const originalNode = AlterTreeStructureForParentNodeChange(originalTree, nodeId, newParentId, oldParentId);
+
+        const originalNode = FindNodeInTree(nodeId, originalTree);
+        AlterTreeStructureForParentNodeChange(originalTree, nodeId, newParentId, originalNode.nodeId, originalNode);
 
         SetNodePropertiesForUpdate(newNode, node);
         SetNodePropertiesForUpdate(newNode, originalNode);
@@ -176,7 +183,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
         const originalTreeRoot = AlterTreeAtructureForCreateRoot(originalTree, copyNewNode);
         originalTree = originalTreeRoot;
 
-      }
+      }/*
       else if(callback === "delete single")
       {
         node = AlterTreeStructureForDeleteSingle(inputTree, nodeId, oldParentId);
@@ -195,7 +202,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
         
         const originalNode = FindNodeInTree(nodeId, originalTree);
         AlterTreeStructureForDeleteCascade(originalTree, nodeId, originalNode.nodeId, originalNode);
-      }
+      }*/
     }
 
     maxLevels = new Object();
@@ -221,7 +228,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
     else if(callback === "new root")
     {
       originalDictionary[node.id] = {...nodeDictionary[node.id]};
-    }
+    }/*
     else if(callback === "delete single")
     {
       UpdateChangeTrackerForDeleteSingle(node);
@@ -229,14 +236,9 @@ const Tree = ({id, treeFetch, countries = null}) => {
     else if(callback === "delete cascade")
     {
       UpdateChangeTrackerForDeleteCascade(node);
-    }
+    }*/
 
-    var treeUnsaved = false;
-
-    if(changeTracker && Object.keys(changeTracker).length > 0)
-    {
-      treeUnsaved = true;
-    }
+    const treeUnsaved = (changeTracker && Object.keys(changeTracker).length > 0);
 
     document.getElementById('save-tree-positions').disabled = !(treeUnsaved);
     document.getElementById('revert-tree-positions').disabled = !(treeUnsaved);
@@ -484,6 +486,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
           >
             <Provider store ={store}>
               <TreeNode
+                unsavedTreePositions={UnsavedTreePositions}
                 reRenderTreeNode = {ReRenderTreeNode} 
                 thumbnailXHRSentCallBack = {ThumbnailXHRSentCallBack}
                 thumbnailXHRDoneCallBack = {ThumbnailXHRDoneCallBack}
@@ -519,6 +522,8 @@ const Tree = ({id, treeFetch, countries = null}) => {
     (
       <Provider store ={store}>
           <TreeNode 
+            unsavedTreePositions={UnsavedTreePositions}
+            reRenderTreeNode = {ReRenderTreeNode}
             thumbnailXHRSentCallBack = {ThumbnailXHRSentCallBack}
             thumbnailXHRDoneCallBack = {ThumbnailXHRDoneCallBack}
             setChangeTracker = {UpdateChangeTrackerCallback}

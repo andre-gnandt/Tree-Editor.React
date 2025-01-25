@@ -10,6 +10,7 @@ import './DetailsList.css';
 import UploadThumbnail from '../utils/UploadThumbnail';
 
 const NodeDetails = ({
+    unsavedTreePositions = null,
     unMount,
     render, 
     inputNode, 
@@ -31,6 +32,7 @@ const NodeDetails = ({
     const fileChangeCount = useRef(0);
     const [Create, setCreate] = useState(create);
     const [Root, setRoot] = useState(root);
+    const disableDeleteButton = unsavedTreePositions ? unsavedTreePositions() : false;;
 
     const handleChange = (value, method) => {
         dispatch(method(value));
@@ -185,7 +187,7 @@ const NodeDetails = ({
             }
             else{
                 SetNodeVar(updatedNode);
-                render("update", inputNode, node.id);
+                render("update", inputNode, node.id, node.nodeId, node.nodeId);
             }
 
             dispatch(cloneNode(inputNode));
@@ -276,10 +278,13 @@ const NodeDetails = ({
                         <div className={!Create && !Root && node.nodeId ? 'dialog-delete' : 'dialog-delete-skeleton'}>
                         { (node.nodeId && !Root && !Create) && (
                             <>
-                                <button className='dialog-delete-button button text-overflow' 
+                                <button disabled = {disableDeleteButton} className='tooltip dialog-delete-button button text-overflow' 
+                                    style = {{color: (disableDeleteButton) ? 'blue' : 'white'}}
                                     onClick={() => {setDeleteOptions("options")}}                       
                                 >
-                                Delete</button>                   
+                                    <span class="tooltip-bottom">Unable delete with unsaved tree positions.</span>
+                                    Delete
+                                </button>                   
                                 { (deleteOptions === "options") && 
                                     (
                                     <>
