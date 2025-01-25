@@ -56,12 +56,19 @@ const Tree = ({id, treeFetch, countries = null}) => {
   var testRender = false;
   var rendering = false;
   var resetting = false;
+  var linesContainer = null;
+  var treeContainer = null;
+  var createContainer = null;
+  const lines = [];
 
   useEffect(() => {
     
+    if(linesContainer === null) linesContainer = createRoot(document.getElementById('line-container-insert'));
+    if(treeContainer === null) treeContainer = createRoot(document.getElementById('tree-root'));
+    if(createContainer === null) createContainer = createRoot(document.getElementById('create-container'));
     if(tree){ 
-      RemoveLines(tree); 
-      AddLines(tree);
+      //RemoveLines(tree); 
+      RenderLines(tree);
     }
     if(treeDetails)
     {
@@ -130,7 +137,6 @@ const Tree = ({id, treeFetch, countries = null}) => {
     if(rendering || dragging || resetting) return;
     rendering = true;
 
-    const treeContainer = createRoot(document.getElementById('tree-root'));
     if(!tree && !newNode)
     {
        treeContainer.render((RenderTree(tree)));
@@ -139,7 +145,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
     else if(tree)
     {
       
-      RemoveLines(tree);
+      //RemoveLines(tree);
     }
 
     //iconDimension = 0.08*window.innerHeight;
@@ -158,7 +164,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
       if(callback === "update")
       {
-        RemoveLine({id: nodeId, nodeId: oldParentId});
+        //RemoveLine({id: nodeId, nodeId: oldParentId});
         node = AlterTreeStructureForParentNodeChange(inputTree, nodeId, newParentId, oldParentId);
 
         const originalNode = FindNodeInTree(nodeId, originalTree);
@@ -212,7 +218,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
     treeContainer.render((RenderTree(inputTree)));
     CorrectTransforms(inputTree);
     ResetElementPositions(inputTree);
-    AddLines(inputTree);
+    RenderLines(inputTree);
     RenderCreationButtons();
 
     //update the change tracker (for drag and drop of subtrees) to remove any changes already saved in the database
@@ -418,7 +424,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
     else
     {
       ResetSubtree(node);
-      AddLine(node);
+      RenderLines(tree);
     } 
     dragging = false;
   }
@@ -442,15 +448,21 @@ const Tree = ({id, treeFetch, countries = null}) => {
     dragging = true;
 
     SetZIndices(node, 12, 8, 'none');
-    RemoveLine(node);
+    //RemoveLine(node);
+    if(node.nodeId) (document.getElementsByClassName(node.nodeId+'_'+node.id)[0]).style.display = 'none';
   }
 
   function RemoveLine(node)
   {
+
     if(node.nodeId)
     {
+
+      //lines
+      
       const line = document.getElementsByClassName(node.nodeId+"_"+node.id);
       if(line && line.length > 0) line[0].remove();
+      
     }
   }
 
@@ -472,6 +484,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
     return (
       <>
         <Draggable 
+            key = {child.id}
             position={{x: 0, y: 0}} 
             onStart = {() => { if(child["dialog"] || resetting || rendering) return false; scrollXBefore = window.scrollX; scrollYBefore = window.scrollY;}} 
             onStop = {(drag) => {if(dragging){OnDropNode(drag, child);} }} 
@@ -479,6 +492,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
         >
           <div 
             id = {child.id} 
+            key = {child.id}
             className={child.id+" treenode-container text-overflow center-text"} 
             onPointerOver={() => {mouseOverNode = child.id;}}
             onPointerOut={() => {mouseOverNode = null;}} 
@@ -674,16 +688,9 @@ const Tree = ({id, treeFetch, countries = null}) => {
       });
 
       return(
-        <>       
-            {elements.map(child => {
-                
-                return (
-                <>
-                  {child}
-                </> );
-                }
-            )}        
-        </>
+               
+            elements        
+        
       );
   }
 
@@ -915,8 +922,6 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
   function DepthFirstMethod(method, node, data = null, sendChild = true, returnerMethod = null)
   {
-    if(node == null || !('children' in node)){return (<></>)}
-
     node.children.forEach(child => 
       {
         DepthFirstMethod(method, child, data, sendChild, returnerMethod);
@@ -937,7 +942,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
     nodeElement.style.top = String(node['top'])+"px";
 
     const lineElements = node.nodeId ? document.getElementsByClassName(node.nodeId+"_"+node.id) : [];
-    if(lineElements && lineElements.length > 0)
+    if(lineElements && lineElements.length > 0 && lineElements[0].style.display != "none")
     {
       const line = lineElements[0];
       const lineStyle = node['line'];
@@ -962,7 +967,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
     childElement.style.left = String((child["left"]+X))+"px";
     childElement.style.transform = 'none';
 
-    if(line)
+    if(line && line.style.display != "none")
     {
       if(!('line' in child))
       {
@@ -1003,64 +1008,75 @@ const Tree = ({id, treeFetch, countries = null}) => {
     //scrollYBefore = window.scrollY;
   }
 
+  /*
+  function RemoveLines()
+  {
+    linesContainer.render(<></>);
+  }
+  */
+
+  
   function RemoveLines(node)
   {
 
     //createRoot(document.getElementById('line-container-insert')).render(<></>);
     //createRoot(document.getElementById('line-container')).render(<></>);
     //DepthFirstMethod(RemoveLine, tree, null, false);
+    //linesContainer.render(<></>);
+    
     RemoveLine(node);
     node.children?.forEach(child => {
       RemoveLines(child);
-    })
-
+    });
   } 
 
   function AddLine(node)
   {
-    if(node.nodeId) createRoot(document.getElementById('line-container-insert')).render
-    (
-      <LineTo within={'line-container'}  style ={{zIndex: 0}} delay id = {node.nodeId+"_"+node.id} from={node.nodeId} to={node.id} className = {node.nodeId+"_"+node.id+" tree-line"} />
-    );
+    if(node.nodeId)
+    {  
+      linesContainer.render
+      (
+        <>
+          <LineTo key = {node.id+"_"+child.id} within={'line-container'}  style ={{zIndex: 0}} delay id = {node.nodeId+"_"+node.id} from={node.nodeId} to={node.id} className = {node.nodeId+"_"+node.id+" tree-line"} />
+        </>
+      );
+    }
+  }
+
+  async function RenderLines(node)
+  {
+    await linesContainer.render(<></>);
+    lines.length = 0;
+    AddLines(node);
+    //linesContainer.render(<></>);
+    //MountLines();
+  }
+
+  function MountLines()
+  {
+    lines.forEach(line => {
+      linesContainer.render(line);
+    });
   }
   
   function AddLines(node)
-  {
-    
-    if(node == null || !('children' in node)){return (<></>)}
-    const lines = [];
-    
+  {  
       node.children.forEach(child => 
       {           
           lines.push(
             <>
-              <LineTo within = {'line-container'} style = {{zIndex: 0}} delay id={node.id+"_"+child.id} from={node.id} to={child.id} className={node.id+"_"+child.id+" tree-line"} /> 
+              <LineTo key={node.id+"_"+child.id} within = {'line-container'} style = {{zIndex: 0}} delay id={node.id+"_"+child.id} from={node.id} to={child.id} className={node.id+"_"+child.id+" tree-line"} /> 
               {AddLines(child)}
             </>
           )        
       }
     );
 
-    const lineJSX = 
-      (<>
-        {lines.map(child => {
-            
-            return (
-            <>
-              {child}
-            </> );
-            }
-        )}
-      </>
-    );
-
-    const lineContainer = createRoot(document.getElementById('line-container-insert'));
-    lineContainer.render(lineJSX);
+    linesContainer.render(lines);
   }
 
   function RenderCreationButtons()
   {
-    const createContainer = createRoot(document.getElementById('create-container'));
     createContainer.render(CreationButtons());
   }
 
@@ -1129,7 +1145,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
     if(dragging || resetting || rendering) return;
     resetting = true;
 
-    RemoveLines(tree);
+    //RemoveLines(tree);
     tree = structuredClone(originalTree);
     
     resetting = false;
@@ -1160,21 +1176,21 @@ const Tree = ({id, treeFetch, countries = null}) => {
                     style = {{width: String(iconDimension)+'rem'}}
                   >
                     <i className='pi pi-home save-icon diagram-header-icon' />
-                    <span class="tooltip-right">Home</span>
+                    <span className="tooltip-right">Home</span>
                   </button>
               <EditTree id = {id} tree = {treeDetails}/>
             </div>          
             <div className='tree-positions-container'>
               <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{width: String(iconDimension)+'rem'}}>
                 <i className='pi pi-replay save-icon diagram-header-icon' />
-                <span class="tooltip-bottom">Revert Tree Positions</span>
+                <span className="tooltip-bottom">Revert Tree Positions</span>
               </button>
               <button onClick={() => { SaveTreePositions();}} id = 'save-tree-positions' className='button-header button-save tooltip'>
                 <i className='pi pi-save save-icon' style = {{fontSize: String(iconDimension)+'rem'}} />
                   <div className='save-position-changes'>
                     Save Position Changes
                   </div>
-                <span class="tooltip-bottom">Save Tree Positions</span>
+                <span className="tooltip-bottom">Save Tree Positions</span>
               </button>
             </div>
             <div id = 'create-container' className='create-container' style = {{width: String(iconDimension*2+0.1)+'rem', marginRight: '1.5rem'}}>

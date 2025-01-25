@@ -282,7 +282,7 @@ const NodeDetails = ({
                                     style = {{color: (disableDeleteButton) ? 'blue' : 'white'}}
                                     onClick={() => {setDeleteOptions("options")}}                       
                                 >
-                                    <span class="tooltip-bottom">Unable delete with unsaved tree positions.</span>
+                                    <span className="tooltip-bottom">Unable delete with unsaved tree positions.</span>
                                     Delete
                                 </button>                   
                                 { (deleteOptions === "options") && 
