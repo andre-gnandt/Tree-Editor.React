@@ -134,6 +134,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
     if(!tree && !newNode)
     {
        treeContainer.render((RenderTree(tree)));
+       rendering = false;
        return;
     }
     else if(tree)
@@ -183,26 +184,29 @@ const Tree = ({id, treeFetch, countries = null}) => {
         const originalTreeRoot = AlterTreeAtructureForCreateRoot(originalTree, copyNewNode);
         originalTree = originalTreeRoot;
 
-      }/*
+      }
       else if(callback === "delete single")
       {
         node = AlterTreeStructureForDeleteSingle(inputTree, nodeId, oldParentId);
-
+        originalTree = structuredClone(inputTree);
+        /*
         const originalNode = FindNodeInTree(nodeId, originalTree);
         const newParent = FindNodeInTree(oldParentId, originalTree);
         AlterTreeStructureForDeleteCascade(originalTree, nodeId, originalNode.nodeId, originalNode);
         originalNode.children.forEach(child => {
           child.nodeId = oldParentId;
           AddNodeToChildren(newParent, child);
-        });   
+        });   */
       }
       else if(callback === "delete cascade")
       {
         node = AlterTreeStructureForDeleteCascade(inputTree, nodeId, oldParentId);
-        
+        originalTree = structuredClone(inputTree);
+        /*
         const originalNode = FindNodeInTree(nodeId, originalTree);
         AlterTreeStructureForDeleteCascade(originalTree, nodeId, originalNode.nodeId, originalNode);
-      }*/
+        */
+      }
     }
 
     maxLevels = new Object();
@@ -228,15 +232,17 @@ const Tree = ({id, treeFetch, countries = null}) => {
     else if(callback === "new root")
     {
       originalDictionary[node.id] = {...nodeDictionary[node.id]};
-    }/*
+    }
     else if(callback === "delete single")
     {
-      UpdateChangeTrackerForDeleteSingle(node);
+      //UpdateChangeTrackerForDeleteSingle(node);
+      originalDictionary = structuredClone(nodeDictionary);
     }
     else if(callback === "delete cascade")
     {
-      UpdateChangeTrackerForDeleteCascade(node);
-    }*/
+      //UpdateChangeTrackerForDeleteCascade(node);
+      originalDictionary = structuredClone(nodeDictionary);
+    }
 
     const treeUnsaved = (changeTracker && Object.keys(changeTracker).length > 0);
 
@@ -395,7 +401,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
   {
     SetZIndices(node, 4, 0, 'auto');
     
-    if(mouseOverNode && mouseOverNode !== node.id)
+    if(mouseOverNode && mouseOverNode !== node.id && mouseOverNode !== node.nodeId)
     {
       const oldParentNode = nodeDictionary[node.nodeId];
       const newParentNode = nodeDictionary[mouseOverNode];    
@@ -1105,23 +1111,18 @@ const Tree = ({id, treeFetch, countries = null}) => {
   }
 
   const EmptyTreeJSX = () => 
-  {
-    const windowWidth = window.innerWidth;
-    const maximumNodeSize = window.innerHeight*0.5;
-
-    return (
-      <>
-            <div className='empty-tree-container' style = {{left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String(maximumNodeSize/4+window.innerWidth*0.04)+'px', height: String(maximumNodeSize)+'px', width: String(maximumNodeSize)+'px'}}>
-              <button onClick={(event) => {document.getElementById('create-root-button').click();}} className='button-root-empty' >
-                  <i className='pi pi-warehouse' style = {{fontSize: String(maximumNodeSize)+'px'}} onClick = {() => { setCreateNode(true);}} />
-              </button> 
-            </div>
-              <span className='empty-tree-message' style = {{left: String(windowWidth/2-(maximumNodeSize/2))+'px', top: String((5*maximumNodeSize/4)+20+window.innerWidth*0.04)+'px', width: String(maximumNodeSize)+'px'}}>
-                This tree is empty, click the icon above to create the root node!
-              </span>
-          </>
-    );
-  }
+    {
+      return (
+        <>
+             {/* <div className='empty-tree-container' style = {{height: 'fit', width: String(maximumNodeSize)+'px'}}> 
+                <button onClick={(event) => {document.getElementById('create-root-button').click();}} className='button-root-empty' >*/}
+                <i className='pi pi-warehouse button-root-empty pointer' onClick = {() => { document.getElementById('create-root-button').click();}} />
+                <div className='empty-tree-message center-text pointer' onClick = {() => { document.getElementById('create-root-button').click();}}>
+                  Click to create a node.
+                </div>
+            </>
+      );
+    }
 
   function RevertTreePositions()
   {
@@ -1160,21 +1161,21 @@ const Tree = ({id, treeFetch, countries = null}) => {
                     style = {{width: String(iconDimension)+'rem'}}
                   >
                     <i className='pi pi-home save-icon diagram-header-icon' />
-                    <span class="tooltip-right">Home</span>
+                    <span className="tooltip-right">Home</span>
                   </button>
               <EditTree id = {id} tree = {treeDetails}/>
             </div>          
             <div className='tree-positions-container'>
               <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{width: String(iconDimension)+'rem'}}>
                 <i className='pi pi-replay save-icon diagram-header-icon' />
-                <span class="tooltip-bottom">Revert Tree Positions</span>
+                <span className="tooltip-bottom">Revert Tree Positions</span>
               </button>
               <button onClick={() => { SaveTreePositions();}} id = 'save-tree-positions' className='button-header button-save tooltip'>
                 <i className='pi pi-save save-icon' style = {{fontSize: String(iconDimension)+'rem'}} />
                   <div className='save-position-changes'>
                     Save Position Changes
                   </div>
-                <span class="tooltip-bottom">Save Tree Positions</span>
+                <span className="tooltip-bottom">Save Tree Positions</span>
               </button>
             </div>
             <div id = 'create-container' className='create-container' style = {{width: String(iconDimension*2+0.1)+'rem', marginRight: '1.5rem'}}>

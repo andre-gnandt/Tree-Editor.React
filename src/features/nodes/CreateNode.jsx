@@ -91,7 +91,7 @@ const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, tree
         <>  
             <button className = {(newNode.nodeId == null) ? 'button-header button-save tooltip' : 'button-header button-create tooltip'} disabled = {(newNode.nodeId == null )}>
                 <i className='pi pi-upload diagram-header-icon'  onClick = {() => { OpenDialog();}} />
-                <span class="tooltip-left">New Node</span>
+                <span className="tooltip-left">New Node</span>
             </button>
             <NodeDialog
                 create = {true}

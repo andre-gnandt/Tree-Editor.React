@@ -70,7 +70,7 @@ const CreateRoot = ({nodeList, nodeDictionary, countries, rootNode, render, tree
         <>
             <button className='button-header button-root tooltip' style = {{marginRight: '0.3rem'}}>
                 <i id = 'create-root-button' className='pi pi-warehouse diagram-header-icon' onClick = {() => { OpenDialog();}} />
-                <span class="tooltip-left">New Root Node</span>
+                <span className="tooltip-left">New Root Node</span>
             </button> 
             <NodeDialog
                 root = {true}

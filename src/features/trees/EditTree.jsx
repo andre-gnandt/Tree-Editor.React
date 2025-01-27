@@ -50,7 +50,7 @@ const EditTree = ({id, tree}) => {
         <>  
             <button className = 'button-header button-save tooltip'>
                 <i className='pi pi-file-edit diagram-header-icon' onClick = {() => { openDialog();}} />
-                <span class="tooltip-right">Edit Tree Details</span>
+                <span className="tooltip-right">Edit Tree Details</span>
             </button>
             <TreeDialog 
                 id = {id}

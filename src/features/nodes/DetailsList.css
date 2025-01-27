@@ -135,7 +135,7 @@
 .dialog-delete-skeleton
 {
     height: 100%;
-    width: 2.2rem;
+    width: 2rem;
     /*width: 17.5%;*/
     float: right; 
 }
@@ -151,22 +151,23 @@
 
 .dialog-header-inner
 {
-  top: 28%;
+  margin-top: auto;
   position: relative;
   height: 2rem;
   display: flex;
+  width: 100%;
 }
 
 .dialog-close-container
 {
-    width: 2.2rem;
+    width: 2rem;
     height: 100%;
 }
 
 .dialog-close-button
 {
   width: 2rem;
-  font-size: 2.2rem;
+  font-size: 2rem;
   cursor: pointer; 
 }
 
@@ -375,6 +376,7 @@
     position: relative;
     z-index: 2;
     cursor: grab;
+    display: flex;
 }
 
 /*
@@ -823,6 +825,11 @@ textarea:focus
     font-size: 5vh; 
     color: #d68a16;
     position: absolute;
+    width: 50vh;
+     position: absolute;
+      font-size: 1.2rem; 
+      top: calc(55vh + 6rem);
+      left: calc(50vw - 25vh);
 }
 
 .empty-tree-container
@@ -837,6 +844,10 @@ textarea:focus
     color: #d68a16;
     outline: none;
     border: none;
+    position: absolute;
+    font-size: 10rem;
+     top: calc(55vh - 4rem);
+     left: calc(50vw - 5rem);
 }
 
 .button-root-empty:hover
