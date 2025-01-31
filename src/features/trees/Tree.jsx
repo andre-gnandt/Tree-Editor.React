@@ -397,10 +397,39 @@ const Tree = ({id, treeFetch, countries = null}) => {
       return node;
   }
 
+  function FindMobileDropPosition(node)
+  {
+    const position = GetElementPosition(document.getElementById(node.id));
+    const top = position.Y;
+    const left = position.X;
+
+    nodeList.forEach(dropNode => {
+      /*
+      const dPosition = GetElementPosition(document.getElementById(dropNode.id));
+      const dTop = dPosition.Y;
+      const dLeft = dPosition.X;
+      */
+      const dTop = dropNode['top'];
+      const dLeft = dropNode['left'];
+      const leftBoundary = dLeft-nodeDimension/2;
+      const rightBoundary = dLeft+nodeDimension/2;
+      const topBoundary = dTop-nodeDimension/2;
+      const bottomBoundary = dTop+nodeDimension/2;
+
+      if(top >= topBoundary && top <= bottomBoundary && left <= rightBoundary && left >= leftBoundary)
+      {
+        mouseOverNode = dropNode.id;
+        return;
+      }      
+    });
+  }
+
   function OnDropNode(mouse, node)
   {
     SetZIndices(node, 4, 0, 'auto');
     
+    if(!IsDesktop()) FindMobileDropPosition(node);
+      
     if(mouseOverNode && mouseOverNode !== node.id && mouseOverNode !== node.nodeId)
     {
       const oldParentNode = nodeDictionary[node.nodeId];

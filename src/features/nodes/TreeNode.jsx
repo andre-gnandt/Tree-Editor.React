@@ -4,6 +4,7 @@ import './DetailsList.css';
 import { cloneNode } from './nodeSlice';
 import NodeDialog from './NodeDialog';
 import { Audio } from 'react-loader-spinner';
+import { IsDesktop } from '../utils/Functions';
 
 
 const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallBack, thumbnailXHRSentCallBack, rootNode, render, inputNode, css, nodeList, nodeDictionary, countries}) => {
@@ -159,7 +160,9 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
                         <img className='image pointer' onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {thumbnail ? thumbnail.base64 : GetImageSource()}/>
                         <div
                             className='image-text text-overflow pointer'
-                            onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}}
+                            onPointerDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} 
+                            onPointerOut={(event) => { if(!IsDesktop()){ValidateButtonClick(event.target);}}}
+                            onClick={(event) => {ValidateButtonClick(event.target);}}
                             style = {{ fontSize: String(css.nodeSize*0.155)+'px'}}
                         >
                             {inputNode.title}
@@ -186,7 +189,9 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
                     (
                         <button 
                             className='tree-button text-overflow'       
-                            onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} 
+                            onPointerDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} 
+                            onPointerOut={(event) => { if(!IsDesktop()){ValidateButtonClick(event.target);}}}
+                            onClick={(event) => {ValidateButtonClick(event.target);}} 
                             style = {{ fontSize: String(css.nodeSize*0.155)+'px', maxHeight:String(css.nodeSize)+'px', maxWidth: String(css.nodeSize)+'px',  height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
                             {inputNode.title}
                         </button> 
