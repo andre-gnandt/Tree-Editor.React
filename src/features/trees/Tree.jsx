@@ -906,21 +906,36 @@ const Tree = ({id, treeFetch, countries = null}) => {
     }
   }
 
+  const GetUpdateNodeObject = (node) =>
+    {
+        const updateNodeObject =
+        {
+            id: node.id,
+            data: node.data,
+            title: node.title,
+            number: node.number,
+            description: node.description,
+            rankId: node.rankId,
+            country: node.country,
+            region: node.region,
+            level: node.level,
+            thumbnailId: node.thumbnailId,
+            treeId: node.treeId,
+            nodeId: node.nodeId,
+            files: [],
+            children: []
+        };
+
+        return updateNodeObject;
+    }
+
   async function SaveTreePositions()
   {
     const updateNodesList = [];
     Object.keys(changeTracker).forEach(key => {
       const parentId = changeTracker[key];
-      const updateNode = {...nodeDictionary[key]};
+      const updateNode = GetUpdateNodeObject(nodeDictionary[key]);
       updateNode.nodeId = parentId;
-      updateNode['children'] = [];
-      delete updateNode['position'];
-      delete updateNode['line'];
-      delete updateNode['left'];
-      delete updateNode['top'];
-      delete updateNode['dialog'];
-      delete updateNode['path'];
-      delete updateNode['thumbnailReq'];
       
       updateNodesList.push(updateNode);
     });
