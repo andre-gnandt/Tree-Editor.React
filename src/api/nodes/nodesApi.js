@@ -19,6 +19,13 @@ const deleteOptions = {
     body: ""
 }
 
+const removeBase64 = (files) =>
+{
+    files.forEach(file => {
+        file.base64 = null;
+    });
+}
+
 const baseURL = "http://localhost:11727";
 
 async function DeleteSingle(parentId, deleteNode){
@@ -56,8 +63,10 @@ async function DeleteCascade(id){
         return null;  
 };
 
-async function updateNode(id, node){
+async function updateNode(id, input){
         Saving();
+        const node = structuredClone(input);
+        removeBase64(node.files);
         const options = {...putOptions};
         options.body = JSON.stringify(node);
         try{
