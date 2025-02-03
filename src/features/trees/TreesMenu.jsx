@@ -28,10 +28,10 @@ const TreesMenu = ({trees}) => {
 
   function FitFontSize(maxSize, maxWidth, text)
   {
-    var maxLength = 26;
-    var length = text.length <= maxLength ? text.length : maxLength;
-    var size = maxWidth/length;
-    var fit = size <= maxSize ? size : maxSize;
+    let maxLength = 26;
+    let length = text.length <= maxLength ? text.length : maxLength;
+    let size = maxWidth/length;
+    let fit = size <= maxSize ? size : maxSize;
 
     return String(fit)+"vw";
 
@@ -60,7 +60,7 @@ const TreesMenu = ({trees}) => {
   async function HandleDeleteTree()
   {
     await deleteTree(deleteOptions);
-    var index = treeList.findIndex((object) => object.id === deleteOptions);
+    let index = treeList.findIndex((object) => object.id === deleteOptions);
     treeList.splice(index, 1);
     setTreeList([...treeList]);
     setDeleteOptions(null);

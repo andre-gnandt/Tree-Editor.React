@@ -19,8 +19,8 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
     //After file gallery is added, set this to an api call to get
     //all files by node id on click/open of node details   
     const[files, setFiles] = useState(inputNode.files); 
-    var buttonMouseDown = new Object();
-    var buttonMouseUp = new Object();
+    let buttonMouseDown = new Object();
+    let buttonMouseUp = new Object();
 
 
     
@@ -93,9 +93,9 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
 
     function GetElementPosition(element)
     {
-        var position = element.getBoundingClientRect();
-        var x = position.left;
-        var y = position.top;
+        let position = element.getBoundingClientRect();
+        let x = position.left;
+        let y = position.top;
 
         return {X:x, Y:y};
     }
@@ -142,13 +142,13 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
 
     function GetImageSource()
     {
-        var index = inputNode.files.findIndex((object) => object.id.toLowerCase() === inputNode.thumbnailId.toLowerCase());
+        let index = inputNode.files.findIndex((object) => object.id.toLowerCase() === inputNode.thumbnailId.toLowerCase());
         if(index != -1)
         {
             return inputNode.files[index].base64;
         }
 
-        var file = inputNode.files.find((object) => object.name === inputNode.thumbnailId);
+        let file = inputNode.files.find((object) => object.name === inputNode.thumbnailId);
         return file.base64;
     }
 

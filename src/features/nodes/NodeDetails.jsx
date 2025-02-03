@@ -180,7 +180,7 @@ const NodeDetails = ({
         updatedNode.files.sort(sortFiles);
         filesDto.sort(sortFiles);
 
-        var i = 0;
+        let i = 0;
         while(i < filesDto.length)
         {
             updatedNode.files[i].id = filesDto[i].id;
@@ -198,7 +198,7 @@ const NodeDetails = ({
         else if(!Create && !Root)
         {
             
-            var updatedNode = await updateNode(node.id, node); 
+            let updatedNode = await updateNode(node.id, node); 
             if(!updatedNode) return;
             SetFilesOnUpdate(updatedNode);
 
@@ -217,7 +217,7 @@ const NodeDetails = ({
         }
         else if(Create)
         {            
-            var resultNode = await createNode(node);
+            let resultNode = await createNode(node);
             if(!resultNode) return;
             SetFilesOnUpdate(resultNode);
             
@@ -229,7 +229,7 @@ const NodeDetails = ({
         }  
         else if(Root)
         {
-            var resultNode = await createRoot(node);
+            let resultNode = await createRoot(node);
             if(!resultNode) return;
             SetFilesOnUpdate(resultNode);
             
