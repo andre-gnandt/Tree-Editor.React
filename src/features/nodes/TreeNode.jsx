@@ -103,7 +103,7 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
     function ValidateButtonClick(element)
     {
         buttonMouseUp = GetElementPosition(element);
-        if(buttonMouseUp.X === buttonMouseDown.X && buttonMouseUp.Y === buttonMouseDown.Y)
+        if( Math.abs(buttonMouseUp.X-buttonMouseDown.X) <= 10 && Math.abs(buttonMouseUp.Y-buttonMouseDown.Y) <=10)
         {
             
             inputNode["dialog"] = true;
@@ -156,8 +156,19 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
             <>  
                 { inputNode.thumbnailId && (thumbnail || inputNode.files.length > 0 ) ? 
                 (
-                    <div style = {{height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
-                        <img className='image pointer' onMouseDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} onClick={(event) => {ValidateButtonClick(event.target);}} src = {thumbnail ? thumbnail.base64 : GetImageSource()}/>
+                    <div 
+                        style = {{height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}
+                        onPointerDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} 
+                        onPointerOut={(event) => { if(!IsDesktop()){ValidateButtonClick(event.target);}}}
+                        onClick={(event) => {ValidateButtonClick(event.target);}}
+                    >
+                        <img 
+                            className='image pointer' 
+                            onPointerDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} 
+                            onPointerOut={(event) => { if(!IsDesktop()){ValidateButtonClick(event.target);}}}
+                            onClick={(event) => {ValidateButtonClick(event.target);}}
+                            src = {thumbnail ? thumbnail.base64 : GetImageSource()}
+                        />
                         <div
                             className='image-text text-overflow pointer'
                             onPointerDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} 
@@ -167,7 +178,7 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
                         >
                             {inputNode.title}
                         </div>                      
-                    </div>
+                    </div>   
                 )
                     :
                 (              
