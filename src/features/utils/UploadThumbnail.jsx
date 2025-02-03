@@ -30,13 +30,13 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
 
   function GetImageSource()
     {
-        var index = nodeFiles.findIndex((object) => object.id.toLowerCase() === node.thumbnailId.toLowerCase());
+        let index = nodeFiles.findIndex((object) => object.id.toLowerCase() === node.thumbnailId.toLowerCase());
         if(index != -1)
         {
             return nodeFiles[index];
         }
 
-        var file = nodeFiles.find((object) => object.name === node.thumbnailId);
+        let file = nodeFiles.find((object) => object.name === node.thumbnailId);
         return file;
     }
 
@@ -156,10 +156,10 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
                 style = {{visibility: 'hidden'}}
                 onChange={(event) => 
                 {
-                    var fileName = event.target.files[0].name;
-                    var originalName = fileName;
-                    var matchingIndex = -2
-                    var i = 0
+                    let fileName = event.target.files[0].name;
+                    let originalName = fileName;
+                    let matchingIndex = -2
+                    let i = 0
                 
                     while(matchingIndex !== -1)
                     {

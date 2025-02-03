@@ -31,31 +31,31 @@ import { IsDesktop } from '../utils/Functions';
 const Tree = ({id, treeFetch, countries = null}) => {
   const navigate = useNavigate();
   const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
-  var originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
-  var tree = originalTree != null ? structuredClone(originalTree) : null;
+  let originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
+  let tree = originalTree != null ? structuredClone(originalTree) : null;
   const pixelsToCentimetres = PixelSizeInCentimetres();
-  var maxLevels = new Object();
-  var scrollXBefore = 0;
-  var scrollYBefore = 0;
-  var scrollDistanceX = 0;
-  var scrollDistanceY = 0;
-  var treeWidth = 0;
-  var treeHeight = 0;
-  var treeWidthMin = null;
-  var treeWidthMax = null;
-  var childPositions = new Object();
-  var nodeDictionary = new Object();
-  var originalDictionary = {...nodeDictionary};
-  var changeTracker = new Object();
-  var nodeList = [];
-  var dragging = false;
-  var mouseOverNode = null;
+  let maxLevels = new Object();
+  let scrollXBefore = 0;
+  let scrollYBefore = 0;
+  let scrollDistanceX = 0;
+  let scrollDistanceY = 0;
+  let treeWidth = 0;
+  let treeHeight = 0;
+  let treeWidthMin = null;
+  let treeWidthMax = null;
+  let childPositions = new Object();
+  let nodeDictionary = new Object();
+  let originalDictionary = {...nodeDictionary};
+  let changeTracker = new Object();
+  let nodeList = [];
+  let dragging = false;
+  let mouseOverNode = null;
   const minimumNodeSize = IsDesktop() ? 1.15/pixelsToCentimetres : 0.7/pixelsToCentimetres; //1.4 cm in pixels
-  var nodeDimension = 80;
-  var iconDimension = 3.2; //rem;
-  var testRender = false;
-  var rendering = false;
-  var resetting = false;
+  let nodeDimension = 80;
+  let iconDimension = 3.2; //rem;
+  let testRender = false;
+  let rendering = false;
+  let resetting = false;
 
   useEffect(() => {
     
@@ -77,9 +77,9 @@ const Tree = ({id, treeFetch, countries = null}) => {
   });
 
   function PixelSizeInCentimetres() {
-    var cpi = 2.54; // centimeters per inch
-    var dpi = 96; // dots per inch
-    var ppd = window.devicePixelRatio; // pixels per dot
+    let cpi = 2.54; // centimeters per inch
+    let dpi = 96; // dots per inch
+    let ppd = window.devicePixelRatio; // pixels per dot
     return (cpi / (dpi * ppd));
   }
 
@@ -147,8 +147,8 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
     nodeList = [];
     nodeDictionary = [];
-    var inputTree = tree;
-    var node = null;
+    let inputTree = tree;
+    let node = null;
 
     //change the trees frontend structure to match the changes that were made in the database (without any api calls)
     //triggered from a saved change of parent node or creation of a new node from the node details dialog (from a POST node or PUT node request)
@@ -266,9 +266,9 @@ const Tree = ({id, treeFetch, countries = null}) => {
   function FindNodeInTree(id, tree)
   {
     if(tree.id === id) return tree; 
-    var node = null;
+    let node = null;
 
-    for(var i = 0; i < tree.children.length; i++)
+    for(let i = 0; i < tree.children.length; i++)
     {     
         node = FindNodeInTree(id, tree.children[i]);
         if(node){ return node; };
@@ -397,10 +397,39 @@ const Tree = ({id, treeFetch, countries = null}) => {
       return node;
   }
 
+  function FindMobileDropPosition(node)
+  {
+    const position = GetElementPosition(document.getElementById(node.id));
+    const top = position.Y;
+    const left = position.X;
+
+    nodeList.forEach(dropNode => {
+      /*
+      const dPosition = GetElementPosition(document.getElementById(dropNode.id));
+      const dTop = dPosition.Y;
+      const dLeft = dPosition.X;
+      */
+      const dTop = dropNode['top'];
+      const dLeft = dropNode['left'];
+      const leftBoundary = dLeft-nodeDimension/2;
+      const rightBoundary = dLeft+nodeDimension/2;
+      const topBoundary = dTop-nodeDimension/2;
+      const bottomBoundary = dTop+nodeDimension/2;
+
+      if(top >= topBoundary && top <= bottomBoundary && left <= rightBoundary && left >= leftBoundary)
+      {
+        mouseOverNode = dropNode.id;
+        return;
+      }      
+    });
+  }
+
   function OnDropNode(mouse, node)
   {
     SetZIndices(node, 4, 0, 'auto');
     
+    if(!IsDesktop()) FindMobileDropPosition(node);
+      
     if(mouseOverNode && mouseOverNode !== node.id && mouseOverNode !== node.nodeId)
     {
       const oldParentNode = nodeDictionary[node.nodeId];
@@ -599,7 +628,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
       const newTreeWidth = treeWidth*nodeDimension;
       const horizontalSpace = width -  (2*horizontalBorder);
-      var offSet = 0;
+      let offSet = 0;
 
       if(newTreeWidth > horizontalSpace)
       {
@@ -696,7 +725,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
   function PrepRenderChildren(tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
   {
     
-    var children = null;
+    let children = null;
     if(parent != null)
     { 
       children = parent.children;
@@ -718,35 +747,35 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
     treeHeight = (row) > treeHeight ? (row) : treeHeight;
     
-    var nodeSize = nodeDimension;
-    var elementWidth = nodeSize*1.5;
+    let nodeSize = nodeDimension;
+    let elementWidth = nodeSize*1.5;
 
     const childElements = [];
 
-    var i = 0;
-    var leftCount = elementWidth;
-    var childCountOdd = 0;
-    var childCountEven = 0;
+    let i = 0;
+    let leftCount = elementWidth;
+    let childCountOdd = 0;
+    let childCountEven = 0;
 
     if( !(String(row-1) in maxLevels) ) maxLevels[String(row-1)] = {};
-    var maxLevel = maxLevels[String(row-1)];
+    let maxLevel = maxLevels[String(row-1)];
 
-    var parentNodePosition = new Object();
+    let parentNodePosition = new Object();
     
     while(i < children.length)
     {
-      var child = children[i];
+      let child = children[i];
 
-      var maxRight =  'Right' in maxLevel ? maxLevel['Right'] : null;
-      var maxLeft = 'Left' in maxLevel ? maxLevel['Left'] : null; 
-      var left = 0;
+      let maxRight =  'Right' in maxLevel ? maxLevel['Right'] : null;
+      let maxLeft = 'Left' in maxLevel ? maxLevel['Left'] : null; 
+      let left = 0;
 
       if(path === 'middle')
       {
-        var middleIndex = Math.floor(children.length/2);
+        let middleIndex = Math.floor(children.length/2);
         if(children.length%2 == 0){ middleIndex--;}
 
-        var j = 0;
+        let j = 0;
         if(i <= middleIndex)
         {
           j = middleIndex-i;
@@ -758,7 +787,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
         child = children[j];
 
-        var leftSpace = 0;
+        let leftSpace = 0;
     
         if((i > 0 && children.length%2==1) && i <= middleIndex){ leftSpace = i > 1 ? -1*leftCount*i : -1*leftCount; }
         if((i > 0 && children.length%2==1) && i > middleIndex){ leftSpace = (i - middleIndex) > 1 ? leftCount*(i - middleIndex) : leftCount; }
@@ -766,7 +795,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
         if(children.length%2==0 && i > middleIndex){ leftSpace = (i - middleIndex) > 1 ? leftCount*(i - middleIndex - 0.75) : leftCount*0.25; }
 
         left = leftSpace+parentLeft;
-        var pathSplitter = 'middle'; 
+        let pathSplitter = 'middle'; 
 
         if(i == 0){ pathSplitter = 'middle';}
         else if(i<= middleIndex){ pathSplitter = 'left';}
@@ -777,8 +806,8 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
         PrepRenderChildren(tree, child, row + 1, left, pathSplitter, false);
 
-        var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
-        var positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
+        let childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
+        let positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
         if(positionAboveChildren != null && 
          ( (pathSplitter === "middle" ) ||
           (pathSplitter === "left" && ( maxLeft == null || positionAboveChildren <= maxLeft-elementWidth ) ) ||
@@ -802,18 +831,18 @@ const Tree = ({id, treeFetch, countries = null}) => {
       }
       else if(path === 'right')
       {
-        var leftSpace = 0;
+        let leftSpace = 0;
         leftSpace = leftCount*(-1*(children.length-1)/2+i);
         left = leftSpace+parentLeft; 
 
-        var pathSplitter = 'right'; 
+        let pathSplitter = 'right'; 
         
         if(maxRight != null && left < maxRight+elementWidth) left = maxRight+elementWidth;
 
         PrepRenderChildren(tree, child, row + 1, left, pathSplitter, false);
-        var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
+        let childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
 
-        var positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
+        let positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
         if(positionAboveChildren != null && (maxRight == null ||  positionAboveChildren >= maxRight+elementWidth)){
            left = positionAboveChildren; 
         }
@@ -832,19 +861,19 @@ const Tree = ({id, treeFetch, countries = null}) => {
       }
       else if(path === 'left')
         {
-          var leftSpace = 0;
+          let leftSpace = 0;
           leftSpace = leftCount*((children.length-1)/2-i);
           left = leftSpace+parentLeft;
   
-          var pathSplitter = 'left'; 
+          let pathSplitter = 'left'; 
           
           if(maxLeft != null && left > maxLeft-elementWidth) left = maxLeft-elementWidth;
   
           PrepRenderChildren(tree, child, row + 1, left, pathSplitter, false);    
             
-          var childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
+          let childPositionsOfNode = (String(child.id) in childPositions) ? childPositions[String(child.id)] : new Object();
   
-          var positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
+          let positionAboveChildren = child.children.length > 0 ? childPositionsOfNode["Left"]+(childPositionsOfNode["Right"]-childPositionsOfNode["Left"])/2 : null;
           if(positionAboveChildren != null && (maxLeft == null || positionAboveChildren <= maxLeft-elementWidth)){
              left = positionAboveChildren; 
           }
@@ -877,29 +906,44 @@ const Tree = ({id, treeFetch, countries = null}) => {
     }
   }
 
+  const GetUpdateNodeObject = (node) =>
+    {
+        const updateNodeObject =
+        {
+            id: node.id,
+            data: node.data,
+            title: node.title,
+            number: node.number,
+            description: node.description,
+            rankId: node.rankId,
+            country: node.country,
+            region: node.region,
+            level: node.level,
+            thumbnailId: node.thumbnailId,
+            treeId: node.treeId,
+            nodeId: node.nodeId,
+            files: [],
+            children: []
+        };
+
+        return updateNodeObject;
+    }
+
   async function SaveTreePositions()
   {
     const updateNodesList = [];
     Object.keys(changeTracker).forEach(key => {
       const parentId = changeTracker[key];
-      const updateNode = {...nodeDictionary[key]};
+      const updateNode = GetUpdateNodeObject(nodeDictionary[key]);
       updateNode.nodeId = parentId;
-      updateNode['children'] = [];
-      delete updateNode['position'];
-      delete updateNode['line'];
-      delete updateNode['left'];
-      delete updateNode['top'];
-      delete updateNode['dialog'];
-      delete updateNode['path'];
-      delete updateNode['thumbnailReq'];
       
       updateNodesList.push(updateNode);
     });
 
-    var result = [];
+    let result = [];
     if(updateNodesList.length > 0)
     {
-      var result = await updateManyNodes(id, updateNodesList);
+      let result = await updateManyNodes(id, updateNodesList);
       if(!result) return;
       
       changeTracker = new Object();
@@ -912,9 +956,9 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
   function GetElementPosition(element)
   {
-    var position = element.getBoundingClientRect();
-    var x = position.left;
-    var y = position.top;
+    let position = element.getBoundingClientRect();
+    let x = position.left;
+    let y = position.top;
 
     return {X:x, Y:y};
   }

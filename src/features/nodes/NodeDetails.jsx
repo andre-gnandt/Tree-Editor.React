@@ -167,6 +167,28 @@ const NodeDetails = ({
         unMount();
     }
 
+    const sortFiles = (a,b) => {
+        if(a.name < b.name){ return 1;}
+        if(a.name > b.name){return -1;}
+        return 0;
+    }
+
+    function SetFilesOnUpdate(updatedNode)
+    {
+        const filesDto = updatedNode.files;
+        updatedNode.files = structuredClone(node.files);
+        updatedNode.files.sort(sortFiles);
+        filesDto.sort(sortFiles);
+
+        let i = 0;
+        while(i < filesDto.length)
+        {
+            updatedNode.files[i].id = filesDto[i].id;
+            updatedNode.files[i].data = null;
+            i++;
+        }
+    }
+
     async function HandleSaveOrCreate()
     {
         if(!node.title || node.title.trim().length === 0)
@@ -176,9 +198,10 @@ const NodeDetails = ({
         else if(!Create && !Root)
         {
             
-            var updatedNode = await updateNode(node.id, node); 
+            let updatedNode = await updateNode(node.id, node); 
             if(!updatedNode) return;
-            
+            SetFilesOnUpdate(updatedNode);
+
             if(node.nodeId != inputNode.nodeId)
             {
                 const oldParentId = inputNode.nodeId;
@@ -194,8 +217,9 @@ const NodeDetails = ({
         }
         else if(Create)
         {            
-            var resultNode = await createNode(node);
+            let resultNode = await createNode(node);
             if(!resultNode) return;
+            SetFilesOnUpdate(resultNode);
             
             SetNodeVar(resultNode);
             render("create", inputNode);
@@ -205,8 +229,9 @@ const NodeDetails = ({
         }  
         else if(Root)
         {
-            var resultNode = await createRoot(node);
+            let resultNode = await createRoot(node);
             if(!resultNode) return;
+            SetFilesOnUpdate(resultNode);
             
             SetNodeVar(resultNode);
             nodeList.length = 0;

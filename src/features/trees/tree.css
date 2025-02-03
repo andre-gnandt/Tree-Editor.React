@@ -91,7 +91,7 @@
   max-height: calc(86vh - 11.2rem);
   height: max(17rem, calc(83vh - 11.2rem)) !important; */
   /*max-height: max(17rem, calc(83vh - 11.2rem)) !important; */
-  height: max(9rem, calc(88vh - 12.4rem)) !important;
+  /*height: max(9rem, calc(88vh - 12.4rem)) !important;*/
   max-height: max(9rem, calc(88vh - 12.4rem)) !important;
   background-color: var(--container-color);
 }
