@@ -50,7 +50,6 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
 
   function GetFileData(event)
   { 
-    console.log(reader.result);
     if(selectedImage)
     {   
       const file = 
