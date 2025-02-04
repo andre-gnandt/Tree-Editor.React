@@ -19,7 +19,7 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
     if(selectedImage)
     {
       reader.onload = GetFileData;
-      reader.readAsArrayBuffer(selectedImage);
+      reader.readAsDataURL(selectedImage);
     }    
   }, [selectedImage]);
 
@@ -50,6 +50,7 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
 
   function GetFileData(event)
   { 
+    console.log(reader.result);
     if(selectedImage)
     {   
       const file = 
@@ -59,8 +60,8 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
         name: uploadName.current,
         size: String(selectedImage.size),
         type: selectedImage.type,
-        data: Array.from(new Uint8Array(event.target.result, 0)),
-        base64: URL.createObjectURL(selectedImage), // only used here to render image in tree without making any api calls (not base64 in this unique case)
+        data: reader.result,
+        base64: reader.result, // only used here to render image in tree without making any api calls (not base64 in this unique case)
       };
           
       node['thumbnailId'] = uploadName.current;
@@ -69,6 +70,7 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
       //node.files.push(file);  --to be added back once file gallery is created
       node.files = [file]; //to be removed once file gallery is created
       SetStateFiles(node.files);
+      setDefaultFile(file);
       fileChangeCallBack(true);
     }
   }
@@ -111,7 +113,7 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
                     <img
                         alt="not found"
                         className = 'image'
-                        src={selectedImage ? URL.createObjectURL(selectedImage) : defaultFile.base64 }
+                        src={defaultFile && defaultFile.base64 ? defaultFile.base64 : URL.createObjectURL(selectedImage)}
                     />
                   </div>
                 </>
