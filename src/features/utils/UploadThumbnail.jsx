@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setStateProperty } from "../nodes/nodeSlice";
+import { uploadThumbnail, removeThumbnail } from "../nodes/nodeSlice";
 import '../nodes/DetailsList.css';
 import 'primeicons/primeicons.css';
 
@@ -40,14 +40,6 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
         return file;
     }
 
-  const SetStateThumbnail = (value) => {
-      dispatch(setStateProperty({key: 'thumbnailId', value: value}));
-  }
-
-  const SetStateFiles = (value) => {
-    dispatch(setStateProperty({key: 'files', value: value}));
-  }
-
   function GetFileData(event)
   { 
     if(selectedImage)
@@ -60,15 +52,14 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
         size: String(selectedImage.size),
         type: selectedImage.type,
         data: reader.result,
-        base64: reader.result, // only used here to render image in tree without making any api calls (not base64 in this unique case)
+        base64: reader.result, // 
       };
           
       node['thumbnailId'] = uploadName.current;
-      SetStateThumbnail(uploadName.current);
 
       //node.files.push(file);  --to be added back once file gallery is created
       node.files = [file]; //to be removed once file gallery is created
-      SetStateFiles(node.files);
+      dispatch(uploadThumbnail({files: node.files, name: file.name}));
       setDefaultFile(file);
       fileChangeCallBack(true);
     }
@@ -78,10 +69,9 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
   {
     document.getElementById('file-upload-button').value = null;
     node.thumbnailId = null;
-    SetStateThumbnail(null);
+    dispatch(removeThumbnail()); //change to only remove the thumbnailId once file gallery is added
     setDefaultFile(null); 
     setSelectedImage(null);
-    SetStateFiles([]); //to be removed when file gallery is created
       
     if(inputNode.thumbnailId) 
     {

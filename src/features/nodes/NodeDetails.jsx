@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { cloneNode, setStateProperty, updateNodeData, updateNodeNumber, updateNodeDescription, updateNodeTitle, updateNodeParent} from './nodeSlice'
+import { cloneNode, setStateProperty} from './nodeSlice'
 import { DeleteCascade,  DeleteSingle, updateNode, createNode, createRoot } from '../../api/nodes/nodesApi';
 import { InputText} from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -33,10 +33,6 @@ const NodeDetails = ({
     const [Create, setCreate] = useState(create);
     const [Root, setRoot] = useState(root);
     const disableDeleteButton = unsavedTreePositions ? unsavedTreePositions() : false;;
-
-    const handleChange = (value, method) => {
-        dispatch(method(value));
-    }
 
     const SetStateProperty = (key, value) => {
         dispatch(setStateProperty({key: key, value: value}));
@@ -258,7 +254,7 @@ const NodeDetails = ({
         setHideButtons(0);
         setRegions(GetRegions(inputNode.country));
         //setResetFiles({reset: true}); 
-        handleChange(inputNode, cloneNode);
+        dispatch(cloneNode(inputNode));
     }
 
     const CountrySelected = (originalValue, previousValue, newValue) =>
@@ -269,7 +265,6 @@ const NodeDetails = ({
             CheckValueChange(originalValue, previousValue, newValue);
             setRegions(GetRegions(newValue));
             SetStateProperty("country", newValue);
-            SetStateProperty("region", null);
         }
     }
 
@@ -288,6 +283,12 @@ const NodeDetails = ({
         if(Root)return <>New Root</>;
         
         return <>Node</>;
+    }
+
+    const formChange = (originalValue, previousValue, newValue, property) => 
+    {
+        CheckValueChange(originalValue, previousValue, newValue);
+        SetStateProperty(property, newValue);
     }
 
         //approx container height = 81.95vh
@@ -348,7 +349,7 @@ const NodeDetails = ({
                                 placeholder="Title" 
                                 className= {(titleRequired ? "title center-text" : "title-required center-text")}
                                 spellCheck = {false}
-                                onChange = {(e) => {CheckValueChange(inputNode.title, node.title, e.target.value); handleChange(e.target.value, updateNodeTitle);}} value = {node.title ? node.title : ""} />
+                                onChange = {(e) => {formChange(inputNode.title, node.title, e.target.value, "title");}} value = {node.title ? node.title : ""} />
                         </div>
                         }
                     </div>
@@ -367,7 +368,7 @@ const NodeDetails = ({
                                     //className='input'
                                     disabled = {node.nodeId ? false : true}
                                     filter
-                                    onChange = {(e) => {CheckValueChange(inputNode.nodeId, node.nodeId, e.target.value.id); handleChange(e.target.value.id, updateNodeParent);}} 
+                                    onChange = {(e) => {formChange(inputNode.nodeId, node.nodeId, e.target.value.id, "nodeId");}} 
                                     value = {nodeList.find((object) => object.id === node.nodeId)}
                                     options = {nodeList}
                                     optionLabel='title'
@@ -381,7 +382,16 @@ const NodeDetails = ({
                             Description:  
                         </div> 
                         <div className="fullWidthRight">
-                            {<InputTextarea style = {{fontSize: 'min(1.8rem, 6vw)'}} className = "input vertical-center" maxLength={10000} placeholder='Description...' autoResize rows={5} onChange = {(e) => {CheckValueChange(inputNode.description, node.description, e.target.value); handleChange(e.target.value, updateNodeDescription);}} value = {node.description ? node.description : ""} />}
+                            <InputTextarea 
+                                style = {{fontSize: 'min(1.8rem, 6vw)'}} 
+                                className = "input vertical-center" 
+                                maxLength={10000} 
+                                placeholder='Description...' 
+                                autoResize 
+                                rows={5} 
+                                onChange = {(e) => {formChange(inputNode.description, node.description, e.target.value, "description");}} 
+                                value = {node.description ? node.description : ""} 
+                            />
                         </div>
                     </div>
                     <div className="entryContainer">
@@ -420,7 +430,7 @@ const NodeDetails = ({
                                 value = {node.region ? regions.find((object) => object.name === node.region) : null}
                                 options = {regions}
                                 optionLabel='name'
-                                />
+                            />
                         </div>
                     </div> 
                     <div className="entryContainer" style = {{height: '13rem'}}>
@@ -428,7 +438,15 @@ const NodeDetails = ({
                             Data: 
                         </div>
                         <div className="fullWidthRight">
-                            <InputTextarea className = "input vertical-center" maxLength={20000} placeholder='Data...' autoResize rows={7} onChange = {(e) => {CheckValueChange(inputNode.data, node.data, e.target.value); handleChange(e.target.value, updateNodeData);}} value = {node.data? node.data : ""} />    
+                            <InputTextarea 
+                                className = "input vertical-center" 
+                                maxLength={20000} 
+                                placeholder='Data...' 
+                                autoResize 
+                                rows={7} 
+                                onChange = {(e) => {formChange(inputNode.data, node.data, e.target.value, "data");}} 
+                                value = {node.data? node.data : ""} 
+                            />    
                         </div>
                     </div>
                     <div className="entryContainer">
@@ -436,7 +454,15 @@ const NodeDetails = ({
                             Number:  
                         </div> 
                         <div className="fullWidthRight">
-                            <InputText maxLength={1000} placeholder='Number...' className = "input text-overflow vertical-center" type = 'number' keyfilter='int' onChange = {(e) => {CheckValueChange(inputNode.number, node.number, e.target.value); handleChange(e.target.value, updateNodeNumber);}} value = {node.number ? node.number : ""} />
+                            <InputText 
+                                maxLength={1000} 
+                                placeholder='Number...' 
+                                className = "input text-overflow vertical-center" 
+                                type = 'number' 
+                                keyfilter='int' 
+                                onChange = {(e) => {formChange(inputNode.number, node.number, e.target.value, "number");}} 
+                                value = {node.number ? node.number : ""} 
+                            />
                         </div>
                     </div>
                     {/*
