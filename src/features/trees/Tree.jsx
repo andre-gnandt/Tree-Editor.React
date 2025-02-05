@@ -50,7 +50,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
   let nodeList = [];
   let dragging = false;
   let mouseOverNode = null;
-  const minimumNodeSize = IsDesktop() ? 1.15/pixelsToCentimetres : 0.7/pixelsToCentimetres; //1.4 cm in pixels
+  const minimumNodeSize = IsDesktop() ? 1.15/pixelsToCentimetres : 0.7/pixelsToCentimetres;
   let nodeDimension = 80;
   let iconDimension = 3.2; //rem;
   let testRender = false;
@@ -401,10 +401,13 @@ const Tree = ({id, treeFetch, countries = null}) => {
   {
     if(tree.id === nodeId) return false;
 
+    const dPosition = GetElementPosition(document.getElementById(tree.id));
     const top = position.Y;
     const left = position.X;
-    const dTop = tree['top'];
-    const dLeft = tree['left'];
+    //const dTop = tree['top'];
+    //const dLeft = tree['left'];
+    const dTop = dPosition.Y;
+    const dLeft = dPosition.X;
     const leftBoundary = dLeft-nodeDimension/2;
     const rightBoundary = dLeft+nodeDimension/2;
     const topBoundary = dTop-nodeDimension/2;
@@ -428,37 +431,6 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
     return false;
   }
-
-  /*
-
-  function FindMobileDropPosition(node)
-  {
-    const position = GetElementPosition(document.getElementById(node.id));
-    const top = position.Y;
-    const left = position.X;
-
-    nodeList.forEach(dropNode => {
-      /*
-      const dPosition = GetElementPosition(document.getElementById(dropNode.id));
-      const dTop = dPosition.Y;
-      const dLeft = dPosition.X;
-      *//*
-      const dTop = dropNode['top'];
-      const dLeft = dropNode['left'];
-      const leftBoundary = dLeft-nodeDimension/2;
-      const rightBoundary = dLeft+nodeDimension/2;
-      const topBoundary = dTop-nodeDimension/2;
-      const bottomBoundary = dTop+nodeDimension/2;
-
-      if(top >= topBoundary && top <= bottomBoundary && left <= rightBoundary && left >= leftBoundary)
-      {
-        mouseOverNode = dropNode.id;
-        return;
-      }      
-    });
-  }
-
-  */
 
   function OnDropNode(mouse, node)
   {
@@ -617,8 +589,8 @@ const Tree = ({id, treeFetch, countries = null}) => {
   //units used are pixels
   function GetNodeDimensions()
   {
-    const width = IsDesktop() ? window.innerWidth : screen.availWidth;
-    const height = IsDesktop() ? window.innerHeight : screen.availHeight;
+    const width = IsDesktop() ? window.innerWidth : screen.width;
+    const height = IsDesktop() ? window.innerHeight : screen.height;
     const horizontalBorder = IsDesktop()? 15 : width/20;
 
     const verticalOffset = GetVerticalOffset();
@@ -649,7 +621,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
   {
     if(tree)
     {
-      const width = IsDesktop() ? window.innerWidth : screen.availWidth;
+      const width = IsDesktop() ? window.innerWidth : screen.width;
       const horizontalBorder = IsDesktop() ? 15 : width/20;
 
       testRender = false;
@@ -720,8 +692,8 @@ const Tree = ({id, treeFetch, countries = null}) => {
 
   function GetVerticalOffset() 
   {
-    const width = IsDesktop()? window.innerWidth : screen.availWidth;
-    const height = IsDesktop()? window.innerHeight : screen.availHeight;
+    const width = IsDesktop()? window.innerWidth : screen.width;
+    const height = IsDesktop()? window.innerHeight : screen.height;
 
     const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
     const headerPresent = (width/rootFontSize) >= 33.5;
@@ -901,6 +873,7 @@ const Tree = ({id, treeFetch, countries = null}) => {
       }
       else if(path === 'left')
         {
+          child = children[children.length-1-i];
           let leftSpace = 0;
           leftSpace = leftCount*((children.length-1)/2-i);
           left = leftSpace+parentLeft;
