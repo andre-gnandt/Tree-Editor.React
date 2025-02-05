@@ -38,30 +38,31 @@ export const nodeSlice = createSlice({
     },
     setStateProperty: (state, action) =>
     {
+      if(action.payload.key === "country" && action.payload.value != state.country) state.region = null;
       state[action.payload.key] = action.payload.value;
     },
-    updateNodeData: (state, action) => {
-        state.data = action.payload;
+    uploadThumbnail: (state, action) => 
+    {
+      state.thumbnailId = action.payload.name;
+      state.files = action.payload.files;
     },
-    updateNodeNumber: (state, action) => {
-        state.number = action.payload;
-    },
-    updateNodeTitle: (state, action) => {
-        state.title = action.payload;
-    },
-    updateNodeDescription: (state, action) => {
-      state.description = action.payload;
-    },
-    updateNodeRank: (state, action) => {
-      state.rankId = action.payload;
-    },
-    updateNodeParent: (state, action) => {
-      state.nodeId = action.payload;
+    removeThumbnail: (state) =>
+    {
+      if(state.files && state.thumbnailId)
+      {
+        const removeIndex = state.files.findIndex((object) => object.id === state.thumbnailId || (object.name === state.thumbnailId && object.id === "00000000-0000-0000-0000-000000000000"));
+        if(removeIndex > -1)  state.files.splice(removeIndex, 1);
+      }
+      else if(state.thumbnailId)
+      {
+        state.files = [];
+      }
+      state.thumbnailId = null;
     },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setStateProperty, cloneNode, updateNodeData, updateNodeNumber, updateNodeTitle, updateNodeDescription, updateNodeRank, updateNodeParent} = nodeSlice.actions
+export const { setStateProperty, cloneNode, uploadThumbnail, removeThumbnail} = nodeSlice.actions
 
 export default nodeSlice.reducer
