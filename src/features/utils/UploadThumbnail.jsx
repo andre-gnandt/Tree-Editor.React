@@ -18,18 +18,26 @@ const UploadThumbnail = memo(({thumbnail, fileChangeCallBack, inputNode}) => {
     setThumbnailFile(thumbnail && thumbnail.base64 ? thumbnail : null);
     setSelectedImage(null);
   }, [thumbnail]);
+
+  useMemo(() => {
+    if(selectedImage)
+    {
+      reader.onload = GetFileData;
+      reader.readAsDataURL(selectedImage);
+    }
+  }, [selectedImage]);
     
   function GetFileData(event)
   { 
-    if(event)
+    if(selectedImage)
     {   
       const file = 
       {
         id: "00000000-0000-0000-0000-000000000000",
         nodeid: node.id,
         name: uploadName.current,
-        size: String(event.size),
-        type: event.type,
+        size: String(selectedImage.size),
+        type: selectedImage.type,
         data: reader.result,
         base64: reader.result, // 
       };
@@ -141,8 +149,6 @@ const UploadThumbnail = memo(({thumbnail, fileChangeCallBack, inputNode}) => {
                     }
 
                     uploadName.current = fileName;
-                    reader.onload = GetFileData;
-                    reader.readAsDataURL(event.target.files[0]);
                     setSelectedImage(event.target.files[0]); 
                 }}
             />
