@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { cloneNode, setStateProperty} from './nodeSlice'
 import { DeleteCascade,  DeleteSingle, updateNode, createNode, createRoot } from '../../api/nodes/nodesApi';
@@ -10,6 +10,7 @@ import './DetailsList.css';
 import UploadThumbnail from '../utils/UploadThumbnail';
 
 const NodeDetails = ({
+    thumbnail = null,
     unsavedTreePositions = null,
     unMount,
     render, 
@@ -22,11 +23,12 @@ const NodeDetails = ({
     {
     const dispatch = useDispatch();
     const node = useSelector(state => state.node);
+    const [thumbnailFile, setThumbnailFile] = useState(thumbnail);
     const [regions, setRegions] = useState(GetRegions(node.country));
     const[hideButtons, setHideButtons] = useState(0);
     const changeCount = useRef(0);
     const[titleRequired, setTitleRequired] = useState(true);
-    const resetThumbnail = useRef(1);
+    //const resetThumbnail = useRef(1);
     const [deleteOptions, setDeleteOptions] = useState("");
     const deleteType = useRef("cascade"); //single | cascade
     const fileChangeCount = useRef(0);
@@ -34,11 +36,7 @@ const NodeDetails = ({
     const [Root, setRoot] = useState(root);
     const disableDeleteButton = unsavedTreePositions ? unsavedTreePositions() : false;;
 
-    const SetStateProperty = (key, value) => {
-        dispatch(setStateProperty({key: key, value: value}));
-    }
-
-    const FileChangeCallBack = (showButtons) => 
+    const FileChangeCallBack = useCallback((showButtons) => 
     {
         if(showButtons)
         {
@@ -50,6 +48,10 @@ const NodeDetails = ({
         }
 
         setHideButtons(changeCount.current+fileChangeCount.current);
+    }, []);
+
+    const SetStateProperty = (key, value) => {
+        dispatch(setStateProperty({key: key, value: value}));
     }
 
     function GetRegions(country) 
@@ -250,10 +252,9 @@ const NodeDetails = ({
         document.getElementById('file-upload-button').value = null;
         changeCount.current = 0; 
         fileChangeCount.current = 0;
-        resetThumbnail.current = resetThumbnail.current * -1;
+        setThumbnailFile( thumbnailFile ? {...thumbnailFile} :  {base64: null});
         setHideButtons(0);
         setRegions(GetRegions(inputNode.country));
-        //setResetFiles({reset: true}); 
         dispatch(cloneNode(inputNode));
     }
 
@@ -338,7 +339,7 @@ const NodeDetails = ({
                 <div className={(hideButtons === 0 && titleRequired) ? 'container': 'container-shrunk'}> 
                     <div className='thumbnail-container-outer' /*style = {{marginBottom: mobile ? '5vw': '5.275vh'}} */>
                         <div className="thumbnail-container" style = {{width: '50%'}}>                         
-                            <UploadThumbnail reset = {resetThumbnail.current} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
+                            <UploadThumbnail thumbnail = {thumbnailFile} fileChangeCallBack = {FileChangeCallBack} inputNode = {inputNode} /> 
                         </div>
                         {
                         <div className='title-container expandable-title-container' style = {{width: '50%'}}>

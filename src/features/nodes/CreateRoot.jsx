@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import { cloneNode } from './nodeSlice';
 import './DetailsList.css'
 import { useDispatch } from 'react-redux';
@@ -9,6 +9,12 @@ const CreateRoot = ({nodeList, nodeDictionary, countries, rootNode, render, tree
     const [createNode, setCreateNode] = useState(null);
     const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
     const dispatch = useDispatch();
+
+    const unMount = useCallback(() => 
+    {
+        window.removeEventListener('resize', isPortrait);
+        setCreateNode(false);
+    }, []);
 
     useEffect(() => {
             
@@ -52,12 +58,6 @@ const CreateRoot = ({nodeList, nodeDictionary, countries, rootNode, render, tree
         thumbnailId: null,
         treeId: treeId,
     };
-
-    const unMount = () => 
-    {
-        window.removeEventListener('resize', isPortrait);
-        setCreateNode(false);
-    }
 
     const OpenDialog = () => 
     {

@@ -1,78 +1,50 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, memo, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { uploadThumbnail, removeThumbnail } from "../nodes/nodeSlice";
 import '../nodes/DetailsList.css';
 import 'primeicons/primeicons.css';
 
-const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
+const UploadThumbnail = memo(({thumbnail, fileChangeCallBack, inputNode}) => {
   const dispatch = useDispatch();
   const uploadName = useRef(null);
-  const node = {...inputNode};
-    node.files = inputNode.files? [...inputNode.files] : [];
-  const nodeFiles = inputNode.files;
-
   const [selectedImage, setSelectedImage] = useState(null);
-  const [defaultFile, setDefaultFile] = useState(inputNode.thumbnailId ? GetImageSource() : null);
+  const [thumbnailFile, setThumbnailFile] = useState(thumbnail && thumbnail.base64 ? thumbnail : null);
   const reader = new FileReader();
 
-  useEffect(() => {
-    if(selectedImage)
-    {
-      reader.onload = GetFileData;
-      reader.readAsDataURL(selectedImage);
-    }    
-  }, [selectedImage]);
+  const node = {...inputNode};
+  node.files = inputNode.files? [...inputNode.files] : [];
 
-  useEffect(() => {
-    setDefaultFile(inputNode.thumbnailId ? GetImageSource() : null);
+  useMemo(() => {
+    setThumbnailFile(thumbnail && thumbnail.base64 ? thumbnail : null);
     setSelectedImage(null);
-  }, [reset]);
-
-  function GetImageSource()
-    {
-        let index = nodeFiles.findIndex((object) => object.id.toLowerCase() === node.thumbnailId.toLowerCase());
-        if(index != -1)
-        {
-            return nodeFiles[index];
-        }
-
-        let file = nodeFiles.find((object) => object.name === node.thumbnailId);
-        return file;
-    }
-
+  }, [thumbnail]);
+    
   function GetFileData(event)
   { 
-    if(selectedImage)
+    if(event)
     {   
       const file = 
       {
         id: "00000000-0000-0000-0000-000000000000",
         nodeid: node.id,
         name: uploadName.current,
-        size: String(selectedImage.size),
-        type: selectedImage.type,
+        size: String(event.size),
+        type: event.type,
         data: reader.result,
         base64: reader.result, // 
       };
           
+      fileChangeCallBack(true);
       node['thumbnailId'] = uploadName.current;
-
       //node.files.push(file);  --to be added back once file gallery is created
       node.files = [file]; //to be removed once file gallery is created
-      dispatch(uploadThumbnail({files: node.files, name: file.name}));
-      setDefaultFile(file);
-      fileChangeCallBack(true);
+      setThumbnailFile(file);
+      dispatch(uploadThumbnail({files: node.files, name: file.name}));  
     }
   }
 
   function RemoveImage()
   {
-    document.getElementById('file-upload-button').value = null;
-    node.thumbnailId = null;
-    dispatch(removeThumbnail()); //change to only remove the thumbnailId once file gallery is added
-    setDefaultFile(null); 
-    setSelectedImage(null);
-      
     if(inputNode.thumbnailId) 
     {
       fileChangeCallBack(true);
@@ -81,11 +53,17 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
     {
       fileChangeCallBack(false);
     }
+
+    document.getElementById('file-upload-button').value = null;
+    node.thumbnailId = null;
+    setThumbnailFile(null);
+    dispatch(removeThumbnail()); //change to only remove the thumbnailId once file gallery is added
+    setSelectedImage(null);
   }
 
   function FitThumbnailImage(fitToContainer)
   {
-    if(selectedImage || defaultFile)
+    if(thumbnailFile || selectedImage)
     {
       if(fitToContainer) document.getElementById("thumbnail-expander").className = "thumbnail-expanded";
       if(!fitToContainer) document.getElementById("thumbnail-expander").className = "thumbnail-fit";
@@ -96,13 +74,13 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
   <>
     <div id = 'thumbnail-uploader' style = {{height: '100%', width: '100%'}}>
         <div style = {{height: '75%', width: '100%'}} className="title-container" onMouseOver={() => {FitThumbnailImage(false);}} onMouseOut = {() => {FitThumbnailImage(true);}}>
-          { (selectedImage || defaultFile ) ? (
+          { (thumbnailFile || selectedImage) ? (
                 <>
                   <div id = 'thumbnail-expander' className="thumbnail-expanded">
                     <img
                         alt="not found"
                         className = 'image'
-                        src={defaultFile && defaultFile.base64 ? defaultFile.base64 : URL.createObjectURL(selectedImage)}
+                        src={thumbnailFile ? thumbnailFile.base64 : URL.createObjectURL(selectedImage)}
                     />
                   </div>
                 </>
@@ -124,9 +102,9 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
         </div>
         <div style = {{height: '25%', width: '100%'}}>
             {/*9.9vw under image, width is 29.7 vw*/}
-            {(selectedImage || defaultFile) ? (
+            {(thumbnailFile || selectedImage) ? (
               <>              
-                <div className="text-overflow dialog-header thumbnail-title">{selectedImage ? selectedImage.name : defaultFile.name}</div>
+                <div className="text-overflow dialog-header thumbnail-title">{thumbnailFile ? thumbnailFile.name : selectedImage.name}</div>
                 <div className="thumbnail-buttons-container" >
                   <button className="button thumbnail-button" style = {{marginRight: '4%'}} onClick={() => { document.getElementById('file-upload-button').click()}}>+Upload</button>
                   <button className="button thumbnail-button" onClick={() => {RemoveImage();}}>Remove</button>
@@ -163,6 +141,8 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
                     }
 
                     uploadName.current = fileName;
+                    reader.onload = GetFileData;
+                    reader.readAsDataURL(event.target.files[0]);
                     setSelectedImage(event.target.files[0]); 
                 }}
             />
@@ -170,6 +150,6 @@ const UploadThumbnail = ({reset, fileChangeCallBack, inputNode}) => {
     </div>
   </>
   );
-};
+});
 
 export default UploadThumbnail;

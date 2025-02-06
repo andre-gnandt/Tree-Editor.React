@@ -1,12 +1,18 @@
-import React, {useEffect, useState} from 'react'
+import React, {memo, useCallback, useEffect, useState} from 'react'
 import '../nodes/DetailsList.css';
 import '../trees/tree.css';
 import 'primeicons/primeicons.css';
 import TreeDialog from './TreeDialog';
 
-const EditTree = ({id, tree}) => {
+const EditTree = memo(({id, tree}) => {
     const [editTree, setEditTree] = useState(null);
     const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
+
+    const closeDialog = useCallback(() => 
+    {
+        window.removeEventListener('resize', isPortrait);
+        setEditTree(false);
+    }, []);
 
     useEffect(() => {
 
@@ -34,12 +40,6 @@ const EditTree = ({id, tree}) => {
         }
     }
 
-    const closeDialog = () => 
-    {
-        window.removeEventListener('resize', isPortrait);
-        setEditTree(false);
-    }
-
     const openDialog = () =>
     {
         isPortrait();
@@ -63,6 +63,6 @@ const EditTree = ({id, tree}) => {
             />
         </>
     );
-}
+});
 
 export default EditTree

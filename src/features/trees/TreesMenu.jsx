@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react'
+import { useState, useEffect, useCallback} from 'react'
 import { useNavigate } from "react-router-dom";
 import { InputText } from 'primereact/inputtext';
 import { DataView} from 'primereact/dataview';
@@ -19,6 +19,22 @@ const TreesMenu = ({trees}) => {
   const [treeList, setTreeList] = useState(trees);
   const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
   const iconDimension = 3.2; //rem
+
+  const closeDialog = useCallback(() => 
+    {
+        setCreateTree(false);
+    }, []);
+
+  const reRenderList = useCallback((callback = null, newTree = null) =>
+  {
+    if(callback === "create")
+    {
+        treeList.push(newTree);
+    }
+
+    treeList.sort(CompareTrees);
+    setTreeList([...treeList]);
+  }, [treeList]);
 
   useEffect(() => {
       window.addEventListener('resize', isPortrait);
@@ -71,17 +87,6 @@ const TreesMenu = ({trees}) => {
     if(!search || !treeList || treeList.length == 0 || search.length == 0) return treeList;
 
     return treeList.filter((tree) => { return (tree.name.toLowerCase().includes(search.toLowerCase()))});
-  }
-
-  function reRenderList(callback = null, newTree = null)
-  {
-    if(callback === "create")
-    {
-        treeList.push(newTree);
-    }
-
-    treeList.sort(CompareTrees);
-    setTreeList([...treeList]);
   }
 
   const EmptyListJSX = () => 
@@ -137,11 +142,6 @@ const TreesMenu = ({trees}) => {
   const listTemplate = (trees) => {
     return <div className='grid grid-nogutter data-table'>{trees.map((tree) => gridItem(tree))}</div>;
   };
-
-  const closeDialog = () => 
-    {
-        setCreateTree(false);
-    }
 
   return (
     <>

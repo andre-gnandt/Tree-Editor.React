@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {memo} from 'react'
 import { Dialog } from 'primereact/dialog';
 import '../nodes/DetailsList.css';
 import TreeDetails from './TreeDetails';
@@ -6,7 +6,7 @@ import 'primeicons/primeicons.css';
 import Draggable from 'react-draggable';
 import { GetDialogHeight, GetDialogWidth } from '../utils/Functions';
 
-const TreeDialog = ({id = null, setCreateTree, createTree,  portrait, inputTree, openDialog, closeDialog, reRenderList = null}) => {
+const TreeDialog = memo(({id = null, setCreateTree, createTree,  portrait, inputTree, openDialog, closeDialog, reRenderList = null}) => {
     
     return(
         <>
@@ -32,6 +32,6 @@ const TreeDialog = ({id = null, setCreateTree, createTree,  portrait, inputTree,
             </Draggable>
         </>
     );
-}
+});
 
 export default TreeDialog
