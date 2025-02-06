@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 //import './DetailsList.css'
 import '../trees/tree.css';
 import { useDispatch } from 'react-redux';
@@ -11,6 +11,11 @@ const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, tree
     const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
     const dispatch = useDispatch();
 
+    const unMount = useCallback(() => 
+    {
+        window.removeEventListener('resize', isPortrait);
+        setCreateNode(false);
+    }, []);
     
     useEffect(() => {
         
@@ -43,14 +48,7 @@ const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, tree
         thumbnailId: null,
         treeId: rootNode ? rootNode.treeId : null,
     };
-
-    const unMount = () => 
-    {
-        window.removeEventListener('resize', isPortrait);
-        setCreateNode(false);
-    }
-
-    
+   
     function isPortrait()
     {
         if(window.innerHeight > window.innerWidth)
@@ -83,6 +81,7 @@ const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, tree
 
     const OpenDialog = () => 
     {
+        isPortrait();
         dispatch(cloneNode(newNode));
         setCreateNode(true);
     }

@@ -7,6 +7,7 @@ import Draggable from 'react-draggable';
 import { GetDialogHeight, GetDialogWidth } from '../utils/Functions';
 
 const NodeDialog = ({
+        thumbnail = null,
         unsavedTreePositions = null,
         create = false, 
         root = false, 
@@ -34,6 +35,7 @@ const NodeDialog = ({
                     visible = {open} 
                     onHide={() => {if (!open) return; unMount();}} >                  
                         <NodeDetails 
+                            thumbnail = {thumbnail}
                             unsavedTreePositions = {unsavedTreePositions}
                             countries = {countries} 
                             unMount = {unMount} 

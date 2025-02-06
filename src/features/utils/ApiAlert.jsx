@@ -1,7 +1,8 @@
 import '../nodes/DetailsList.css';
 import { Audio } from 'react-loader-spinner';
+import React, {memo} from 'react';
 
-const ApiAlert = ({hidden = true, id, message, graphic = true, color = null }) => {
+const ApiAlert = memo(({hidden = true, id, message, graphic = true, color = null }) => {
     return (
         <div hidden = {hidden}  id = {id} className = {graphic ? 'alert-load transparent' : 'alert-load '+color}>
             { (graphic) && 
@@ -22,5 +23,5 @@ const ApiAlert = ({hidden = true, id, message, graphic = true, color = null }) =
             </div>
         </div>
     );
-}
+});
 export default ApiAlert 

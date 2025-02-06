@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react'
+import React, {memo, useEffect, useState, useRef, useCallback} from 'react'
 import { useDispatch} from 'react-redux';
 import './DetailsList.css';
 import { cloneNode } from './nodeSlice';
@@ -6,12 +6,10 @@ import NodeDialog from './NodeDialog';
 import { Audio } from 'react-loader-spinner';
 import { IsDesktop } from '../utils/Functions';
 
-
-const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallBack, thumbnailXHRSentCallBack, rootNode, render, inputNode, css, nodeList, nodeDictionary, countries}) => {
+const TreeNode = memo(({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallBack, thumbnailXHRSentCallBack, rootNode, render, inputNode, css, nodeList, nodeDictionary, countries}) => {
     const[dialog, setDialog] = useState(false);
-    const[thumbnail, setThumbnail] = useState(null);
+    const thumbnail = useRef(GetThumbnail());
     const req = new XMLHttpRequest();
-    req.addEventListener("loadend", ThumbnailLoaded); 
     const dispatch = useDispatch();
     const [manualReRender, setManualReRender] = useState(1); //used for callback re renders
     const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
@@ -22,7 +20,12 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
     let buttonMouseDown = new Object();
     let buttonMouseUp = new Object();
 
-
+    const CloseDialog = useCallback(() =>
+    {
+        inputNode['dialog'] = false;
+        window.removeEventListener('resize', isPortrait);
+        setDialog(false);
+    }, [inputNode]);
     
     useEffect(() => {
 
@@ -36,24 +39,19 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
         }
 
         
-        if(!XHRSent() && inputNode.thumbnailId && inputNode.files.length < 1 && thumbnail == null)
+        if(!XHRSent() && inputNode.thumbnailId && thumbnail.current == null)
         {
             inputNode['thumbnailReq'] = true;
             thumbnailXHRSentCallBack(inputNode);
+            req.addEventListener("loadend", ThumbnailLoaded); 
             req.open("GET", "http://localhost:11727/api/Files/"+inputNode.thumbnailId);
             req.send();
         } 
-        else if(thumbnail != null && inputNode.files.length < 1)
-        {
-            inputNode.files.push({...thumbnail});
-            thumbnailXHRDoneCallBack(inputNode);
-            reRenderTreeNode(inputNode);
-        }
 
         return () => 
-            {   
-                window.removeEventListener('resize', isPortrait);
-            }
+        {   
+            window.removeEventListener('resize', isPortrait);
+        }
     });    
 
     function isPortrait()
@@ -74,7 +72,10 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
     function ThumbnailLoaded(event)
     {
         const file = JSON.parse(event.target.responseText);
-        setThumbnail(file);
+
+        inputNode.files.push({...file});
+        thumbnailXHRDoneCallBack(inputNode);
+        reRenderTreeNode(inputNode);
     }
 
     //used for callback re renders
@@ -82,14 +83,6 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
     {
         setManualReRender(-1*manualReRender);
     }
-
-    const CloseDialog = () =>
-    {
-        inputNode['dialog'] = false;
-        window.removeEventListener('resize', isPortrait);
-        setDialog(false);
-    }
-
 
     function GetElementPosition(element)
     {
@@ -140,21 +133,21 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
         return newList.sort(CompareNodes);
     }
 
-    function GetImageSource()
+    function GetThumbnail()
     {
         let index = inputNode.files.findIndex((object) => object.id.toLowerCase() === inputNode.thumbnailId.toLowerCase());
         if(index != -1)
         {
-            return inputNode.files[index].base64;
+            return inputNode.files[index];
         }
 
         let file = inputNode.files.find((object) => object.name === inputNode.thumbnailId);
-        return file.base64;
+        return file;
     }
 
         return(
             <>  
-                { inputNode.thumbnailId && (thumbnail || inputNode.files.length > 0 ) ? 
+                { (thumbnail.current ) ? 
                 (
                     <div 
                         style = {{height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}
@@ -167,7 +160,7 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
                             onPointerDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} 
                             onPointerOut={(event) => { if(!IsDesktop()){ValidateButtonClick(event.target);}}}
                             onClick={(event) => {ValidateButtonClick(event.target);}}
-                            src = {thumbnail ? thumbnail.base64 : GetImageSource()}
+                            src = {thumbnail.current ? thumbnail.current.base64 : GetThumbnail().base64}
                         />
                         <div
                             className='image-text text-overflow pointer'
@@ -210,6 +203,7 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
                 ) 
                 } 
                 <NodeDialog
+                    thumbnail={thumbnail.current}
                     unsavedTreePositions = {unsavedTreePositions}
                     unMount = {CloseDialog}
                     countries = {countries}
@@ -224,6 +218,6 @@ const TreeNode = ({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallB
                 /> 
             </> 
         );
-}
+});
 
 export default TreeNode 

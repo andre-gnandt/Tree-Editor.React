@@ -1,4 +1,4 @@
-import {useEffect} from 'react'
+import {memo, useCallback, useEffect} from 'react'
 import TreeNode from '../nodes/TreeNode';
 import { Provider} from 'react-redux';
 import { store } from '../../store';
@@ -28,7 +28,7 @@ import { IsDesktop } from '../utils/Functions';
 //Due to strange issues and positioning with the CSS transform 
 //property of tree nodes on re renders, this component will NEVER Re render
 //Re renders of the tree diagram must be done with plain JavaScript
-const Tree = ({id, treeFetch, countries = null}) => {
+const Tree = memo(({id, treeFetch, countries = null}) => {
   const navigate = useNavigate();
   const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
   let originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
@@ -76,55 +76,12 @@ const Tree = ({id, treeFetch, countries = null}) => {
     }
   });
 
-  function PixelSizeInCentimetres() {
-    let cpi = 2.54; // centimeters per inch
-    let dpi = 96; // dots per inch
-    let ppd = window.devicePixelRatio; // pixels per dot
-    return (cpi / (dpi * ppd));
-  }
-
-  //used for a non parent changed update of node content
-  function UpdateChangeTrackerCallback(node)
-  {
-    originalDictionary[node.id] = {...node};
-    delete changeTracker[node.id];
-
-    if(Object.keys(changeTracker).length === 0) 
-    {
-      document.getElementById('save-tree-positions').disabled = true;
-      document.getElementById('revert-tree-positions').disabled = true;
-    }
-  }
-
-  function SetNodePropertiesForUpdate(src, dest)
-  {
-    dest.id = src.id;
-    dest.title = src.title;
-    dest.files = src.files;
-    dest.number = src.number;
-    dest.data = src.data;
-    dest.rankId = src.rankId;
-    dest.thumbnailId = src.thumbnailId;
-    dest.description = src.description;
-    dest.country = src.country;
-    dest.region = src.region;
-    dest.level = src.level;
-    dest.treeId = src.treeId;
-  }
-
-  function RenderTreeMutex() {
-    if(rendering || dragging || resetting) {
-        setTimeout(RenderTreeMutex, 50);
-        return;
-    }
-  }
-
-  function UnsavedTreePositions()
+  const UnsavedTreePositions =  useCallback(() => 
   {
     return (changeTracker && Object.keys(changeTracker).length > 0);
-  }
+  }, [treeFetch, countries]);
 
-  function ReRenderTree(callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null)
+  const ReRenderTree = useCallback((callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null) =>
   {
     RenderTreeMutex();
     if(rendering || dragging || resetting) return;
@@ -250,6 +207,86 @@ const Tree = ({id, treeFetch, countries = null}) => {
     document.getElementById('revert-tree-positions').disabled = !(treeUnsaved);
 
     rendering = false;
+  }, [treeFetch, countries]);
+
+  const ThumbnailXHRSentCallBack = useCallback((node) =>
+  {
+    const originalNode = FindNodeInTree(node.id, originalTree);
+    originalNode['thumbnailReq'] = true;
+  }, [treeFetch, countries]);
+
+  const ThumbnailXHRDoneCallBack = useCallback((node) => 
+  {
+    const originalNode = FindNodeInTree(node.id, originalTree);
+    originalNode.files = [...node.files];
+  }, [treeFetch, countries]);
+
+  const UpdateChangeTrackerCallback = useCallback((node) =>
+  {
+    originalDictionary[node.id] = {...node};
+    delete changeTracker[node.id];
+
+    if(Object.keys(changeTracker).length === 0) 
+    {
+      document.getElementById('save-tree-positions').disabled = true;
+      document.getElementById('revert-tree-positions').disabled = true;
+    }
+  }, [treeFetch, countries]);
+
+  const ReRenderTreeNode = useCallback((node) =>
+  {
+    ReRenderTreeNodeMutex();
+    if(rendering || resetting) return;
+
+    createRoot(document.getElementById(node.id)).render
+    (
+      <Provider store ={store}>
+          <TreeNode 
+            unsavedTreePositions={UnsavedTreePositions}
+            reRenderTreeNode = {ReRenderTreeNode}
+            thumbnailXHRSentCallBack = {ThumbnailXHRSentCallBack}
+            thumbnailXHRDoneCallBack = {ThumbnailXHRDoneCallBack}
+            setChangeTracker = {UpdateChangeTrackerCallback}
+            rootNode = {tree} 
+            render = {ReRenderTree} 
+            inputNode = {node} 
+            css = {{nodeSize: nodeDimension}} 
+            nodeList = {nodeList} 
+            nodeDictionary = {nodeDictionary}
+            countries = {countries}
+          />
+      </Provider> 
+    );
+  }, [UnsavedTreePositions, ReRenderTree, ThumbnailXHRDoneCallBack, ThumbnailXHRSentCallBack, UpdateChangeTrackerCallback, treeFetch, countries, id]);
+
+  function RenderTreeMutex() {
+    if(rendering || dragging || resetting) {
+        setTimeout(RenderTreeMutex, 50);
+        return;
+    }
+  }
+
+  function PixelSizeInCentimetres() {
+    let cpi = 2.54; // centimeters per inch
+    let dpi = 96; // dots per inch
+    let ppd = window.devicePixelRatio; // pixels per dot
+    return (cpi / (dpi * ppd));
+  }
+
+  function SetNodePropertiesForUpdate(src, dest)
+  {
+    dest.id = src.id;
+    dest.title = src.title;
+    dest.files = src.files;
+    dest.number = src.number;
+    dest.data = src.data;
+    dest.rankId = src.rankId;
+    dest.thumbnailId = src.thumbnailId;
+    dest.description = src.description;
+    dest.country = src.country;
+    dest.region = src.region;
+    dest.level = src.level;
+    dest.treeId = src.treeId;
   }
 
   function CompareNodes(a, b)
@@ -501,18 +538,6 @@ const Tree = ({id, treeFetch, countries = null}) => {
     }
   }
 
-  const ThumbnailXHRSentCallBack = (node) =>
-  {
-    const originalNode = FindNodeInTree(node.id, originalTree);
-    originalNode['thumbnailReq'] = true;
-  }
-
-  const ThumbnailXHRDoneCallBack = (node) => 
-  {
-    const originalNode = FindNodeInTree(node.id, originalTree);
-    originalNode.files = [...node.files];
-  }
-
   function AppendChildNode(tree, child, left, row, nodeSize, verticalOffset)
   {
     
@@ -558,32 +583,6 @@ const Tree = ({id, treeFetch, countries = null}) => {
         setTimeout(ReRenderTreeNodeMutex, 50);
         return;
     }
-  }
-
-  function ReRenderTreeNode(node)
-  {
-    ReRenderTreeNodeMutex();
-    if(rendering || resetting) return;
-
-    createRoot(document.getElementById(node.id)).render
-    (
-      <Provider store ={store}>
-          <TreeNode 
-            unsavedTreePositions={UnsavedTreePositions}
-            reRenderTreeNode = {ReRenderTreeNode}
-            thumbnailXHRSentCallBack = {ThumbnailXHRSentCallBack}
-            thumbnailXHRDoneCallBack = {ThumbnailXHRDoneCallBack}
-            setChangeTracker = {UpdateChangeTrackerCallback}
-            rootNode = {tree} 
-            render = {ReRenderTree} 
-            inputNode = {node} 
-            css = {{nodeSize: nodeDimension}} 
-            nodeList = {nodeList} 
-            nodeDictionary = {nodeDictionary}
-            countries = {countries}
-          />
-      </Provider> 
-    );
   }
 
   //units used are pixels
@@ -1254,6 +1253,6 @@ const Tree = ({id, treeFetch, countries = null}) => {
       }
     </>
   );
-}
+});
 
 export default Tree
