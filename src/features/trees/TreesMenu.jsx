@@ -140,7 +140,11 @@ const TreesMenu = ({trees}) => {
     }
 
   const listTemplate = (trees) => {
-    return <div className='grid grid-nogutter data-table'>{trees.map((tree) => gridItem(tree))}</div>;
+    return  <>
+              <div className='data-table-outline'>
+                <div className='grid grid-nogutter data-table'>{trees.map((tree) => gridItem(tree))}</div>
+              </div>
+            </>;
   };
 
   return (
@@ -171,8 +175,9 @@ const TreesMenu = ({trees}) => {
                   paginator  
                   rows = {16} 
                   value = {FilterTree(treeList)}
-                   listTemplate={listTemplate} 
-                   layout = {"grid"} 
+                  listTemplate={listTemplate} 
+                  layout = {"grid"} 
+                  
                 />
             </>
             )
