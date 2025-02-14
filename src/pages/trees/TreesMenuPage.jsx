@@ -3,7 +3,9 @@ import { GetTreeList } from '../../api/trees/treesApi';
 import TreesMenu from '../../features/trees/TreesMenu';
 
 const TreesMenuPage = () => {
-  const [list, setList] = useState(null);   
+  const [list, setList] = useState(null);
+  const maxCount = 1000;   
+  const itemsPerPage = 20;
   
   useEffect(() => {
       if(!list)
@@ -14,7 +16,7 @@ const TreesMenuPage = () => {
 
   async function SetTreeList()
   {
-    const getList = await GetTreeList();
+    const getList = await GetTreeList(maxCount);
     setList(getList);
   }
 
@@ -23,7 +25,7 @@ const TreesMenuPage = () => {
     { (list) &&
         (
             <>
-                <TreesMenu trees = {list}/>
+                <TreesMenu trees = {list} maxCount = {maxCount} itemsPerPage={itemsPerPage}/>
             </>
         )
     }

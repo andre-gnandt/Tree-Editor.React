@@ -217,8 +217,16 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
 
   const ThumbnailXHRDoneCallBack = useCallback((node) => 
   {
+    ReRenderTreeNodeMutex();
+    rendering = true;
+
     const originalNode = FindNodeInTree(node.id, originalTree);
     originalNode.files = [...node.files];
+
+    const currentNode = FindNodeInTree(node.id, tree);
+    currentNode.files = [...node.files]
+
+    rendering = false;
   }, [treeFetch, countries]);
 
   const UpdateChangeTrackerCallback = useCallback((node) =>
@@ -237,6 +245,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   {
     ReRenderTreeNodeMutex();
     if(rendering || resetting) return;
+    rendering = true;
 
     createRoot(document.getElementById(node.id)).render
     (
@@ -257,7 +266,9 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
           />
       </Provider> 
     );
-  }, [UnsavedTreePositions, ReRenderTree, ThumbnailXHRDoneCallBack, ThumbnailXHRSentCallBack, UpdateChangeTrackerCallback, treeFetch, countries, id]);
+
+    rendering = false;
+  }, [UnsavedTreePositions, ReRenderTree, ThumbnailXHRDoneCallBack, ThumbnailXHRSentCallBack, UpdateChangeTrackerCallback, treeFetch, countries]);
 
   function RenderTreeMutex() {
     if(rendering || dragging || resetting) {
@@ -538,6 +549,10 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     }
   }
 
+  const NotDraggable = (child) => {
+    return child["dialog"] || resetting || rendering || dragging || (!IsDesktop() && child.thumbnailId && child.files.length === 0);
+  }
+
   function AppendChildNode(tree, child, left, row, nodeSize, verticalOffset)
   {
     
@@ -545,7 +560,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
       <>
         <Draggable 
             position={{x: 0, y: 0}} 
-            onStart = {() => { if(child["dialog"] || resetting || rendering) return false; scrollXBefore = window.scrollX; scrollYBefore = window.scrollY;}} 
+            onStart = {() => { if(NotDraggable(child)) return false; scrollXBefore = window.scrollX; scrollYBefore = window.scrollY;}} 
             onStop = {(drag) => {if(dragging){OnDropNode(drag, child);} }} 
             onDrag = {(drag) =>{if(!dragging){StartDrag(child);} RepositionSubTree(drag, child);}}
         >

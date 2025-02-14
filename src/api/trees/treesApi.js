@@ -60,9 +60,13 @@ async function GetFullTree(id){
     return null;
 };
 
-async function GetTreeList(){
+async function GetTreeList(maxCount = 1000, skip = 0, search = null){
     Loading();
-    return await fetch(baseURL+"/api/Trees").then(res => res.json()).then(
+
+    let params = "maxCount="+String(maxCount)+"&skip="+String(skip);//+"&search=2"
+    if(search) params = params+"&search="+search;
+
+    return await fetch(baseURL+"/api/Trees?"+params).then(res => res.json()).then(
         (result) => { 
           DoneLoading();
           return result;

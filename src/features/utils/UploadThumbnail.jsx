@@ -69,19 +69,10 @@ const UploadThumbnail = memo(({thumbnail, fileChangeCallBack, inputNode}) => {
     setSelectedImage(null);
   }
 
-  function FitThumbnailImage(fitToContainer)
-  {
-    if(thumbnailFile || selectedImage)
-    {
-      if(fitToContainer) document.getElementById("thumbnail-expander").className = "thumbnail-expanded";
-      if(!fitToContainer) document.getElementById("thumbnail-expander").className = "thumbnail-fit";
-    }
-  }
-
   return (
   <>
     <div id = 'thumbnail-uploader' style = {{height: '100%', width: '100%'}}>
-        <div style = {{height: '75%', width: '100%'}} className="title-container" onMouseOver={() => {FitThumbnailImage(false);}} onMouseOut = {() => {FitThumbnailImage(true);}}>
+        <div style = {{height: '75%', width: '100%'}} className="title-container" /*onMouseOver={() => {FitThumbnailImage(false);}} onMouseOut = {() => {FitThumbnailImage(true);}}*/>
           { (thumbnailFile || selectedImage) ? (
                 <>
                   <div id = 'thumbnail-expander' className="thumbnail-expanded">
