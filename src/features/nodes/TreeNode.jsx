@@ -39,7 +39,7 @@ const TreeNode = memo(({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDone
         }
 
         
-        if(!XHRSent() && inputNode.thumbnailId && thumbnail.current == null && GetThumbnail() == null)
+        if(!XHRSent() && inputNode.thumbnailId && thumbnail.current == null && inputNode.files.length === 0)
         {
             inputNode['thumbnailReq'] = true;
             thumbnailXHRSentCallBack(inputNode);
