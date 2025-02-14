@@ -209,12 +209,6 @@ const TreesMenu = ({trees, maxCount = 1000, itemsPerPage = 20}) => {
     const pageMax = Math.ceil(treesPaged.trees.length/itemsPerPage);
     //const pageMin = pageMax-maxCount/itemsPerPage+1;
 
-      console.log("next page "+nextPage);
-      console.log("prev page "+currentPage.current);
-      console.log("page max "+pageMax);
-      //console.log("page min "+pageMin);
-      console.log("skip count "+skipCount.current);
-
     if(nextPage === pageMax+1 && prevPage === pageMax)
     {
       skipCount.current = skipCount.current+maxCount;
@@ -229,7 +223,6 @@ const TreesMenu = ({trees, maxCount = 1000, itemsPerPage = 20}) => {
     */
 
     setFirstRecord((nextPage-1)*itemsPerPage);
-    console.log("skip count after"+skipCount.current);
   }
 
   async function SearchTable(string)
