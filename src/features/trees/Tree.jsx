@@ -68,20 +68,25 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
       document.getElementById('save-tree-positions').disabled = true;
       document.getElementById('revert-tree-positions').disabled = true;
     }
-    window.addEventListener('resize', ReRenderTree);
+    window.addEventListener('resize', ReRenderOnResize);
 
     return () =>{ 
-      window.removeEventListener('resize', ReRenderTree);
+      window.removeEventListener('resize', ReRenderOnResize);
       if(tree) RemoveLines(tree);
     }
   });
+
+  function ReRenderOnResize()
+  {
+    ReRenderTree(false);
+  }
 
   const UnsavedTreePositions =  useCallback(() => 
   {
     return (changeTracker && Object.keys(changeTracker).length > 0);
   }, [treeFetch, countries]);
 
-  const ReRenderTree = useCallback((callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null) =>
+  const ReRenderTree = useCallback((reRender = false, callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null) =>
   {
     RenderTreeMutex();
     if(rendering || dragging || resetting) return;
@@ -90,7 +95,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     const treeContainer = createRoot(document.getElementById('tree-root'));
     if(!tree && !newNode)
     {
-       treeContainer.render((RenderTree(tree)));
+       treeContainer.render((RenderTree(true, tree)));
        rendering = false;
        return;
     }
@@ -170,7 +175,15 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     childPositions = new Object();
     nodeDictionary = new Object();
     //RemoveLines(inputTree);
-    treeContainer.render((RenderTree(inputTree)));
+    if(reRender)
+    {
+      treeContainer.render((RenderTree(reRender, inputTree)));
+    }
+    else 
+    {
+      RenderTree(reRender, inputTree);
+    }
+
     CorrectTransforms(inputTree);
     ResetElementPositions(inputTree);
     AddLines(inputTree);
@@ -480,6 +493,19 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     return false;
   }
 
+  function IsDescendant(node, id)
+  {
+    if(node.id === id) return true;  
+    let i = 0;
+    while(i < node.children.length)
+    {
+      const child  = node.children[i];
+      if(IsDescendant(child, id)) return true;
+      i++;
+    };
+    return false;
+  }
+
   function OnDropNode(mouse, node)
   {
     SetZIndices(node, 4, 0, 'auto');
@@ -488,6 +514,10 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     {
        const position = GetElementPosition(document.getElementById(node.id));
        FindMobileDropPosition(tree, node.id, position);
+    }
+    else if(mouseOverNode && IsDescendant(node, mouseOverNode))
+    {
+      mouseOverNode = null;
     }
       
     if(mouseOverNode && mouseOverNode !== node.id && mouseOverNode !== node.nodeId)
@@ -508,7 +538,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
 
       mouseOverNode = null;
       dragging = false;
-      ReRenderTree();
+      ReRenderTree(false);
     }
     else
     {
@@ -535,13 +565,15 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   function StartDrag(node)
   {
     dragging = true;
-
+    //node = FindNodeInTree(node.id, tree);
     SetZIndices(node, 12, 8, 'none');
+    console.log("start drag");
     RemoveLine(node);
   }
 
   function RemoveLine(node)
   {
+    console.log("remove line "+node.nodeId+"_"+node.id);
     if(node.nodeId)
     {
       const line = document.getElementsByClassName(node.nodeId+"_"+node.id);
@@ -625,13 +657,13 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   function InitialTreeRender(tree)
   {
     rendering = true;
-    const Jsx = RenderTree(tree);
+    const Jsx = RenderTree(true, tree);
     rendering = false;
 
     return Jsx;
   }
 
-  function RenderTree(tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
+  function RenderTree(reRender, tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
   {
     if(tree)
     {
@@ -666,7 +698,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
         const leftMost = bufferSpace/2+horizontalBorder;
         offSet = leftMost-treeWidthMin;
       }
-      return RenderChildren(tree, tree, 0, offSet);
+      return RenderChildren(reRender, tree, tree, 0, offSet);
     }
     else if(treeDetails)
     {
@@ -718,34 +750,58 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   }
 
   
-  function RenderChildren(tree, node, row = 1, offset = 0)
+  function RenderChildren(reRender, tree, node, row = 1, offset = 0)
   {  
       const verticalOffset = GetVerticalOffset();
       const elements = [];
-      elements.push((AppendChildNode(tree, node, node["left"]+offset, row, nodeDimension, verticalOffset)));
+      
+      if(reRender)
+      {
+        elements.push((AppendChildNode(tree, node, node["left"]+offset, row, nodeDimension, verticalOffset)));
+      }
+      else
+      {
+        const nodeElement = document.getElementById(node.id);
+        nodeElement.style.left = String(node["left"] + offset)+"px";
+        nodeElement.style.top = String((row*nodeDimension*1.5)+verticalOffset)+'px'
+        nodeElement.style.maxHeight = String(nodeDimension)+'px';
+        nodeElement.style.maxWidth = String(nodeDimension)+'px';
+        nodeElement.style.height = String(nodeDimension)+'px';
+        nodeElement.style.width = String(nodeDimension)+'px';
+      }
       
       node["left"] = node['left'] + offset;
       node["top"] = node["top"] + verticalOffset;
+      
       node.children.forEach(child => {
-        elements.push((
-          <>
-            {RenderChildren(tree, child, row+1, offset)}
-          </>
-        ));
+        if(reRender)
+        {
+          elements.push((
+            <>
+              {RenderChildren(reRender, tree, child, row+1, offset)}
+            </>
+          ));
+        }
+        else 
+        {
+          RenderChildren(reRender, tree, child, row+1, offset);
+        }
       });
 
-      return(
-        <>       
-            {elements.map(child => {
-                
-                return (
-                <>
-                  {child}
-                </> );
-                }
-            )}        
-        </>
-      );
+      if(reRender){
+        return(
+          <>       
+              {elements.map(child => {
+                  
+                  return (
+                  <>
+                    {child}
+                  </> );
+                  }
+              )}        
+          </>
+        );
+      }
   }
 
   function PrepRenderChildren(tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
@@ -1204,8 +1260,10 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     RemoveLines(tree);
     tree = structuredClone(originalTree);
     
+    console.log(originalTree);
+    console.log(tree);
     resetting = false;
-    ReRenderTree();
+    ReRenderTree(true);
     resetting = true;
     
     changeTracker = new Object();

@@ -155,12 +155,12 @@ const NodeDetails = ({
             deleteNode["children"]  = children;
 
             await DeleteSingle(inputNode.nodeId, deleteNode);
-            render("delete single", null, node.id, null, node.nodeId);
+            render(true, "delete single", null, node.id, null, node.nodeId);
         }
         else
         {
             await DeleteCascade(inputNode.id);
-            render("delete cascade", null, node.id, null, node.nodeId);
+            render(true, "delete cascade", null, node.id, null, node.nodeId);
         }
         unMount();
     }
@@ -204,11 +204,11 @@ const NodeDetails = ({
             {
                 const oldParentId = inputNode.nodeId;
                 SetNodeVar(updatedNode);
-                render("update", inputNode, node.id, node.nodeId, oldParentId);
+                render(false, "update", inputNode, node.id, node.nodeId, oldParentId);
             }
             else{
                 SetNodeVar(updatedNode);
-                render("update", inputNode, node.id, node.nodeId, node.nodeId);
+                render(false, "update", inputNode, node.id, node.nodeId, node.nodeId);
             }
 
             dispatch(cloneNode(inputNode));
@@ -220,7 +220,7 @@ const NodeDetails = ({
             SetFilesOnUpdate(resultNode);
             
             SetNodeVar(resultNode);
-            render("create", inputNode);
+            render(true, "create", inputNode);
 
             dispatch(cloneNode(inputNode));
             setCreate(false);
@@ -233,7 +233,7 @@ const NodeDetails = ({
             
             SetNodeVar(resultNode);
             nodeList.length = 0;
-            render("new root", inputNode);
+            render(true, "new root", inputNode);
 
             dispatch(cloneNode(inputNode));
             setRoot(false);
