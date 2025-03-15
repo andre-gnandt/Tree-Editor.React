@@ -204,11 +204,11 @@ const NodeDetails = ({
             {
                 const oldParentId = inputNode.nodeId;
                 SetNodeVar(updatedNode);
-                render(false, "update", inputNode, node.id, node.nodeId, oldParentId);
+                render(true, "update", inputNode, node.id, node.nodeId, oldParentId);
             }
             else{
                 SetNodeVar(updatedNode);
-                render(false, "update", inputNode, node.id, node.nodeId, node.nodeId);
+                render(true, "update", inputNode, node.id, node.nodeId, node.nodeId);
             }
 
             dispatch(cloneNode(inputNode));
