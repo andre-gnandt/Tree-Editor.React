@@ -524,8 +524,25 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     if(mouseOverNode && mouseOverNode !== node.id && mouseOverNode !== node.nodeId)
     {
       const oldParentNode = nodeDictionary[node.nodeId];
-      const newParentNode = nodeDictionary[mouseOverNode];    
+      const newParentNode = nodeDictionary[mouseOverNode];   
       AlterTreeStructureForParentNodeChange(tree, node.id, mouseOverNode, node.nodeId, node, oldParentNode, newParentNode);
+
+      //remove collapse button if previous parent no longer contains any children
+      if(oldParentNode.children.length === 0) document.getElementById(oldParentNode.id+"-collapse").remove();
+      //add new collapse button to new parent node
+      if(newParentNode.children.length === 1)
+      {
+        const treeRootElement = document.getElementById('tree-root');
+        const newParentCollapseButton = document.createElement('button');
+        newParentCollapseButton.id = newParentNode.id+"-collapse";
+        newParentCollapseButton.style.position = "absolute";
+        newParentCollapseButton.style.padding = '0 0 0 0';
+        newParentCollapseButton.style.backgroundColor = "grey";
+        newParentCollapseButton.style.zIndex = "5";
+        newParentCollapseButton.className = 'button';
+        newParentCollapseButton.onclick = () => CollapseDescendants(newParentNode);
+        treeRootElement.appendChild(newParentCollapseButton);
+      }
       
       const originalNode = originalDictionary[node.id];
       if(originalNode.nodeId !== mouseOverNode)
@@ -583,7 +600,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
       lineElement.style.visibility = null;
       */
 
-      if(node.children.length > 0 || true)
+      if(node.children.length > 0)
       {
         const collapseButton = document.getElementById(node.id+"-collapse");
         collapseButton.style.display = 'none';
@@ -598,7 +615,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
 
   function HideButtons(node, hide)
   {
-    document.getElementById(node.id+"-collapse").style.display = hide ? 'none' : 'block';
+    if(node.children.length > 0) document.getElementById(node.id+"-collapse").style.display = hide ? 'none' : 'block';
     if(!('collapse' in node && node.collapse))
     {
       node.children.forEach(child => {HideButtons(child, hide);});
@@ -638,7 +655,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
       const lineElement = document.getElementsByClassName(child.nodeId+"_"+child.id)[0];
       lineElement.className = hide ? node.id+"_"+child.id+" hidden" : node.id+"_"+child.id;
 
-      if(('children' in child && child.children.length > 0) || true)
+      if(('children' in child && child.children.length > 0))
       {
         const collapseButtonElement = document.getElementById(child.id+"-collapse");
         collapseButtonElement.style.display = hide ? 'none' : 'block';
@@ -664,11 +681,12 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     
     return (
       <>
-        { (('children' in child && child.children.length > 0) || true) && (
+        { (('children' in child && child.children.length > 0)) && (
           <button className='button' id={child.id+"-collapse"}
             style = {{position: 'absolute', height: String(nodeSize/3)+'px', width: String(nodeSize/3)+'px', 
               left: String(left-nodeSize/3)+'px', top: String((row*nodeSize*1.5)+verticalOffset+2*nodeSize/3)+'px',
-              padding: '0 0 0 0', backgroundColor: 'grey', borderRadius: String(nodeSize*0.2/3)+'px', visibility: collapsed ? 'hidden' : 'visible'
+              padding: '0 0 0 0', backgroundColor: 'grey', borderRadius: String(nodeSize*0.2/3)+'px', 
+              visibility: collapsed ? 'hidden' : 'visible', zIndex: 5
             }}
             onClick={() => {CollapseDescendants(child);}}
           >
@@ -857,8 +875,9 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
         nodeElement.style.height = String(nodeDimension)+'px';
         nodeElement.style.width = String(nodeDimension)+'px';
         nodeElement.style.borderRadius = String(nodeDimension*0.2)+'px';
+        nodeElement.style.visibility = collapsed ? 'hidden': 'visible';
 
-        if(('children' in node && node.children.length > 0) || true)
+        if(('children' in node && node.children.length > 0))
         {
           const collapseButton = document.getElementById(node.id+"-collapse");
           collapseButton.style.left = String(node["left"]-nodeDimension/3+offset)+'px';
@@ -868,6 +887,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
           collapseButton.style.maxHeight =  String(nodeDimension/3)+'px';
           collapseButton.style.maxWidth =  String(nodeDimension/3)+'px';
           collapseButton.style.borderRadius = String(nodeDimension*0.2/3)+'px';
+          collapseButton.style.visibility = collapsed ? 'hidden': 'visible';
         }
       }
       
@@ -1275,7 +1295,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
         nodeHTMLElement.style.visibility = 'hidden';
       }
 
-      if(node.children.length > 0 || true)
+      if(node.children.length > 0)
       {
         const collapseButton = document.getElementById(node.id+"-collapse");
         if(collapseButton)
@@ -1378,6 +1398,11 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
             </>
       );
     }
+
+  function isCollapsed(node)
+  {
+    return 'collapse' in node && node.collapse;
+  }
 
   function RevertTreePositions()
   {
