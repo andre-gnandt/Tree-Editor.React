@@ -634,7 +634,6 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
 
   function RemoveLine(node)
   {
-    console.log("remove line "+node.nodeId+"_"+node.id);
     if(node.nodeId)
     {
       const line = document.getElementsByClassName(node.nodeId+"_"+node.id);
@@ -1444,8 +1443,6 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     RemoveLines(tree);
     tree = structuredClone(originalTree);
     
-    console.log(originalTree);
-    console.log(tree);
     resetting = false;
     ReRenderTree(true);
     resetting = true;
