@@ -563,6 +563,39 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     })
   }
 
+  function AdjustCollapsedNodes(node, hide = false)
+  {
+    const isCollapsed = hide;
+    if('collapse' in node && node.collapse)
+    {
+      hide = true;
+    }
+
+    if(isCollapsed)
+    {
+      const nodeHTMLElement = document.getElementById(node.id);
+      nodeHTMLElement.style.display = 'none';
+      nodeHTMLElement.style.visibility = null;
+
+      /*
+      const lineElement = document.getElementsByClassName(node.nodeId+"_"+node.id)[0];
+      lineElement.style.display = 'none';
+      lineElement.style.visibility = null;
+      */
+
+      if(node.children.length > 0 || true)
+      {
+        const collapseButton = document.getElementById(node.id+"-collapse");
+        collapseButton.style.display = 'none';
+        collapseButton.style.visibility = null;
+      }
+    }
+
+    node.children.forEach(child => {
+      AdjustCollapsedNodes(child, hide);
+    });
+  }
+
   function HideButtons(node, hide)
   {
     document.getElementById(node.id+"-collapse").style.display = hide ? 'none' : 'block';
@@ -598,14 +631,20 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   function Collapse(node, hide)
   {
     node.children.forEach(child => {
-      document.getElementById(child.id).style.display = hide ? 'none' : 'table';
-      document.getElementsByClassName(child.nodeId+"_"+child.id)[0].style.display = hide ? 'none' : 'block';
+      const nodeElement = document.getElementById(child.id);
+      nodeElement.style.display = hide ? 'none' : 'table';
+      nodeElement.style.visibility = "visible";
+
+      const lineElement = document.getElementsByClassName(child.nodeId+"_"+child.id)[0];
+      lineElement.className = hide ? node.id+"_"+child.id+" hidden" : node.id+"_"+child.id;
 
       if(('children' in child && child.children.length > 0) || true)
       {
-        document.getElementById(child.id+"-collapse").style.display = hide ? 'none' : 'block';
+        const collapseButtonElement = document.getElementById(child.id+"-collapse");
+        collapseButtonElement.style.display = hide ? 'none' : 'block';
+        collapseButtonElement.style.visibility = "visible";
       }
-      
+
       if(!('collapse' in child && child.collapse) || hide)
       {
         Collapse(child, hide);
@@ -620,7 +659,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     node['collapse'] = hideTree;
   }
 
-  function AppendChildNode(tree, child, left, row, nodeSize, verticalOffset)
+  function AppendChildNode(tree, child, left, row, nodeSize, verticalOffset, collapsed = false)
   {
     
     return (
@@ -629,7 +668,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
           <button className='button' id={child.id+"-collapse"}
             style = {{position: 'absolute', height: String(nodeSize/3)+'px', width: String(nodeSize/3)+'px', 
               left: String(left-nodeSize/3)+'px', top: String((row*nodeSize*1.5)+verticalOffset+2*nodeSize/3)+'px',
-              padding: '0 0 0 0', backgroundColor: 'grey'
+              padding: '0 0 0 0', backgroundColor: 'grey', borderRadius: String(nodeSize*0.2/3)+'px', visibility: collapsed ? 'hidden' : 'visible'
             }}
             onClick={() => {CollapseDescendants(child);}}
           >
@@ -647,7 +686,10 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
             className={child.id+" treenode-container text-overflow center-text"} 
             onPointerOver={() => {mouseOverNode = child.id;}}
             onPointerOut={() => {mouseOverNode = null;}} 
-            style = {{borderRadius: String(nodeSize*0.2)+'px', top: String((row*nodeSize*1.5)+verticalOffset)+'px' , left: String(left)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px'}}
+            style = {{borderRadius: String(nodeSize*0.2)+'px', top: String((row*nodeSize*1.5)+verticalOffset)+'px' , 
+                      left: String(left)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px', 
+                      visibility: collapsed ? 'hidden' : 'visible'
+                    }}
           >
             <Provider store ={store}>
               <TreeNode
@@ -796,14 +838,14 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   }
 
   
-  function RenderChildren(reRender, tree, node, row = 1, offset = 0)
+  function RenderChildren(reRender, tree, node, row = 1, offset = 0, collapsed = false)
   {  
       const verticalOffset = GetVerticalOffset();
       const elements = [];
       
       if(reRender)
       {
-        elements.push((AppendChildNode(tree, node, node["left"]+offset, row, nodeDimension, verticalOffset)));
+        elements.push((AppendChildNode(tree, node, node["left"]+offset, row, nodeDimension, verticalOffset, collapsed)));
       }
       else
       {
@@ -814,6 +856,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
         nodeElement.style.maxWidth = String(nodeDimension)+'px';
         nodeElement.style.height = String(nodeDimension)+'px';
         nodeElement.style.width = String(nodeDimension)+'px';
+        nodeElement.style.borderRadius = String(nodeDimension*0.2)+'px';
 
         if(('children' in node && node.children.length > 0) || true)
         {
@@ -824,24 +867,27 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
           collapseButton.style.width =  String(nodeDimension/3)+'px';
           collapseButton.style.maxHeight =  String(nodeDimension/3)+'px';
           collapseButton.style.maxWidth =  String(nodeDimension/3)+'px';
+          collapseButton.style.borderRadius = String(nodeDimension*0.2/3)+'px';
         }
       }
       
       node["left"] = node['left'] + offset;
       node["top"] = node["top"] + verticalOffset;
+
+      if('collapse' in node && node.collapse) collapsed = true;
       
       node.children.forEach(child => {
         if(reRender)
         {
           elements.push((
             <>
-              {RenderChildren(reRender, tree, child, row+1, offset)}
+              {RenderChildren(reRender, tree, child, row+1, offset, collapsed)}
             </>
           ));
         }
         else 
         {
-          RenderChildren(reRender, tree, child, row+1, offset);
+          RenderChildren(reRender, tree, child, row+1, offset, collapsed);
         }
       });
 
@@ -1210,23 +1256,47 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   {
     if(node.nodeId) createRoot(document.getElementById('line-container-insert')).render
     (
-      <LineTo within={'line-container'}  style ={{zIndex: 0}} delay id = {node.nodeId+"_"+node.id} from={node.nodeId} to={node.id} className = {node.nodeId+"_"+node.id+" tree-line"} />
+      <LineTo within={'line-container'}  style ={{zIndex: 0}} delay id = {node.nodeId+"_"+node.id} from={node.nodeId} to={node.id} className = {node.nodeId+"_"+node.id} />
     );
   }
   
-  function AddLines(node)
+  function AddLines(node, collapsed = false)
   {
-    
-    if(node == null || !('children' in node)){return (<></>)}
+
+    const isCollapsed = collapsed;
     const lines = [];
+
+    if(isCollapsed)
+    {
+      const nodeHTMLElement = document.getElementById(node.id);
+      if(nodeHTMLElement)
+      {
+        nodeHTMLElement.style.display = 'table';
+        nodeHTMLElement.style.visibility = 'hidden';
+      }
+
+      if(node.children.length > 0 || true)
+      {
+        const collapseButton = document.getElementById(node.id+"-collapse");
+        if(collapseButton)
+        {
+          collapseButton.style.display = 'block';
+          collapseButton.style.visibility = 'hidden';
+        }
+      }
+    }
     
-      
+    if('collapse' in node && node.collapse)
+    {
+      collapsed = true;
+    }
+
       node.children.forEach(child => 
       {           
           lines.push(
             <>
-              <LineTo within = {'line-container'} style = {{zIndex: 0}} delay id={node.id+"_"+child.id} from={node.id} to={child.id} className={node.id+"_"+child.id+" tree-line"} /> 
-              {AddLines(child)}
+              <LineTo within = {'line-container'} id={node.id+"_"+child.id} from={node.id} to={child.id} className= {collapsed ? node.id+"_"+child.id+" hidden" : node.id+"_"+child.id}/> 
+              {AddLines(child, collapsed)}
             </>
           )        
       }
