@@ -616,6 +616,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   function HideButtons(node, hide)
   {
     if(node.children.length > 0) document.getElementById(node.id+"-collapse").style.display = hide ? 'none' : 'block';
+    document.getElementById(node.id+"-create").style.display = hide ? 'none' : 'block';
     if(!('collapse' in node && node.collapse))
     {
       node.children.forEach(child => {HideButtons(child, hide);});
@@ -655,6 +656,10 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
       const lineElement = document.getElementsByClassName(child.nodeId+"_"+child.id)[0];
       lineElement.className = hide ? node.id+"_"+child.id+" hidden" : node.id+"_"+child.id;
 
+      const addChildButton = document.getElementById(child.id+"-create");
+      addChildButton.style.display = hide ? 'none' : 'block';
+      addChildButton.style.visibility = "visible";
+
       if(('children' in child && child.children.length > 0))
       {
         const collapseButtonElement = document.getElementById(child.id+"-collapse");
@@ -693,6 +698,15 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
           </button>
         )
         }
+        <button className='button' id = {child.id+"-create"}
+          style = {{position: 'absolute', height: String(nodeSize/3)+'px', width: String(nodeSize/3)+'px', 
+            left: String(left-nodeSize/3)+'px', top: String((row*nodeSize*1.5)+verticalOffset+0.1*nodeSize)+'px',
+            padding: '0 0 0 0', backgroundColor: 'grey', borderRadius: String(nodeSize*0.2/3)+'px', 
+            visibility: collapsed ? 'hidden' : 'visible', zIndex: 5
+          }}
+          onClick={() => {RenderCreationButtons(child.id, true)}}
+        >
+        </button>
         <Draggable 
             position={{x: 0, y: 0}} 
             onStart = {() => { if(NotDraggable(child)) return false; scrollXBefore = window.scrollX; scrollYBefore = window.scrollY;}} 
@@ -876,6 +890,16 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
         nodeElement.style.width = String(nodeDimension)+'px';
         nodeElement.style.borderRadius = String(nodeDimension*0.2)+'px';
         nodeElement.style.visibility = collapsed ? 'hidden': 'visible';
+
+        const addChildButton = document.getElementById(node.id+"-create");
+        addChildButton.style.left = String(node["left"]-nodeDimension/3+offset)+'px';
+        addChildButton.style.top = String((row*nodeDimension*1.5)+verticalOffset+0.1*nodeDimension)+'px';
+        addChildButton.style.height =  String(nodeDimension/3)+'px';
+        addChildButton.style.width =  String(nodeDimension/3)+'px';
+        addChildButton.style.maxHeight =  String(nodeDimension/3)+'px';
+        addChildButton.style.maxWidth =  String(nodeDimension/3)+'px';
+        addChildButton.style.borderRadius = String(nodeDimension*0.2/3)+'px';
+        addChildButton.style.visibility = collapsed ? 'hidden': 'visible';
 
         if(('children' in node && node.children.length > 0))
         {
@@ -1295,6 +1319,13 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
         nodeHTMLElement.style.visibility = 'hidden';
       }
 
+      const newChildButton = document.getElementById(node.id+"-create");
+      if(newChildButton)
+      {
+        newChildButton.style.display = 'block';
+        newChildButton.style.visibility = 'hidden';
+      }
+
       if(node.children.length > 0)
       {
         const collapseButton = document.getElementById(node.id+"-collapse");
@@ -1339,13 +1370,13 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     lineContainer.render(lineJSX);
   }
 
-  function RenderCreationButtons()
+  function RenderCreationButtons(parentId = null, openCreate = false)
   {
     const createContainer = createRoot(document.getElementById('create-container'));
-    createContainer.render(CreationButtons());
+    createContainer.render(CreationButtons(parentId, openCreate));
   }
 
-  const CreationButtons = () => 
+  const CreationButtons = (parentId = null, openCreate = false) => 
   {
     return (
       <>
@@ -1353,7 +1384,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
           <CreateRoot countries = {countries} treeId = {id} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
         </Provider>
         <Provider store ={store}>
-          <CreateNode countries = {countries}  treeId = {id} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
+          <CreateNode parentId = {parentId} openCreate = {openCreate} countries = {countries}  treeId = {id} render = {ReRenderTree} rootNode = {tree} nodeDictionary = {nodeDictionary} nodeList = {nodeList}/>
         </Provider>
       </> 
     );

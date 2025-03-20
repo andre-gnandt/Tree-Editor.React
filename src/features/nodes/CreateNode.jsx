@@ -6,14 +6,35 @@ import 'primeicons/primeicons.css';
 import { cloneNode } from './nodeSlice';
 import NodeDialog from './NodeDialog';
 
-const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, treeId}) => {
-    const [createNode, setCreateNode] = useState(null);
+const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, parentId = null, treeId, openCreate = false}) => {
+    const [createNode, setCreateNode] = useState(openCreate);
+    const [formParentId, setFormParentId] = useState(parentId ? parentId : (rootNode ? rootNode.id : null));
     const [portrait, setPortrait] = useState(window.innerHeight > window.innerWidth ? true : false);
     const dispatch = useDispatch();
+
+    const newNode = 
+    {
+        data: null,
+        title: null,
+        level: 0,
+        description: null,
+        number: null,
+        nodeId: formParentId,
+        rankId: null,
+        country: null,
+        region: null,
+        children: [],
+        files: [],
+        thumbnailId: null,
+        treeId: rootNode ? rootNode.treeId : null,
+    };
+
+    dispatch(cloneNode(newNode));
 
     const unMount = useCallback(() => 
     {
         window.removeEventListener('resize', isPortrait);
+        setFormParentId(rootNode ? rootNode.id : null);
         setCreateNode(false);
     }, []);
     
@@ -30,24 +51,6 @@ const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, tree
         
         return () => window.removeEventListener('resize', isPortrait);
     });
-    
-
-    const newNode = 
-    {
-        data: null,
-        title: null,
-        level: 0,
-        description: null,
-        number: null,
-        nodeId: rootNode ? rootNode.id : null,
-        rankId: null,
-        country: null,
-        region: null,
-        children: [],
-        files: [],
-        thumbnailId: null,
-        treeId: rootNode ? rootNode.treeId : null,
-    };
    
     function isPortrait()
     {
@@ -61,7 +64,6 @@ const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, tree
         }
     }
     
-
     function CompareNodes(a, b)
     {
         if ( a.title < b.title ){                                                                   
@@ -82,7 +84,6 @@ const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, tree
     const OpenDialog = () => 
     {
         isPortrait();
-        dispatch(cloneNode(newNode));
         setCreateNode(true);
     }
 
