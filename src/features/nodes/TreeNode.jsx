@@ -170,6 +170,7 @@ const TreeNode = memo(({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDone
                             src = {thumbnail.current ? thumbnail.current.base64 : GetThumbnail().base64}
                         />
                         <div
+                            id = {inputNode.id+"-text"}
                             className='image-text text-overflow pointer'
                             onPointerDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} 
                             onPointerOut={(event) => { if(!IsDesktop()){ValidateButtonClick(event.target);}}}
@@ -199,6 +200,7 @@ const TreeNode = memo(({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDone
                     :
                     (
                         <button 
+                            id = {inputNode.id+"-text"}
                             className='tree-button text-overflow'       
                             onPointerDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} 
                             onPointerOut={(event) => { if(!IsDesktop()){ValidateButtonClick(event.target);}}}

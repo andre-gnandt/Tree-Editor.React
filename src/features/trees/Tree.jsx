@@ -34,6 +34,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   let originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
   let tree = originalTree != null ? structuredClone(originalTree) : null;
   const pixelsToCentimetres = PixelSizeInCentimetres();
+  const horizontalTreeMargin = window.innerWidth/20;
   let maxLevels = new Object();
   let scrollXBefore = 0;
   let scrollYBefore = 0;
@@ -680,16 +681,16 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     node['collapse'] = hideTree;
   }
 
-  function AppendChildNode(tree, child, left, row, nodeSize, verticalOffset, collapsed = false)
+  function AppendChildNode(tree, child, left, row, nodeSize, verticalOffset, buttonSize, collapsed = false)
   {
     
     return (
       <>
         { (('children' in child && child.children.length > 0)) && (
           <button className='button' id={child.id+"-collapse"}
-            style = {{position: 'absolute', height: String(nodeSize/3)+'px', width: String(nodeSize/3)+'px', 
-              left: String(left-nodeSize/3)+'px', top: String((row*nodeSize*1.5)+verticalOffset+2*nodeSize/3)+'px',
-              padding: '0 0 0 0', backgroundColor: 'grey', borderRadius: String(nodeSize*0.2/3)+'px', 
+            style = {{position: 'absolute', height: String(buttonSize)+'px', width: String(buttonSize)+'px', 
+              left: String(left-buttonSize)+'px', top: String((row*nodeSize*1.5)+verticalOffset+(nodeSize-buttonSize))+'px',
+              padding: '0 0 0 0', backgroundColor: 'grey', borderRadius: String(buttonSize*0.2)+'px', 
               visibility: collapsed ? 'hidden' : 'visible', zIndex: 5
             }}
             onClick={() => {CollapseDescendants(child);}}
@@ -698,9 +699,9 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
         )
         }
         <button className='button' id = {child.id+"-create"}
-          style = {{position: 'absolute', height: String(nodeSize/3)+'px', width: String(nodeSize/3)+'px', 
-            left: String(left-nodeSize/3)+'px', top: String((row*nodeSize*1.5)+verticalOffset+0.1*nodeSize)+'px',
-            padding: '0 0 0 0', backgroundColor: 'grey', borderRadius: String(nodeSize*0.2/3)+'px', 
+          style = {{position: 'absolute', height: String(buttonSize)+'px', width: String(buttonSize)+'px', 
+            left: String(left-buttonSize)+'px', top: String((row*nodeSize*1.5)+verticalOffset+0.1*nodeSize)+'px',
+            padding: '0 0 0 0', backgroundColor: 'grey', borderRadius: String(buttonSize*0.2)+'px', 
             visibility: collapsed ? 'hidden' : 'visible', zIndex: 5
           }}
           onClick={() => {RenderCreationButtons(child.id, true)}}
@@ -756,7 +757,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   {
     const width = IsDesktop() ? window.innerWidth : screen.width;
     const height = IsDesktop() ? window.innerHeight : screen.height;
-    const horizontalBorder = IsDesktop()? 15 : width/20;
+    const horizontalBorder = IsDesktop() ? horizontalTreeMargin : width/20;
 
     const verticalOffset = GetVerticalOffset();
     const maximumNodeSize = height > width ? height*0.5 : width * 0.65;
@@ -787,7 +788,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     if(tree)
     {
       const width = IsDesktop() ? window.innerWidth : screen.width;
-      const horizontalBorder = IsDesktop() ? 15 : width/20;
+      const horizontalBorder = IsDesktop() ? horizontalTreeMargin : width/20;
 
       testRender = false;
       maxLevels = new Object();
@@ -868,15 +869,22 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     return totalPixels+(0.03*height);
   }
 
+  function GetButtonSize()
+  {
+    const maxSize = horizontalTreeMargin;
+    const suitableSize = nodeDimension/3;
+
+    return suitableSize <= maxSize ? suitableSize : maxSize;
+  }
   
-  function RenderChildren(reRender, tree, node, row = 1, offset = 0, collapsed = false)
+  function RenderChildren(reRender, tree, node, row = 1, offset = 0, collapsed = false, buttonSize = GetButtonSize())
   {  
       const verticalOffset = GetVerticalOffset();
       const elements = [];
       
       if(reRender)
       {
-        elements.push((AppendChildNode(tree, node, node["left"]+offset, row, nodeDimension, verticalOffset, collapsed)));
+        elements.push((AppendChildNode(tree, node, node["left"]+offset, row, nodeDimension, verticalOffset, buttonSize, collapsed)));
       }
       else
       {
@@ -891,25 +899,27 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
         nodeElement.style.visibility = collapsed ? 'hidden': 'visible';
 
         const addChildButton = document.getElementById(node.id+"-create");
-        addChildButton.style.left = String(node["left"]-nodeDimension/3+offset)+'px';
+        addChildButton.style.left = String(node["left"]-buttonSize+offset)+'px';
         addChildButton.style.top = String((row*nodeDimension*1.5)+verticalOffset+0.1*nodeDimension)+'px';
-        addChildButton.style.height =  String(nodeDimension/3)+'px';
-        addChildButton.style.width =  String(nodeDimension/3)+'px';
-        addChildButton.style.maxHeight =  String(nodeDimension/3)+'px';
-        addChildButton.style.maxWidth =  String(nodeDimension/3)+'px';
-        addChildButton.style.borderRadius = String(nodeDimension*0.2/3)+'px';
+        addChildButton.style.height =  String(buttonSize)+'px';
+        addChildButton.style.width =  String(buttonSize)+'px';
+        addChildButton.style.maxHeight =  String(buttonSize)+'px';
+        addChildButton.style.maxWidth =  String(buttonSize)+'px';
+        addChildButton.style.borderRadius = String(buttonSize*0.2)+'px';
         addChildButton.style.visibility = collapsed ? 'hidden': 'visible';
+
+        document.getElementById(node.id+"-text").style.fontSize = String(nodeDimension*0.155)+'px';
 
         if(('children' in node && node.children.length > 0))
         {
           const collapseButton = document.getElementById(node.id+"-collapse");
-          collapseButton.style.left = String(node["left"]-nodeDimension/3+offset)+'px';
-          collapseButton.style.top = String((row*nodeDimension*1.5)+verticalOffset+2*nodeDimension/3)+'px';
-          collapseButton.style.height =  String(nodeDimension/3)+'px';
-          collapseButton.style.width =  String(nodeDimension/3)+'px';
-          collapseButton.style.maxHeight =  String(nodeDimension/3)+'px';
-          collapseButton.style.maxWidth =  String(nodeDimension/3)+'px';
-          collapseButton.style.borderRadius = String(nodeDimension*0.2/3)+'px';
+          collapseButton.style.left = String(node["left"]-buttonSize+offset)+'px';
+          collapseButton.style.top = String((row*nodeDimension*1.5)+verticalOffset+(nodeDimension-buttonSize))+'px';
+          collapseButton.style.height =  String(buttonSize)+'px';
+          collapseButton.style.width =  String(buttonSize)+'px';
+          collapseButton.style.maxHeight =  String(buttonSize)+'px';
+          collapseButton.style.maxWidth =  String(buttonSize)+'px';
+          collapseButton.style.borderRadius = String(buttonSize*0.2)+'px';
           collapseButton.style.visibility = collapsed ? 'hidden': 'visible';
         }
       }
@@ -924,13 +934,13 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
         {
           elements.push((
             <>
-              {RenderChildren(reRender, tree, child, row+1, offset, collapsed)}
+              {RenderChildren(reRender, tree, child, row+1, offset, collapsed, buttonSize)}
             </>
           ));
         }
         else 
         {
-          RenderChildren(reRender, tree, child, row+1, offset, collapsed);
+          RenderChildren(reRender, tree, child, row+1, offset, collapsed, buttonSize);
         }
       });
 
