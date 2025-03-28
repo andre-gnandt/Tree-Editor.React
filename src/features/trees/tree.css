@@ -502,6 +502,22 @@ button:focus{
 
 }
 
+.treenode-action-icon
+{
+  position: relative;
+  color: white;
+  height: 100%;
+  width:100%;
+}
+
+.treenode-action-button
+{
+  position: absolute;
+  padding: 0 0 0 0;
+  background-color: grey; 
+  z-index: 5;
+}
+
 .treenode-container
 {
   background-color: #F0F0F0;

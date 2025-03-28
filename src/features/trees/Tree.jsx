@@ -529,20 +529,23 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
       AlterTreeStructureForParentNodeChange(tree, node.id, mouseOverNode, node.nodeId, node, oldParentNode, newParentNode);
 
       //remove collapse button if previous parent no longer contains any children
-      if(oldParentNode.children.length === 0) document.getElementById(oldParentNode.id+"-collapse").remove();
+      if(oldParentNode.children.length === 0 && IsDesktop()) document.getElementById(oldParentNode.id+"-collapse").remove();
       //add new collapse button to new parent node
-      if(newParentNode.children.length === 1)
+      if(newParentNode.children.length === 1 && IsDesktop())
       {
         const treeRootElement = document.getElementById('tree-root');
+        
         const newParentCollapseButton = document.createElement('button');
         newParentCollapseButton.id = newParentNode.id+"-collapse";
-        newParentCollapseButton.style.position = "absolute";
-        newParentCollapseButton.style.padding = '0 0 0 0';
-        newParentCollapseButton.style.backgroundColor = "grey";
-        newParentCollapseButton.style.zIndex = "5";
-        newParentCollapseButton.className = 'button';
+        newParentCollapseButton.className = 'button treenode-action-button';
         newParentCollapseButton.onclick = () => CollapseDescendants(newParentNode);
+
+        const newParentCollapseIcon = document.createElement('i');
+        newParentCollapseIcon.id = newParentNode.id+"-collapse-icon";
+        newParentCollapseIcon.className = 'pi pi-angle-up treenode-action-icon center-text';
+
         treeRootElement.appendChild(newParentCollapseButton);
+        newParentCollapseButton.appendChild(newParentCollapseIcon);
       }
       
       const originalNode = originalDictionary[node.id];
@@ -615,7 +618,9 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   }
 
   function HideButtons(node, hide)
-  {
+  { 
+    if(!IsDesktop()) return;
+
     if(node.children.length > 0) document.getElementById(node.id+"-collapse").style.display = hide ? 'none' : 'block';
     document.getElementById(node.id+"-create").style.display = hide ? 'none' : 'block';
     if(!('collapse' in node && node.collapse))
@@ -677,6 +682,10 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   function CollapseDescendants(node)
   {
     const hideTree = !('collapse' in node && node.collapse);
+    
+    const collapseIcon = document.getElementById(node.id+'-collapse-icon');
+    if(collapseIcon) collapseIcon.className = hideTree ? 'pi pi-angle-down treenode-action-icon center-text' : 'pi pi-angle-up treenode-action-icon center-text';
+
     Collapse(node, hideTree);
     node['collapse'] = hideTree;
   }
@@ -686,27 +695,45 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     
     return (
       <>
-        { (('children' in child && child.children.length > 0)) && (
-          <button className='button' id={child.id+"-collapse"}
-            style = {{position: 'absolute', height: String(buttonSize)+'px', width: String(buttonSize)+'px', 
-              left: String(left-buttonSize)+'px', top: String((row*nodeSize*1.5)+verticalOffset+(nodeSize-buttonSize))+'px',
-              padding: '0 0 0 0', backgroundColor: 'grey', borderRadius: String(buttonSize*0.2)+'px', 
-              visibility: collapsed ? 'hidden' : 'visible', zIndex: 5
-            }}
-            onClick={() => {CollapseDescendants(child);}}
-          >
-          </button>
-        )
+        { (IsDesktop()) && 
+          (
+            <>
+              { (('children' in child && child.children.length > 0)) && (
+                <button className='treenode-action-button button' id={child.id+"-collapse"}
+                  style = {{height: String(buttonSize)+'px', width: String(buttonSize)+'px', 
+                    maxHeight: String(buttonSize)+'px', maxWidth: String(buttonSize)+'px', 
+                    left: String(left-buttonSize)+'px', top: String((row*nodeSize*1.5)+verticalOffset+(nodeSize-buttonSize))+'px',
+                    borderRadius: String(buttonSize*0.2)+'px', 
+                    visibility: collapsed ? 'hidden' : 'visible'
+                  }}
+                  onClick={() => {CollapseDescendants(child);}}
+                >
+                  <i 
+                    id = {child.id+"-collapse-icon"} 
+                    style = {{fontSize: String(buttonSize)+'px'}}
+                    className={(isCollapsed(child)) ? 'pi pi-angle-down treenode-action-icon center-text' : 'pi pi-angle-up treenode-action-icon center-text'}
+                  />
+                </button>
+              )
+              }
+              <button className='button treenode-action-button' id = {child.id+"-create"}
+                style = {{height: String(buttonSize)+'px', width: String(buttonSize)+'px', 
+                  maxHeight: String(buttonSize)+'px', maxWidth: String(buttonSize)+'px', 
+                  left: String(left-buttonSize)+'px', top: String((row*nodeSize*1.5)+verticalOffset+0.1*nodeSize)+'px',
+                  borderRadius: String(buttonSize*0.2)+'px', 
+                  visibility: collapsed ? 'hidden' : 'visible'
+                }}
+                onClick={() => {RenderCreationButtons(child.id, true)}}
+              >
+                <i 
+                    id = {child.id+"-create-icon"} 
+                    style = {{fontSize: String(buttonSize)+'px'}}
+                    className='pi pi-plus treenode-action-icon center-text'
+                />
+              </button>
+            </>
+          )
         }
-        <button className='button' id = {child.id+"-create"}
-          style = {{position: 'absolute', height: String(buttonSize)+'px', width: String(buttonSize)+'px', 
-            left: String(left-buttonSize)+'px', top: String((row*nodeSize*1.5)+verticalOffset+0.1*nodeSize)+'px',
-            padding: '0 0 0 0', backgroundColor: 'grey', borderRadius: String(buttonSize*0.2)+'px', 
-            visibility: collapsed ? 'hidden' : 'visible', zIndex: 5
-          }}
-          onClick={() => {RenderCreationButtons(child.id, true)}}
-        >
-        </button>
         <Draggable 
             position={{x: 0, y: 0}} 
             onStart = {() => { if(NotDraggable(child)) return false; scrollXBefore = window.scrollX; scrollYBefore = window.scrollY;}} 
@@ -720,6 +747,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
             onPointerOut={() => {mouseOverNode = null;}} 
             style = {{borderRadius: String(nodeSize*0.2)+'px', top: String((row*nodeSize*1.5)+verticalOffset)+'px' , 
                       left: String(left)+'px', height: String(nodeSize)+'px', width: String(nodeSize)+'px', 
+                      maxHeight: String(nodeSize)+'px', maxWidth: String(nodeSize)+'px', 
                       visibility: collapsed ? 'hidden' : 'visible'
                     }}
           >
@@ -889,38 +917,66 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
       else
       {
         const nodeElement = document.getElementById(node.id);
-        nodeElement.style.left = String(node["left"] + offset)+"px";
-        nodeElement.style.top = String((row*nodeDimension*1.5)+verticalOffset)+'px'
-        nodeElement.style.maxHeight = String(nodeDimension)+'px';
-        nodeElement.style.maxWidth = String(nodeDimension)+'px';
-        nodeElement.style.height = String(nodeDimension)+'px';
-        nodeElement.style.width = String(nodeDimension)+'px';
-        nodeElement.style.borderRadius = String(nodeDimension*0.2)+'px';
-        nodeElement.style.visibility = collapsed ? 'hidden': 'visible';
-
-        const addChildButton = document.getElementById(node.id+"-create");
-        addChildButton.style.left = String(node["left"]-buttonSize+offset)+'px';
-        addChildButton.style.top = String((row*nodeDimension*1.5)+verticalOffset+0.1*nodeDimension)+'px';
-        addChildButton.style.height =  String(buttonSize)+'px';
-        addChildButton.style.width =  String(buttonSize)+'px';
-        addChildButton.style.maxHeight =  String(buttonSize)+'px';
-        addChildButton.style.maxWidth =  String(buttonSize)+'px';
-        addChildButton.style.borderRadius = String(buttonSize*0.2)+'px';
-        addChildButton.style.visibility = collapsed ? 'hidden': 'visible';
-
-        document.getElementById(node.id+"-text").style.fontSize = String(nodeDimension*0.155)+'px';
-
-        if(('children' in node && node.children.length > 0))
+        if(nodeElement)
         {
-          const collapseButton = document.getElementById(node.id+"-collapse");
-          collapseButton.style.left = String(node["left"]-buttonSize+offset)+'px';
-          collapseButton.style.top = String((row*nodeDimension*1.5)+verticalOffset+(nodeDimension-buttonSize))+'px';
-          collapseButton.style.height =  String(buttonSize)+'px';
-          collapseButton.style.width =  String(buttonSize)+'px';
-          collapseButton.style.maxHeight =  String(buttonSize)+'px';
-          collapseButton.style.maxWidth =  String(buttonSize)+'px';
-          collapseButton.style.borderRadius = String(buttonSize*0.2)+'px';
-          collapseButton.style.visibility = collapsed ? 'hidden': 'visible';
+          nodeElement.style.left = String(node["left"] + offset)+"px";
+          nodeElement.style.top = String((row*nodeDimension*1.5)+verticalOffset)+'px'
+          nodeElement.style.maxHeight = String(nodeDimension)+'px';
+          nodeElement.style.maxWidth = String(nodeDimension)+'px';
+          nodeElement.style.height = String(nodeDimension)+'px';
+          nodeElement.style.width = String(nodeDimension)+'px';
+          nodeElement.style.borderRadius = String(nodeDimension*0.2)+'px';
+          nodeElement.style.visibility = collapsed ? 'hidden': 'visible';
+        }
+
+        if(IsDesktop())
+        {
+          const addChildButton = document.getElementById(node.id+"-create");
+          if(addChildButton)
+          {
+            addChildButton.style.left = String(node["left"]-buttonSize+offset)+'px';
+            addChildButton.style.top = String((row*nodeDimension*1.5)+verticalOffset+0.1*nodeDimension)+'px';
+            addChildButton.style.height =  String(buttonSize)+'px';
+            addChildButton.style.width =  String(buttonSize)+'px';
+            addChildButton.style.maxHeight =  String(buttonSize)+'px';
+            addChildButton.style.maxWidth =  String(buttonSize)+'px';
+            addChildButton.style.borderRadius = String(buttonSize*0.2)+'px';
+            addChildButton.style.visibility = collapsed ? 'hidden': 'visible';
+          }
+
+          const addChildIcon = document.getElementById(node.id+"-create-icon");
+          if(addChildIcon)
+          {
+            addChildIcon.style.fontSize = String(buttonSize)+'px';
+          }
+
+          const buttonText = document.getElementById(node.id+"-text");
+          if(buttonText)
+          {
+            buttonText.style.fontSize = String(nodeDimension*0.155)+'px';
+          }
+
+          if(('children' in node && node.children.length > 0))
+          {
+            const collapseButton = document.getElementById(node.id+"-collapse");
+            if(collapseButton)
+            {
+              collapseButton.style.left = String(node["left"]-buttonSize+offset)+'px';
+              collapseButton.style.top = String((row*nodeDimension*1.5)+verticalOffset+(nodeDimension-buttonSize))+'px';
+              collapseButton.style.height =  String(buttonSize)+'px';
+              collapseButton.style.width =  String(buttonSize)+'px';
+              collapseButton.style.maxHeight =  String(buttonSize)+'px';
+              collapseButton.style.maxWidth =  String(buttonSize)+'px';
+              collapseButton.style.borderRadius = String(buttonSize*0.2)+'px';
+              collapseButton.style.visibility = collapsed ? 'hidden': 'visible';
+            }
+
+            const collapseIcon = document.getElementById(node.id+"-collapse-icon");
+            if(collapseIcon)
+            {
+              collapseIcon.style.fontSize = String(buttonSize)+'px';
+            }
+          }
         }
       }
       
