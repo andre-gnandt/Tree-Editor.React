@@ -655,16 +655,21 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   {
     node.children.forEach(child => {
       const nodeElement = document.getElementById(child.id);
-      nodeElement.style.display = hide ? 'none' : 'table';
+      const dimension = nodeElement.style.maxWidth;
       nodeElement.style.visibility = "visible";
+      nodeElement.style.display = hide ? 'none' : 'block';
+      nodeElement.style.width = dimension;
+      nodeElement.style.height = dimension;
+      nodeElement.style.maxWidth = dimension;
+      nodeElement.style.maxHeight = dimension;
 
       const lineElement = document.getElementsByClassName(child.nodeId+"_"+child.id)[0];
       lineElement.className = hide ? node.id+"_"+child.id+" hidden" : node.id+"_"+child.id;
 
       const addChildButton = document.getElementById(child.id+"-create");
-      addChildButton.style.display = hide ? 'none' : 'block';
       addChildButton.style.visibility = "visible";
-
+      addChildButton.style.display = hide ? 'none' : 'block';
+      
       if(('children' in child && child.children.length > 0))
       {
         const collapseButtonElement = document.getElementById(child.id+"-collapse");
@@ -699,7 +704,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
           (
             <>
               { (('children' in child && child.children.length > 0)) && (
-                <button className='treenode-action-button button' id={child.id+"-collapse"}
+                <button className='treenode-action-button button center-text' id={child.id+"-collapse"}
                   style = {{height: String(buttonSize)+'px', width: String(buttonSize)+'px', 
                     maxHeight: String(buttonSize)+'px', maxWidth: String(buttonSize)+'px', 
                     left: String(left-buttonSize)+'px', top: String((row*nodeSize*1.5)+verticalOffset+(nodeSize-buttonSize))+'px',
@@ -716,7 +721,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
                 </button>
               )
               }
-              <button className='button treenode-action-button' id = {child.id+"-create"}
+              <button className='treenode-action-button button center-text' id = {child.id+"-create"}
                 style = {{height: String(buttonSize)+'px', width: String(buttonSize)+'px', 
                   maxHeight: String(buttonSize)+'px', maxWidth: String(buttonSize)+'px', 
                   left: String(left-buttonSize)+'px', top: String((row*nodeSize*1.5)+verticalOffset+0.1*nodeSize)+'px',
@@ -931,6 +936,12 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
 
         if(IsDesktop())
         {
+          const addChildIcon = document.getElementById(node.id+"-create-icon");
+          if(addChildIcon)
+          {
+            addChildIcon.style.fontSize = String(buttonSize)+'px';
+          }
+
           const addChildButton = document.getElementById(node.id+"-create");
           if(addChildButton)
           {
@@ -942,12 +953,6 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
             addChildButton.style.maxWidth =  String(buttonSize)+'px';
             addChildButton.style.borderRadius = String(buttonSize*0.2)+'px';
             addChildButton.style.visibility = collapsed ? 'hidden': 'visible';
-          }
-
-          const addChildIcon = document.getElementById(node.id+"-create-icon");
-          if(addChildIcon)
-          {
-            addChildIcon.style.fontSize = String(buttonSize)+'px';
           }
 
           const buttonText = document.getElementById(node.id+"-text");

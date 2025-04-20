@@ -1,5 +1,4 @@
 import React, {useCallback, useEffect, useState} from 'react';
-//import './DetailsList.css'
 import '../trees/tree.css';
 import { useDispatch } from 'react-redux';
 import 'primeicons/primeicons.css';
@@ -29,7 +28,7 @@ const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, pare
         treeId: rootNode ? rootNode.treeId : null,
     };
 
-    dispatch(cloneNode(newNode));
+    if(parentId) dispatch(cloneNode(newNode));
 
     const unMount = useCallback(() => 
     {
@@ -85,6 +84,7 @@ const CreateNode = ({nodeList, nodeDictionary, countries, rootNode, render, pare
     {
         isPortrait();
         setCreateNode(true);
+        dispatch(cloneNode(newNode));
     }
 
     return (

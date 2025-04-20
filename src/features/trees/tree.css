@@ -523,7 +523,7 @@ button:focus{
   background-color: #F0F0F0;
   z-index: 4;
   position: absolute;
-  display: table;
+  display: block;
   border: 2px solid red;
 }
 
