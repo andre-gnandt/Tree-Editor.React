@@ -546,6 +546,34 @@ button:focus{
     */
 }
 
+.p-slider 
+{
+    position: relative;
+    background-color: var(--input-focused-background-color);
+    height: 0.4rem;
+    border-radius: 0.2rem;
+}
+
+.p-slider-range 
+{
+    position: relative;
+    background-color: var(--form-focused-color);
+    height: 0.4rem;
+    border-radius: 0.2rem;
+}
+
+.p-slider-handle
+{
+    position: absolute;
+    top: -0.6rem;
+    color: red;
+    background-color: white;
+    border: 2px solid var(--form-focused-color);
+    border-radius: 50%;
+    height: 1.6rem;
+    width: 1.6rem;
+}
+
 .tooltip {
     position: relative;
     display: inline-block;

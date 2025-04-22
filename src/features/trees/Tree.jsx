@@ -1,9 +1,10 @@
-import {memo, useCallback, useEffect} from 'react'
+import {memo, useCallback, useEffect, useState} from 'react'
 import TreeNode from '../nodes/TreeNode';
 import { Provider} from 'react-redux';
 import { store } from '../../store';
 import LineTo from 'react-lineto';
 import Draggable from 'react-draggable';
+import { Slider } from 'primereact/slider';
 import { createRoot } from 'react-dom/client';
 import CreateNode from '../nodes/CreateNode';
 import CreateRoot from '../nodes/CreateRoot';
@@ -11,8 +12,8 @@ import EditTree from '../trees/EditTree';
 import { useNavigate } from 'react-router-dom';
 import HeaderInfo from '../utils/HeaderInfo';
 import { updateManyNodes } from '../../api/nodes/nodesApi';
-import 'primeicons/primeicons.css';
 import '../trees/tree.css';
+import 'primeicons/primeicons.css';
 import { IsDesktop } from '../utils/Functions';
 
 /*extra node properties include:
@@ -29,6 +30,7 @@ import { IsDesktop } from '../utils/Functions';
 //property of tree nodes on re renders, this component will NEVER Re render
 //Re renders of the tree diagram must be done with plain JavaScript
 const Tree = memo(({id, treeFetch, countries = null}) => {
+  const [sliderValue, setSliderValue] = useState(50);
   const navigate = useNavigate();
   const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
   let originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
@@ -51,7 +53,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   let nodeList = [];
   let dragging = false;
   let mouseOverNode = null;
-  const minimumNodeSize = IsDesktop() ? 1.15/pixelsToCentimetres : 0.7/pixelsToCentimetres;
+  const minimumNodeSize = IsDesktop() ? 1/pixelsToCentimetres : 0.7/pixelsToCentimetres;
   let nodeDimension = 80;
   let iconDimension = 3.2; //rem;
   let testRender = false;
@@ -87,7 +89,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     return (changeTracker && Object.keys(changeTracker).length > 0);
   }, [treeFetch, countries]);
 
-  const ReRenderTree = useCallback((reRender = false, callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null) =>
+  const ReRenderTree = useCallback((reRender = false, callback = null, newNode = null, nodeId = null, newParentId = null, oldParentId = null, zoomPercentage = null) =>
   {
     RenderTreeMutex();
     if(rendering || dragging || resetting) return;
@@ -96,7 +98,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     const treeContainer = createRoot(document.getElementById('tree-root'));
     if(!tree && !newNode)
     {
-       treeContainer.render((RenderTree(true, tree)));
+       treeContainer.render((RenderTree(true, tree, zoomPercentage)));
        rendering = false;
        return;
     }
@@ -178,11 +180,11 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     //RemoveLines(inputTree);
     if(reRender)
     {
-      treeContainer.render((RenderTree(reRender, inputTree)));
+      treeContainer.render((RenderTree(reRender, inputTree, zoomPercentage)));
     }
     else 
     {
-      RenderTree(reRender, inputTree);
+      RenderTree(reRender, inputTree, zoomPercentage);
     }
 
     CorrectTransforms(inputTree);
@@ -220,6 +222,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     document.getElementById('save-tree-positions').disabled = !(treeUnsaved);
     document.getElementById('revert-tree-positions').disabled = !(treeUnsaved);
 
+    RemoveLines(inputTree, true);
     rendering = false;
   }, [treeFetch, countries]);
 
@@ -638,12 +641,17 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     RemoveLine(node);
   }
 
-  function RemoveLine(node)
+  function RemoveLine(node, extra = false)
   {
     if(node.nodeId)
     {
-      const line = document.getElementsByClassName(node.nodeId+"_"+node.id);
-      if(line && line.length > 0) line[0].remove();
+      const lines = document.getElementsByClassName(node.nodeId+"_"+node.id);
+      let i = extra ? 1 : 0;
+      while(i < lines.length)
+      {
+        lines[i].remove();
+        i++;
+      }
     }
   }
 
@@ -786,7 +794,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   }
 
   //units used are pixels
-  function GetNodeDimensions()
+  function GetNodeDimensions(zoomPercentage = null)
   {
     const width = IsDesktop() ? window.innerWidth : screen.width;
     const height = IsDesktop() ? window.innerHeight : screen.height;
@@ -794,6 +802,13 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
 
     const verticalOffset = GetVerticalOffset();
     const maximumNodeSize = height > width ? height*0.5 : width * 0.65;
+    const trueMinimumSize = 0.5/pixelsToCentimetres;
+
+    if(zoomPercentage)
+    {
+      return ((maximumNodeSize-trueMinimumSize)*zoomPercentage/100)+trueMinimumSize;
+    }
+
     const verticalSpace = 0.96*height - verticalOffset;
     const horizontalSpace = width -  (2*horizontalBorder);
 
@@ -816,7 +831,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     return Jsx;
   }
 
-  function RenderTree(reRender, tree, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
+  function RenderTree(reRender, tree, zoomPercentage = null, parent = null, row = 0, parentLeft = window.innerWidth/2, path = 'middle')
   {
     if(tree)
     {
@@ -827,7 +842,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
       maxLevels = new Object();
       childPositions = new Object();
       nodeDictionary = new Object();
-      SetTreeDimensions(tree);
+      SetTreeDimensions(tree, zoomPercentage);
    
       maxLevels = new Object();
       childPositions = new Object();
@@ -861,7 +876,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     return <></>;
   }
 
-  function SetTreeDimensions(tree)
+  function SetTreeDimensions(tree, zoomPercentage = null)
   {
     nodeDimension = 1;
     treeWidthMax = null;
@@ -872,7 +887,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     PrepRenderChildren(tree);
     treeWidth = treeWidthMax-treeWidthMin+1;
     treeHeight = treeHeight > 1 ? ((treeHeight-1)*1.5)+1 : treeHeight;
-    nodeDimension = GetNodeDimensions(); 
+    nodeDimension = GetNodeDimensions(zoomPercentage); 
   }
 
   function SetTreeWidths(value)
@@ -1353,15 +1368,15 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     //scrollYBefore = window.scrollY;
   }
 
-  function RemoveLines(node)
+  function RemoveLines(node, extra = false)
   {
 
     //createRoot(document.getElementById('line-container-insert')).render(<></>);
     //createRoot(document.getElementById('line-container')).render(<></>);
     //DepthFirstMethod(RemoveLine, tree, null, false);
-    RemoveLine(node);
+    RemoveLine(node, extra);
     node.children?.forEach(child => {
-      RemoveLines(child);
+      RemoveLines(child, extra);
     })
 
   } 
@@ -1377,8 +1392,11 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   function AddLines(node, collapsed = false)
   {
 
+
     const isCollapsed = collapsed;
     const lines = [];
+
+    RemoveLine(node);
 
     if(isCollapsed)
     {
@@ -1525,6 +1543,21 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     resetting = false;
   }
 
+  function RenderSlider(value = 50)
+  {
+    return (
+      <>
+        <Slider value={value} onChange={(e) => ReRenderOnSlider(e.value)} className="w-14rem" />  
+      </>
+    );
+  }
+
+  function ReRenderOnSlider(value = 50)
+  {
+    ReRenderTree(false, null, null, null, null, null, value);
+    createRoot(document.getElementById('slider-container')).render(RenderSlider(value));
+  }
+
   return (
     <>
       { (treeFetch && treeDetails) && (
@@ -1545,7 +1578,15 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
                     <span className="tooltip-right">Home</span>
                   </button>
               <EditTree id = {id} tree = {treeDetails}/>
-            </div>          
+            </div>
+            { (IsDesktop()) && 
+              (
+                <div id = 'slider-container'>    
+                  <Slider value={50} onChange={(e) => { ReRenderOnSlider(e.value);}} className="w-14rem" />   
+                </div>
+              )
+                  
+            }      
             <div className='tree-positions-container'>
               <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{width: String(iconDimension)+'rem'}}>
                 <i className='pi pi-replay save-icon diagram-header-icon' />
@@ -1563,7 +1604,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
                 {CreationButtons()}
             </div>
           </div>
-        </div>
+        </div> 
         <div id = 'line-container' className='line-container'>
           <div id = 'line-container-insert' className='line-container-insert'>
           </div>
