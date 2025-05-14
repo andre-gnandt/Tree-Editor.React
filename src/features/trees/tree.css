@@ -493,12 +493,37 @@ button:focus{
 
 }
 
+.hidden
+{
+  display: none;
+}
+
+.tree-line{
+
+}
+
+.treenode-action-icon
+{
+  position: relative;
+  color: white;
+  height: 100%;
+  width:100%;
+}
+
+.treenode-action-button
+{
+  position: absolute;
+  padding: 0 0 0 0;
+  background-color: grey; 
+  z-index: 5;
+}
+
 .treenode-container
 {
   background-color: #F0F0F0;
   z-index: 4;
   position: absolute;
-  display: table;
+  display: block;
   border: 2px solid red;
 }
 
@@ -519,6 +544,34 @@ button:focus{
     background-color: var(--button-blue-focused);
     color: lightgrey;
     */
+}
+
+.p-slider 
+{
+    position: relative;
+    background-color: var(--input-focused-background-color);
+    height: 0.4rem;
+    border-radius: 0.2rem;
+}
+
+.p-slider-range 
+{
+    position: relative;
+    background-color: var(--form-focused-color);
+    height: 0.4rem;
+    border-radius: 0.2rem;
+}
+
+.p-slider-handle
+{
+    position: absolute;
+    top: -0.6rem;
+    color: red;
+    background-color: white;
+    border: 2px solid var(--form-focused-color);
+    border-radius: 50%;
+    height: 1.6rem;
+    width: 1.6rem;
 }
 
 .tooltip {

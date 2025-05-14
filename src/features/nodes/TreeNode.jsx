@@ -7,6 +7,7 @@ import { Audio } from 'react-loader-spinner';
 import { IsDesktop } from '../utils/Functions';
 
 const TreeNode = memo(({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDoneCallBack, thumbnailXHRSentCallBack, rootNode, render, inputNode, css, nodeList, nodeDictionary, countries}) => {
+    const firstRender = useRef(true);
     const[dialog, setDialog] = useState(false);
     const thumbnail = useRef(GetThumbnail());
     const req = new XMLHttpRequest();
@@ -41,12 +42,19 @@ const TreeNode = memo(({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDone
         
         if(!XHRSent() && inputNode.thumbnailId && thumbnail.current == null && inputNode.files.length === 0)
         {
+            firstRender.current = false;
             inputNode['thumbnailReq'] = true;
             thumbnailXHRSentCallBack(inputNode);
             req.addEventListener("loadend", ThumbnailLoaded); 
             req.open("GET", "http://localhost:11727/api/Files/"+inputNode.thumbnailId);
             req.send();
         } 
+
+        if(firstRender.current)
+        {
+            firstRender.current =  false;
+            setManualReRender(-1*manualReRender);
+        }
 
         return () => 
         {   
@@ -67,7 +75,6 @@ const TreeNode = memo(({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDone
     }
 
     function XHRSent(){ return (('thumbnailReq' in inputNode) && inputNode['thumbnailReq']);}
-
     
     function ThumbnailLoaded(event)
     {
@@ -147,10 +154,10 @@ const TreeNode = memo(({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDone
 
         return(
             <>  
-                { (thumbnail.current ) ? 
+                { (thumbnail.current && !firstRender.current) ? 
                 (
                     <div 
-                        style = {{height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}
+                        style = {{height: '100%', width: '100%'}}
                         onPointerDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} 
                         onPointerOut={(event) => { if(!IsDesktop()){ValidateButtonClick(event.target);}}}
                         onClick={(event) => {ValidateButtonClick(event.target);}}
@@ -163,6 +170,7 @@ const TreeNode = memo(({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDone
                             src = {thumbnail.current ? thumbnail.current.base64 : GetThumbnail().base64}
                         />
                         <div
+                            id = {inputNode.id+"-text"}
                             className='image-text text-overflow pointer'
                             onPointerDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} 
                             onPointerOut={(event) => { if(!IsDesktop()){ValidateButtonClick(event.target);}}}
@@ -192,11 +200,12 @@ const TreeNode = memo(({unsavedTreePositions, reRenderTreeNode, thumbnailXHRDone
                     :
                     (
                         <button 
+                            id = {inputNode.id+"-text"}
                             className='tree-button text-overflow'       
                             onPointerDown= {(event) => {buttonMouseDown = GetElementPosition(event.target);}} 
                             onPointerOut={(event) => { if(!IsDesktop()){ValidateButtonClick(event.target);}}}
                             onClick={(event) => {ValidateButtonClick(event.target);}} 
-                            style = {{ fontSize: String(css.nodeSize*0.155)+'px', maxHeight:String(css.nodeSize)+'px', maxWidth: String(css.nodeSize)+'px',  height: String(css.nodeSize)+'px', width: String(css.nodeSize)+'px'}}>
+                            style = {{ fontSize: String(css.nodeSize*0.155)+'px', height: '100%', width: '100%'}}>
                             {inputNode.title}
                         </button> 
                     )                   
