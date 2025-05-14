@@ -4,7 +4,8 @@ import { Provider} from 'react-redux';
 import { store } from '../../store';
 import LineTo from 'react-lineto';
 import Draggable from 'react-draggable';
-import { Slider } from 'primereact/slider';
+//slider disabled until improvements are made
+//import { Slider } from 'primereact/slider';
 import { createRoot } from 'react-dom/client';
 import CreateNode from '../nodes/CreateNode';
 import CreateRoot from '../nodes/CreateRoot';
@@ -28,9 +29,10 @@ import { IsDesktop } from '../utils/Functions';
 
 //Due to strange issues and positioning with the CSS transform 
 //property of tree nodes on re renders, this component will NEVER Re render
-//Re renders of the tree diagram must be done with plain JavaScript
+//Re renders of the tree diagram must be done manually
 const Tree = memo(({id, treeFetch, countries = null}) => {
-  const [sliderValue, setSliderValue] = useState(50);
+  //slider disabled until improvements are made
+  //const [sliderValue, setSliderValue] = useState(50);
   const navigate = useNavigate();
   const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
   let originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
@@ -1543,6 +1545,8 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     resetting = false;
   }
 
+  //slider disabled until improvements are made
+  /*
   function RenderSlider(value = 50)
   {
     return (
@@ -1551,12 +1555,16 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
       </>
     );
   }
+  */
 
+  //slider disabled until improvements are made
+  /*
   function ReRenderOnSlider(value = 50)
   {
     ReRenderTree(false, null, null, null, null, null, value);
     createRoot(document.getElementById('slider-container')).render(RenderSlider(value));
   }
+  */
 
   return (
     <>
@@ -1579,13 +1587,15 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
                   </button>
               <EditTree id = {id} tree = {treeDetails}/>
             </div>
-            { (IsDesktop()) && 
+            { 
+              //slider disabled until improvements are made
+              /* (IsDesktop()) && 
               (
                 <div id = 'slider-container'>    
                   <Slider value={50} onChange={(e) => { ReRenderOnSlider(e.value);}} className="w-14rem" />   
                 </div>
-              )
-                  
+              )        
+              */
             }      
             <div className='tree-positions-container'>
               <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{width: String(iconDimension)+'rem'}}>
