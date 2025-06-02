@@ -5,7 +5,7 @@ import { store } from '../../store';
 import LineTo from 'react-lineto';
 import Draggable from 'react-draggable';
 //slider disabled until improvements are made
-//import { Slider } from 'primereact/slider';
+import { Slider } from 'primereact/slider';
 import { createRoot } from 'react-dom/client';
 import CreateNode from '../nodes/CreateNode';
 import CreateRoot from '../nodes/CreateRoot';
@@ -32,7 +32,6 @@ import { IsDesktop } from '../utils/Functions';
 //Re renders of the tree diagram must be done manually
 const Tree = memo(({id, treeFetch, countries = null}) => {
   //slider disabled until improvements are made
-  //const [sliderValue, setSliderValue] = useState(50);
   const navigate = useNavigate();
   const treeDetails = treeFetch != null && treeFetch.tree != null ? treeFetch.tree : null;
   let originalTree = treeFetch != null && treeFetch.root != null ? treeFetch.root : null;
@@ -191,7 +190,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
 
     CorrectTransforms(inputTree);
     ResetElementPositions(inputTree);
-    AddLines(inputTree);
+    if(!zoomPercentage)AddLines(inputTree);
     RenderCreationButtons();
 
     //update the change tracker (for drag and drop of subtrees) to remove any changes already saved in the database
@@ -1561,25 +1560,24 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
   }
 
   //slider disabled until improvements are made
-  /*
+  
   function RenderSlider(value = 50)
   {
     return (
       <>
-        <Slider value={value} onChange={(e) => ReRenderOnSlider(e.value)} className="w-14rem" />  
+        <Slider value={value} onChange={(e) => ReRenderOnSlider(e.value)} onSlideEnd={() => AddLines(tree)} className="w-14rem" />  
       </>
     );
   }
-  */
+  
 
   //slider disabled until improvements are made
-  /*
   function ReRenderOnSlider(value = 50)
   {
     ReRenderTree(false, null, null, null, null, null, value);
     createRoot(document.getElementById('slider-container')).render(RenderSlider(value));
   }
-  */
+  
 
   return (
     <>
@@ -1604,13 +1602,13 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
             </div>
             { 
               //slider disabled until improvements are made
-              /* (IsDesktop()) && 
+               (IsDesktop()) && 
               (
                 <div id = 'slider-container'>    
-                  <Slider value={50} onChange={(e) => { ReRenderOnSlider(e.value);}} className="w-14rem" />   
+                  <Slider value={50} onChange={(e) => { ReRenderOnSlider(e.value);}} onSlideEnd={() => AddLines(tree)} className="w-14rem" />   
                 </div>
               )        
-              */
+              
             }      
             <div className='tree-positions-container'>
               <button onClick={() => { RevertTreePositions();}} id = 'revert-tree-positions' className='button-header button-save tooltip' style = {{width: String(iconDimension)+'rem'}}>

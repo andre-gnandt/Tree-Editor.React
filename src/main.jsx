@@ -4,10 +4,12 @@ import './index.css'
 import { PrimeReactProvider } from 'primereact/api';
 import ApiAlert from './features/utils/ApiAlert.jsx';
 
+/*
 console.log = function () {};
 console.debug = function () {};
 console.error = function () {};
 console.warn = function () {};
+*/
 createRoot(document.getElementById('root')).render(
         <>
                 <PrimeReactProvider>
