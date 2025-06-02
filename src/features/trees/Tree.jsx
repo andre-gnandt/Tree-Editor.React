@@ -826,6 +826,7 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
 
   function InitialTreeRender(tree)
   {
+    ClearLines();
     rendering = true;
     const Jsx = RenderTree(true, tree);
     rendering = false;
@@ -1382,6 +1383,20 @@ const Tree = memo(({id, treeFetch, countries = null}) => {
     })
 
   } 
+
+  function ClearLines()
+  {
+    const lineContainer = document.getElementById('line-container')
+    if(lineContainer)
+    {
+      const lines = lineContainer.children;
+      let i = 1;
+      while(i < lines.length)
+      {
+        lines[i].remove();
+      }
+    }
+  }
 
   function AddLine(node)
   {
